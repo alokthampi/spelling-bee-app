@@ -6,9 +6,11 @@
   <title>Spelling Bee Practice</title>
 
   <style>
+    /* ===== Global ===== */
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fa;
+      background: #0d1117;            /* GitHub-style dark */
+      color: #e6edf3;
       padding: 20px;
     }
 
@@ -17,7 +19,11 @@
       margin: auto;
     }
 
-    /* Top bar */
+    h1, h2, h3 {
+      color: #f0f6fc;
+    }
+
+    /* ===== Top Bar ===== */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -27,10 +33,12 @@
     }
 
     select {
+      background: #161b22;
+      color: #e6edf3;
       padding: 8px 12px;
       font-size: 14px;
       border-radius: 6px;
-      border: none;
+      border: 1px solid #30363d;
     }
 
     button {
@@ -42,67 +50,63 @@
     }
 
     .reset-btn {
-      background: #dc3545;
+      background: #da3633;
       color: white;
     }
 
-    h1 {
-      margin-bottom: 15px;
-    }
-
-    /* Main layout */
+    /* ===== Layout ===== */
     .layout {
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
     }
 
-    /* Word list */
+    /* ===== Word List ===== */
     .word-list {
       flex: 1;
       min-width: 220px;
-      background: #fff;
+      background: #161b22;
       padding: 15px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      max-height: 70vh;     /* desktop default */
+      border: 1px solid #30363d;
+      max-height: 70vh;
       overflow-y: auto;
     }
 
     .word-item {
       padding: 10px;
       cursor: pointer;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #30363d;
     }
 
     .word-item:hover {
-      background: #f0f4ff;
+      background: #21262d;
     }
 
-    /* Selection colors */
+    /* Selection states */
     .word-item.selected {
-      background: #28a745;
+      background: #238636;     /* green */
       color: white;
       font-weight: bold;
     }
 
     .word-item.active {
-      background: #ffc107;
-      color: black;
+      background: #f1c40f;     /* yellow */
+      color: #000;
       font-weight: bold;
     }
 
-    /* Details card */
+    /* ===== Details Card ===== */
     .card {
       flex: 2;
-      background: #fff;
+      background: #161b22;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border: 1px solid #30363d;
     }
 
     .audio-buttons button {
-      background: #007bff;
+      background: #1f6feb;
       color: white;
       margin: 6px 6px 0 0;
     }
@@ -110,14 +114,15 @@
     .label {
       font-weight: bold;
       margin-top: 10px;
+      color: #8b949e;
     }
 
     .ipa {
       font-style: italic;
-      color: #555;
+      color: #c9d1d9;
     }
 
-    /* 📱 MOBILE OPTIMIZATION */
+    /* ===== Mobile Optimization ===== */
     @media (max-width: 768px) {
       body {
         padding: 12px;
@@ -128,7 +133,7 @@
       }
 
       .word-list {
-        max-height: 35vh;   /* 👈 key fix */
+        max-height: 35vh;
       }
 
       .card {
