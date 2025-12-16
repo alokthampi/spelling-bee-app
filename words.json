@@ -1,14 +1,1250 @@
 [
-  {
-    "word": "resilient",
-    "context": "She remained resilient even after losing the match."
-  },
-  {
-    "word": "dubious",
-    "context": "The teacher was dubious about the excuse."
-  },
-  {
-    "word": "anguish",
-    "context": "He cried out in anguish after hearing the news."
-  }
+    {
+        "word": "tag",
+        "difficulty": "one",
+        "part_of_speech": "noun, verb",
+        "definition": "A label attached to something, or to touch someone in a game.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/tæɡ/"
+            }
+        ],
+        "sentence": "She tied a tag to her backpack."
+    },
+    {
+        "word": "send",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To cause something to go or be taken to another place.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/sɛnd/"
+            }
+        ],
+        "sentence": "Please send the email today."
+    },
+    {
+        "word": "deck",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A flat outdoor area attached to a house, or a set of cards.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/dɛk/"
+            }
+        ],
+        "sentence": "They sat on the deck in the evening."
+    },
+    {
+        "word": "stuck",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Unable to move or get free.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/stʌk/"
+            }
+        ],
+        "sentence": "The zipper got stuck on her jacket."
+    },
+    {
+        "word": "snug",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Warm, comfortable, and fitting closely.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/snʌɡ/"
+            }
+        ],
+        "sentence": "The kitten slept in a snug bed."
+    },
+    {
+        "word": "fish",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "An animal that lives in water and has fins and gills.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/fɪʃ/"
+            }
+        ],
+        "sentence": "The fish swam quickly in the pond."
+    },
+    {
+        "word": "hold",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To carry or keep something in your hands or arms.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/hoʊld/"
+            }
+        ],
+        "sentence": "She held the baby carefully."
+    },
+    {
+        "word": "mind",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "The part of a person that thinks, feels, and remembers.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/maɪnd/"
+            }
+        ],
+        "sentence": "He changed his mind about the game."
+    },
+    {
+        "word": "stay",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To remain in the same place.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/steɪ/"
+            }
+        ],
+        "sentence": "Please stay inside during the storm."
+    },
+    {
+        "word": "scrub",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To clean something by rubbing it hard.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/skrʌb/"
+            }
+        ],
+        "sentence": "She scrubbed the table until it was clean."
+    },
+    {
+        "word": "draw",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To make a picture with a pencil, pen, or crayon.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/drɔ/"
+            }
+        ],
+        "sentence": "He likes to draw animals."
+    },
+    {
+        "word": "brown",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Having the color of wood or chocolate.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/braʊn/"
+            }
+        ],
+        "sentence": "She wore a brown jacket."
+    },
+    {
+        "word": "cozy",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Comfortable and warm.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈkoʊzi/"
+            },
+            {
+                "dialect": "UK",
+                "ipa": "/ˈkəʊzi/",
+                "note": "Also spelled 'cosy'"
+            }
+        ],
+        "sentence": "The room felt cozy on a cold night."
+    },
+    {
+        "word": "tint",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A light shade of a color.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/tɪnt/"
+            }
+        ],
+        "sentence": "The glass had a blue tint."
+    },
+    {
+        "word": "milk",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A white liquid that comes from cows and is used as food.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/mɪlk/"
+            }
+        ],
+        "sentence": "She poured milk into her cereal."
+    },
+    {
+        "word": "yawn",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To open your mouth wide when you are tired or bored.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/jɔn/"
+            }
+        ],
+        "sentence": "He began to yawn during the movie."
+    },
+    {
+        "word": "tank",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A large container for holding liquids.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/tæŋk/"
+            }
+        ],
+        "sentence": "The fish tank was full of colorful fish."
+    },
+    {
+        "word": "want",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To wish for or desire something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/wɑnt/"
+            }
+        ],
+        "sentence": "I want to play outside."
+    },
+    {
+        "word": "crowd",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A large group of people gathered together.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/kraʊd/"
+            }
+        ],
+        "sentence": "A crowd watched the parade."
+    },
+    {
+        "word": "pond",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A small body of still water.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/pɑnd/"
+            }
+        ],
+        "sentence": "Frogs lived near the pond."
+    },
+    {
+        "word": "skirt",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A piece of clothing worn around the waist.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/skɝt/"
+            }
+        ],
+        "sentence": "She wore a blue skirt to school."
+    },
+    {
+        "word": "sharks",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Large fish with sharp teeth that live in the ocean.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ʃɑrks/"
+            }
+        ],
+        "sentence": "Sharks are powerful swimmers."
+    },
+    {
+        "word": "quilt",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A thick blanket made by stitching layers of fabric together.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/kwɪlt/"
+            }
+        ],
+        "sentence": "Her grandmother made a warm quilt."
+    },
+    {
+        "word": "twigs",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Small, thin branches that grow from a tree or bush.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/twɪɡz/"
+            }
+        ],
+        "sentence": "The bird used twigs to build its nest."
+    },
+    {
+        "word": "taffy",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A soft, chewy candy made with sugar and butter.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈtæfi/"
+            }
+        ],
+        "sentence": "She bought saltwater taffy at the beach."
+    },
+    {
+        "word": "comfy",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Comfortable and cozy.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈkʌmfi/"
+            }
+        ],
+        "sentence": "The chair was soft and comfy."
+    },
+    {
+        "word": "stretch",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To make something longer or wider by pulling it.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/strɛtʃ/"
+            }
+        ],
+        "sentence": "She likes to stretch before running."
+    },
+    {
+        "word": "tight",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Fitting closely or firmly.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/taɪt/"
+            }
+        ],
+        "sentence": "The lid was too tight to open."
+    },
+    {
+        "word": "candy",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A sweet food made with sugar.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈkændi/"
+            }
+        ],
+        "sentence": "He saved his candy for later."
+    },
+    {
+        "word": "scrunch",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To squeeze or crush something into a smaller shape.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/skrʌntʃ/"
+            }
+        ],
+        "sentence": "She scrunched the paper into a ball."
+    },
+    {
+        "word": "ruby",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A precious red gemstone.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈruːbi/"
+            }
+        ],
+        "sentence": "The ring had a bright red ruby."
+    },
+    {
+        "word": "close",
+        "difficulty": "one",
+        "part_of_speech": "verb, adjective",
+        "definition": "To shut something, or to be near in distance.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/kloʊz/ (verb)"
+            },
+            {
+                "dialect": "US",
+                "ipa": "/kloʊs/ (adjective)"
+            }
+        ],
+        "sentence": "Please close the door."
+    },
+    {
+        "word": "tackle",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To try to deal with or solve a problem.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈtækəl/"
+            }
+        ],
+        "sentence": "They worked together to tackle the puzzle."
+    },
+    {
+        "word": "wire",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A thin piece of metal that can bend easily.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/waɪr/"
+            }
+        ],
+        "sentence": "The fence was made of wire."
+    },
+    {
+        "word": "skater",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A person who skates on ice or pavement.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈskeɪtər/"
+            }
+        ],
+        "sentence": "The skater practiced tricks at the park."
+    },
+    {
+        "word": "giant",
+        "difficulty": "one",
+        "part_of_speech": "noun, adjective",
+        "definition": "A very large person or thing.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈdʒaɪənt/"
+            }
+        ],
+        "sentence": "A giant tree stood in the yard."
+    },
+    {
+        "word": "bucket",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A container used for carrying liquids or sand.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈbʌkɪt/"
+            }
+        ],
+        "sentence": "He filled the bucket with water."
+    },
+    {
+        "word": "chance",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "An opportunity for something to happen.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/tʃæns/"
+            }
+        ],
+        "sentence": "She had a chance to win the game."
+    },
+    {
+        "word": "baskets",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Containers made of woven material used to hold things.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈbæskɪts/"
+            }
+        ],
+        "sentence": "The apples were placed in baskets."
+    },
+    {
+        "word": "tender",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Soft, gentle, or easy to cut or chew.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈtɛndər/"
+            }
+        ],
+        "sentence": "The meat was tender and juicy."
+    },
+    {
+        "word": "paste",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A thick, soft substance used to stick things together.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/peɪst/"
+            }
+        ],
+        "sentence": "She used paste to glue the paper."
+    },
+    {
+        "word": "melon",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A large, round fruit with juicy flesh.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈmɛlən/"
+            }
+        ],
+        "sentence": "The melon was sweet and refreshing."
+    },
+    {
+        "word": "farmer",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A person who grows crops or raises animals.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈfɑrmər/"
+            }
+        ],
+        "sentence": "The farmer worked in the fields."
+    },
+    {
+        "word": "parent",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A mother or father.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈpɛrənt/"
+            }
+        ],
+        "sentence": "Her parent attended the school meeting."
+    },
+    {
+        "word": "tail",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "The part that sticks out from the back of an animal.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/teɪl/"
+            }
+        ],
+        "sentence": "The dog wagged its tail."
+    },
+    {
+        "word": "hockey",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A fast team sport played on ice or a field.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈhɑki/"
+            }
+        ],
+        "sentence": "He plays hockey on the school team."
+    },
+    {
+        "word": "slime",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A thick, sticky, and slippery substance.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/slaɪm/"
+            }
+        ],
+        "sentence": "The kids made slime during science class."
+    },
+    {
+        "word": "insects",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Small animals with six legs and usually wings, such as ants or butterflies.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈɪnˌsɛkts/"
+            }
+        ],
+        "sentence": "Insects help pollinate flowers."
+    },
+    {
+        "word": "teeth",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "The hard white parts in the mouth used for biting and chewing.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/tiːθ/"
+            }
+        ],
+        "sentence": "She brushes her teeth every morning."
+    },
+    {
+        "word": "shortcut",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A quicker or shorter way to get somewhere.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈʃɔrtˌkʌt/"
+            }
+        ],
+        "sentence": "They took a shortcut through the park."
+    },
+    {
+        "word": "bait",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Food used to attract fish or animals.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/beɪt/"
+            }
+        ],
+        "sentence": "The fisherman put bait on the hook."
+    },
+    {
+        "word": "lure",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To attract someone or something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/lʊr/"
+            }
+        ],
+        "sentence": "Bright colors can lure insects to flowers."
+    },
+    {
+        "word": "cluster",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A group of things growing or gathered close together.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈklʌstər/"
+            }
+        ],
+        "sentence": "A cluster of grapes hung from the vine."
+    },
+    {
+        "word": "forest",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A large area filled with trees and plants.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈfɔrɪst/"
+            }
+        ],
+        "sentence": "They went hiking in the forest."
+    },
+    {
+        "word": "hollow",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Having an empty space inside.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈhɑloʊ/"
+            }
+        ],
+        "sentence": "The owl lived in a hollow tree."
+    },
+    {
+        "word": "spinning",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "Turning around quickly in circles.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈspɪnɪŋ/"
+            }
+        ],
+        "sentence": "The dancer was spinning across the stage."
+    },
+    {
+        "word": "baffling",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Hard to understand or confusing.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈbæflɪŋ/"
+            }
+        ],
+        "sentence": "The riddle was baffling at first."
+    },
+    {
+        "word": "sizzling",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Making a hissing sound from heat.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈsɪzlɪŋ/"
+            }
+        ],
+        "sentence": "The bacon was sizzling in the pan."
+    },
+    {
+        "word": "hoist",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To lift something heavy using effort or equipment.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/hɔɪst/"
+            }
+        ],
+        "sentence": "They helped hoist the flag."
+    },
+    {
+        "word": "search",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To look carefully for something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/sɝtʃ/"
+            }
+        ],
+        "sentence": "She began to search for her lost keys."
+    },
+    {
+        "word": "remind",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To help someone remember something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/rɪˈmaɪnd/"
+            }
+        ],
+        "sentence": "Please remind me to call later."
+    },
+    {
+        "word": "mango",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A sweet, juicy tropical fruit.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈmæŋɡoʊ/"
+            }
+        ],
+        "sentence": "She sliced a ripe mango for dessert."
+    },
+    {
+        "word": "coral",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A hard substance formed by sea animals, often found in reefs.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈkɔrəl/"
+            }
+        ],
+        "sentence": "Colorful fish swam near the coral."
+    },
+    {
+        "word": "jangle",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To make a loud, clashing ringing sound.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈdʒæŋɡəl/"
+            }
+        ],
+        "sentence": "The keys began to jangle in her pocket."
+    },
+    {
+        "word": "shimmer",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To shine with a soft, wavering light.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈʃɪmər/"
+            }
+        ],
+        "sentence": "The lake began to shimmer in the sunlight."
+    },
+    {
+        "word": "blossoms",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Flowers that grow on trees or plants.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈblɑsəmz/"
+            }
+        ],
+        "sentence": "Pink blossoms covered the trees."
+    },
+    {
+        "word": "swampy",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Wet, muddy, and covered with water.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈswɑmpi/"
+            }
+        ],
+        "sentence": "The ground was swampy after the rain."
+    },
+    {
+        "word": "studded",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Covered with or decorated by many small items.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈstʌdɪd/"
+            }
+        ],
+        "sentence": "The sky was studded with stars."
+    },
+    {
+        "word": "focus",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To give attention to one thing.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈfoʊkəs/"
+            }
+        ],
+        "sentence": "Please focus on your homework."
+    },
+    {
+        "word": "distress",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Great worry, pain, or sadness.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/dɪˈstrɛs/"
+            }
+        ],
+        "sentence": "The lost puppy was in distress."
+    },
+    {
+        "word": "lessons",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Periods of time spent learning something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈlɛsənz/"
+            }
+        ],
+        "sentence": "She takes piano lessons every week."
+    },
+    {
+        "word": "moment",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A very short period of time.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈmoʊmənt/"
+            }
+        ],
+        "sentence": "Please wait a moment."
+    },
+    {
+        "word": "ajar",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Slightly open.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/əˈdʒɑr/"
+            }
+        ],
+        "sentence": "She left the door ajar."
+    },
+    {
+        "word": "basil",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A fragrant green herb used in cooking.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈbeɪzəl/"
+            },
+            {
+                "dialect": "UK",
+                "ipa": "/ˈbæzəl/"
+            }
+        ],
+        "sentence": "Fresh basil was added to the pasta."
+    },
+    {
+        "word": "triple",
+        "difficulty": "one",
+        "part_of_speech": "adjective, verb",
+        "definition": "Three times as much or to make something three times larger.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈtrɪpəl/"
+            }
+        ],
+        "sentence": "The recipe calls for a triple batch."
+    },
+    {
+        "word": "satin",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A smooth, shiny fabric.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈsætən/"
+            }
+        ],
+        "sentence": "The dress was made of satin."
+    },
+    {
+        "word": "ahoy",
+        "difficulty": "one",
+        "part_of_speech": "exclamation",
+        "definition": "A call used to greet or attract attention, especially at sea.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/əˈhɔɪ/"
+            }
+        ],
+        "sentence": "The sailor shouted, \"Ahoy!\""
+    },
+    {
+        "word": "signal",
+        "difficulty": "one",
+        "part_of_speech": "noun, verb",
+        "definition": "A sign or action used to send information.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈsɪɡnəl/"
+            }
+        ],
+        "sentence": "She gave a signal to start the race."
+    },
+    {
+        "word": "answer",
+        "difficulty": "one",
+        "part_of_speech": "noun, verb",
+        "definition": "A response to a question.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈænsər/"
+            }
+        ],
+        "sentence": "He knew the answer right away."
+    },
+    {
+        "word": "shuffle",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To move by dragging the feet or to mix cards.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈʃʌfəl/"
+            }
+        ],
+        "sentence": "She began to shuffle the deck of cards."
+    },
+    {
+        "word": "dollop",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A small rounded amount of something.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈdɑləp/"
+            }
+        ],
+        "sentence": "He added a dollop of cream."
+    },
+    {
+        "word": "minnows",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Small freshwater fish.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈmɪnoʊz/"
+            }
+        ],
+        "sentence": "Minnows swam near the shore."
+    },
+    {
+        "word": "silver",
+        "difficulty": "one",
+        "part_of_speech": "noun, adjective",
+        "definition": "A shiny gray metal or the color of that metal.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈsɪlvər/"
+            }
+        ],
+        "sentence": "She wore a silver necklace."
+    },
+    {
+        "word": "before",
+        "difficulty": "one",
+        "part_of_speech": "preposition, adverb",
+        "definition": "Earlier than a certain time or event.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/bɪˈfɔr/"
+            }
+        ],
+        "sentence": "Finish your homework before dinner."
+    },
+    {
+        "word": "circus",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A traveling show with acrobats, animals, and clowns.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈsɝkəs/"
+            }
+        ],
+        "sentence": "They went to see the circus."
+    },
+    {
+        "word": "writing",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "The act of forming letters or words.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈraɪtɪŋ/"
+            }
+        ],
+        "sentence": "Her writing was neat and clear."
+    },
+    {
+        "word": "kitchen",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A room where food is prepared and cooked.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈkɪtʃən/"
+            }
+        ],
+        "sentence": "Dinner was ready in the kitchen."
+    },
+    {
+        "word": "sugar",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "A sweet substance used in food and drinks.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈʃʊɡər/"
+            }
+        ],
+        "sentence": "She added sugar to her tea."
+    },
+    {
+        "word": "awkward",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Clumsy, uncomfortable, or embarrassing.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/ˈɔkwərd/"
+            }
+        ],
+        "sentence": "There was an awkward silence."
+    },
+    {
+        "word": "seep",
+        "difficulty": "one",
+        "part_of_speech": "verb",
+        "definition": "To flow slowly through small openings.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/sip/"
+            }
+        ],
+        "sentence": "Water began to seep through the ground."
+    },
+    {
+        "word": "sweet",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Having a sugary taste or being kind and pleasant.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/swit/"
+            }
+        ],
+        "sentence": "The cake tasted sweet."
+    },
+    {
+        "word": "wheels",
+        "difficulty": "one",
+        "part_of_speech": "noun",
+        "definition": "Round objects that help things move.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/wilz/"
+            }
+        ],
+        "sentence": "The bike rolled smoothly on its wheels."
+    },
+    {
+        "word": "faint",
+        "difficulty": "one",
+        "part_of_speech": "adjective",
+        "definition": "Weak, light, or barely noticeable.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/feɪnt/"
+            }
+        ],
+        "sentence": "She heard a faint sound."
+    },
+    {
+        "word": "fruit",
+        "difficulty": "medium",
+        "part_of_speech": "noun",
+        "definition": "The part of a plant that contains seeds and is often sweet.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/frut/"
+            }
+        ],
+        "sentence": "Apples are a healthy fruit."
+    },
+    {
+        "word": "roam",
+        "difficulty": "hard",
+        "part_of_speech": "verb",
+        "definition": "To wander or move around freely.",
+        "alternate_pronunciations": [
+            {
+                "dialect": "US",
+                "ipa": "/roʊm/"
+            }
+        ],
+        "sentence": "The deer roam through the forest."
+    }
 ]
