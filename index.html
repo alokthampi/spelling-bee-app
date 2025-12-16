@@ -9,7 +9,7 @@
     /* ===== Global ===== */
     body {
       font-family: Arial, sans-serif;
-      background: #0d1117;            /* GitHub-style dark */
+      background: #0d1117;
       color: #e6edf3;
       padding: 20px;
     }
@@ -23,35 +23,46 @@
       color: #f0f6fc;
     }
 
-    /* ===== Top Bar ===== */
-    .top-bar {
+    /* ===== Difficulty Bar (PROMINENT) ===== */
+    .difficulty-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-      gap: 10px;
-    }
-
-    select {
+      gap: 12px;
       background: #161b22;
-      color: #e6edf3;
-      padding: 8px 12px;
-      font-size: 14px;
-      border-radius: 6px;
+      padding: 12px 16px;
+      border-radius: 10px;
       border: 1px solid #30363d;
+      margin: 12px 0 14px;
     }
 
-    button {
+    .difficulty-bar label {
+      font-weight: bold;
+      color: #f0f6fc;
+    }
+
+    .difficulty-bar select {
+      background: #0d1117;
+      color: #e6edf3;
       padding: 8px 14px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
     }
 
     .reset-btn {
       background: #da3633;
       color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ===== Progress ===== */
+    #categoryCount,
+    #progressText {
+      color: #8b949e;
+      margin-bottom: 6px;
     }
 
     /* ===== Layout ===== */
@@ -83,15 +94,14 @@
       background: #21262d;
     }
 
-    /* Selection states */
     .word-item.selected {
-      background: #238636;     /* green */
+      background: #238636;
       color: white;
       font-weight: bold;
     }
 
     .word-item.active {
-      background: #f1c40f;     /* yellow */
+      background: #f1c40f;
       color: #000;
       font-weight: bold;
     }
@@ -109,6 +119,10 @@
       background: #1f6feb;
       color: white;
       margin: 6px 6px 0 0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
     }
 
     .label {
@@ -122,7 +136,7 @@
       color: #c9d1d9;
     }
 
-    /* ===== Mobile Optimization ===== */
+    /* ===== Mobile ===== */
     @media (max-width: 768px) {
       body {
         padding: 12px;
@@ -130,6 +144,15 @@
 
       h1 {
         font-size: 22px;
+      }
+
+      .difficulty-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .reset-btn {
+        width: 100%;
       }
 
       .word-list {
@@ -144,11 +167,13 @@
 </head>
 
 <body>
-
 <div class="container">
 
-  <!-- TOP BAR -->
-  <div class="top-bar">
+  <h1>🐝 Spelling Bee Practice</h1>
+
+  <!-- DIFFICULTY FILTER -->
+  <div class="difficulty-bar">
+    <label for="difficultyFilter">Difficulty</label>
     <select id="difficultyFilter" onchange="applyFilter()">
       <option value="all">All Bees</option>
       <option value="one">One Bee 🐝</option>
@@ -159,11 +184,9 @@
     <button class="reset-btn" onclick="resetSelection()">🔄 Reset</button>
   </div>
 
-  <h1>🐝 Spelling Bee Practice</h1>
-
-  <!-- ✅ Progress Indicator (NEW) -->
-  <div id="categoryCount" style="margin: 6px 0; color: #8b949e;"></div>
-  <div id="progressText" style="margin-bottom: 14px; color: #8b949e;"></div>
+  <!-- PROGRESS -->
+  <div id="categoryCount"></div>
+  <div id="progressText"></div>
 
   <div class="layout">
 
@@ -173,7 +196,7 @@
       <div id="wordList"></div>
     </div>
 
-    <!-- DETAILS CARD -->
+    <!-- DETAILS -->
     <div class="card">
       <h2 id="word">Select a word</h2>
 
