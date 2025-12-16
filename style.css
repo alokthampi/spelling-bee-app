@@ -5,21 +5,40 @@ body {
   padding: 20px;
 }
 
+h1 {
+  margin-bottom: 20px;
+}
+
 .card {
   background: white;
   padding: 20px;
   border-radius: 12px;
-  max-width: 400px;
+  max-width: 420px;
   margin: auto;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+#word {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+#context {
+  font-size: 16px;
+  color: #444;
+}
+
 button {
   padding: 10px 16px;
-  margin: 10px;
+  margin: 8px;
   font-size: 16px;
   border-radius: 8px;
   border: none;
+  cursor: pointer;
   background: #007bff;
   color: white;
+}
+
+button:hover {
+  background: #0056b3;
 }
