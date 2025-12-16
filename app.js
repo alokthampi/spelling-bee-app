@@ -15,6 +15,7 @@ fetch("words.json")
     words = data;
     filteredWords = words;
     renderWordList();
+    updateProgress();
   });
 
 /* Map difficulty to display label */
@@ -22,7 +23,7 @@ function difficultyLabel(level) {
   if (level === "one") return "One Bee 🐝";
   if (level === "two") return "Two Bee 🐝🐝";
   if (level === "three") return "Three Bee 🐝🐝🐝";
-  return "—";
+  return "All Bees";
 }
 
 /* Apply Bee-level filter */
@@ -36,6 +37,7 @@ function applyFilter() {
 
   resetSelection(false);
   renderWordList();
+  updateProgress();
 }
 
 /* Render word list */
@@ -48,17 +50,25 @@ function renderWordList() {
     div.className = "word-item";
     div.innerText = item.word;
     div.onclick = () => selectWord(index);
+
+    if (selectedIndexes.has(index)) {
+      div.classList.add("selected");
+    }
+    if (index === currentIndex) {
+      div.classList.add("active");
+    }
+
     list.appendChild(div);
   });
 }
 
-/* Select word → highlight + speak ONLY the word */
+/* ✅ Select word → ACTIVE + SELECTED + speak word */
 function selectWord(index) {
-  if (currentIndex !== -1) {
-    selectedIndexes.add(currentIndex);
-  }
-
   currentIndex = index;
+
+  // ✅ Mark clicked word as selected
+  selectedIndexes.add(index);
+
   const item = filteredWords[index];
 
   /* Update UI */
@@ -74,7 +84,7 @@ function selectWord(index) {
       .map(p => `${p.dialect}: ${p.ipa}`)
       .join(" | ");
 
-  /* Update colors */
+  /* Update list styles */
   document.querySelectorAll(".word-item").forEach((el, i) => {
     el.classList.remove("active");
 
@@ -89,6 +99,8 @@ function selectWord(index) {
 
   speechSynthesis.cancel();
   speakText(item.word);
+
+  updateProgress();
 }
 
 /* 🔊 Manual audio buttons */
@@ -124,6 +136,21 @@ function speakText(text) {
   }, 250);
 }
 
+/* Progress + Category Count */
+function updateProgress() {
+  const categoryCountEl = document.getElementById("categoryCount");
+  const progressTextEl = document.getElementById("progressText");
+  const level = document.getElementById("difficultyFilter")?.value || "all";
+
+  if (!categoryCountEl || !progressTextEl) return;
+
+  const total = filteredWords.length;
+  const selected = selectedIndexes.size;
+
+  categoryCountEl.innerText = `${difficultyLabel(level)} — ${total} words`;
+  progressTextEl.innerText = `${selected} / ${total} completed`;
+}
+
 /* Reset */
 function resetSelection(clearFilter = true) {
   currentIndex = -1;
@@ -137,16 +164,14 @@ function resetSelection(clearFilter = true) {
   document.getElementById("sentence").innerText = "—";
   document.getElementById("ipa").innerText = "—";
 
-  document.querySelectorAll(".word-item").forEach(el =>
-    el.classList.remove("selected", "active")
-  );
-
   if (clearFilter) {
     const dropdown = document.getElementById("difficultyFilter");
     if (dropdown) dropdown.value = "all";
     filteredWords = words;
     renderWordList();
   }
+
+  updateProgress();
 }
 
 /* Get American English voice */
