@@ -23,7 +23,7 @@
       color: #f0f6fc;
     }
 
-    /* ===== Difficulty Bar (PROMINENT) ===== */
+    /* ===== Difficulty + Search Bar ===== */
     .difficulty-bar {
       display: flex;
       align-items: center;
@@ -33,6 +33,7 @@
       border-radius: 10px;
       border: 1px solid #30363d;
       margin: 12px 0 14px;
+      flex-wrap: wrap;
     }
 
     .difficulty-bar label {
@@ -47,6 +48,21 @@
       font-size: 15px;
       border-radius: 8px;
       border: 1px solid #30363d;
+    }
+
+    .search-box {
+      flex: 1;
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 8px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      min-width: 180px;
+    }
+
+    .search-box::placeholder {
+      color: #8b949e;
     }
 
     .reset-btn {
@@ -167,64 +183,70 @@
 </head>
 
 <body>
-<div class="container">
+  <div class="container">
+    <h1>🐝 Spelling Bee Practice</h1>
 
-  <h1>🐝 Spelling Bee Practice</h1>
+    <!-- Difficulty + Search -->
+    <div class="difficulty-bar">
+      <label for="difficultyFilter">Difficulty</label>
 
-  <!-- DIFFICULTY FILTER -->
-  <div class="difficulty-bar">
-    <label for="difficultyFilter">Difficulty</label>
-    <select id="difficultyFilter" onchange="applyFilter()">
-      <option value="all">All Bees</option>
-      <option value="one">One Bee 🐝</option>
-      <option value="two">Two Bee 🐝🐝</option>
-      <option value="three">Three Bee 🐝🐝🐝</option>
-    </select>
+      <select id="difficultyFilter" onchange="applyFilter()">
+        <option value="all">All Bees</option>
+        <option value="one">One Bee 🐝</option>
+        <option value="two">Two Bee 🐝🐝</option>
+        <option value="three">Three Bee 🐝🐝🐝</option>
+      </select>
 
-    <button class="reset-btn" onclick="resetSelection()">🔄 Reset</button>
-  </div>
+      <input
+        id="searchInput"
+        class="search-box"
+        type="text"
+        placeholder="🔍 Search words..."
+      />
 
-  <!-- PROGRESS -->
-  <div id="categoryCount"></div>
-  <div id="progressText"></div>
-
-  <div class="layout">
-
-    <!-- WORD LIST -->
-    <div class="word-list">
-      <h3>Word List</h3>
-      <div id="wordList"></div>
+      <button class="reset-btn" onclick="resetSelection()">🔄 Reset</button>
     </div>
 
-    <!-- DETAILS -->
-    <div class="card">
-      <h2 id="word">Select a word</h2>
+    <!-- Progress -->
+    <div id="categoryCount"></div>
+    <div id="progressText"></div>
 
-      <div class="audio-buttons">
-        <button onclick="readPOS()">▶️ Part of Speech</button>
-        <button onclick="readDefinition()">▶️ Definition</button>
-        <button onclick="readSentence()">▶️ Sentence</button>
+    <!-- Main Layout -->
+    <div class="layout">
+      <!-- Word List -->
+      <div class="word-list">
+        <h3>Word List</h3>
+        <div id="wordList"></div>
       </div>
 
-      <div class="label">Difficulty</div>
-      <div id="difficulty">—</div>
+      <!-- Details -->
+      <div class="card">
+        <h2 id="word">Select a word</h2>
 
-      <div class="label">Part of Speech</div>
-      <div id="pos">—</div>
+        <div class="audio-buttons">
+          <button onclick="readPOS()">▶️ Part of Speech</button>
+          <button onclick="readDefinition()">▶️ Definition</button>
+          <button onclick="readSentence()">▶️ Sentence</button>
+        </div>
 
-      <div class="label">Definition</div>
-      <div id="definition">—</div>
+        <div class="label">Difficulty</div>
+        <div id="difficulty">—</div>
 
-      <div class="label">Alternate Pronunciation</div>
-      <div id="ipa" class="ipa">—</div>
+        <div class="label">Part of Speech</div>
+        <div id="pos">—</div>
 
-      <div class="label">Sentence</div>
-      <div id="sentence">—</div>
+        <div class="label">Definition</div>
+        <div id="definition">—</div>
+
+        <div class="label">Alternate Pronunciation</div>
+        <div id="ipa" class="ipa">—</div>
+
+        <div class="label">Sentence</div>
+        <div id="sentence">—</div>
+      </div>
     </div>
-
   </div>
-</div>
 
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
