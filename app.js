@@ -2,6 +2,7 @@ let words = [];
 let filteredWords = [];
 let currentIndex = -1;
 let selectedIndexes = new Set();
+let searchQuery = "";
 
 /* Ensure voices load */
 window.speechSynthesis.onvoiceschanged = () => {
@@ -18,6 +19,17 @@ fetch("words.json")
     updateProgress();
   });
 
+/* 🆕 Search input listener */
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("searchInput");
+  if (!searchInput) return;
+
+  searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilter();
+  });
+});
+
 /* Map difficulty to display label */
 function difficultyLabel(level) {
   if (level === "one") return "One Bee 🐝";
@@ -26,16 +38,17 @@ function difficultyLabel(level) {
   return "All Bees";
 }
 
-/* Apply Bee-level filter */
+/* Apply Bee-level + search filter */
 function applyFilter() {
   const level = document.getElementById("difficultyFilter").value;
 
-  filteredWords =
-    level === "all"
-      ? words
-      : words.filter(w => w.difficulty === level);
+  filteredWords = words.filter(w => {
+    const matchesLevel = level === "all" || w.difficulty === level;
+    const matchesSearch = w.word.toLowerCase().includes(searchQuery);
+    return matchesLevel && matchesSearch;
+  });
 
-  resetSelection(false);
+  currentIndex = -1;
   renderWordList();
   updateProgress();
 }
@@ -51,7 +64,7 @@ function renderWordList() {
     div.innerText = item.word;
     div.onclick = () => selectWord(index);
 
-    if (selectedIndexes.has(index)) {
+    if (selectedIndexes.has(item.word)) {
       div.classList.add("selected");
     }
     if (index === currentIndex) {
@@ -62,16 +75,14 @@ function renderWordList() {
   });
 }
 
-/* ✅ Select word → ACTIVE + SELECTED + speak word */
+/* Select word → ACTIVE + SELECTED + speak */
 function selectWord(index) {
   currentIndex = index;
-
-  // ✅ Mark clicked word as selected
-  selectedIndexes.add(index);
-
   const item = filteredWords[index];
 
-  /* Update UI */
+  /* ✅ Track by WORD (safe across filters/search) */
+  selectedIndexes.add(item.word);
+
   document.getElementById("word").innerText = item.word;
   document.getElementById("difficulty").innerText =
     difficultyLabel(item.difficulty);
@@ -84,22 +95,10 @@ function selectWord(index) {
       .map(p => `${p.dialect}: ${p.ipa}`)
       .join(" | ");
 
-  /* Update list styles */
-  document.querySelectorAll(".word-item").forEach((el, i) => {
-    el.classList.remove("active");
-
-    if (selectedIndexes.has(i)) {
-      el.classList.add("selected");
-    }
-
-    if (i === index) {
-      el.classList.add("active");
-    }
-  });
-
   speechSynthesis.cancel();
   speakText(item.word);
 
+  renderWordList();
   updateProgress();
 }
 
@@ -136,7 +135,7 @@ function speakText(text) {
   }, 250);
 }
 
-/* Progress + Category Count */
+/* Progress */
 function updateProgress() {
   const categoryCountEl = document.getElementById("categoryCount");
   const progressTextEl = document.getElementById("progressText");
@@ -145,16 +144,19 @@ function updateProgress() {
   if (!categoryCountEl || !progressTextEl) return;
 
   const total = filteredWords.length;
-  const selected = selectedIndexes.size;
+  const completed = filteredWords.filter(w =>
+    selectedIndexes.has(w.word)
+  ).length;
 
   categoryCountEl.innerText = `${difficultyLabel(level)} — ${total} words`;
-  progressTextEl.innerText = `${selected} / ${total} completed`;
+  progressTextEl.innerText = `${completed} / ${total} completed`;
 }
 
 /* Reset */
 function resetSelection(clearFilter = true) {
   currentIndex = -1;
   selectedIndexes.clear();
+  searchQuery = "";
   speechSynthesis.cancel();
 
   document.getElementById("word").innerText = "Select a word";
@@ -164,13 +166,16 @@ function resetSelection(clearFilter = true) {
   document.getElementById("sentence").innerText = "—";
   document.getElementById("ipa").innerText = "—";
 
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.value = "";
+
   if (clearFilter) {
     const dropdown = document.getElementById("difficultyFilter");
     if (dropdown) dropdown.value = "all";
     filteredWords = words;
-    renderWordList();
   }
 
+  renderWordList();
   updateProgress();
 }
 
