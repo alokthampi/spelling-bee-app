@@ -4,12 +4,18 @@ let currentIndex = -1;
 let selectedIndexes = new Set();
 let searchQuery = "";
 
-/* Ensure voices load */
+let audioPlayer = null;
+
+/* ---------------------------
+   Speech setup
+--------------------------- */
 window.speechSynthesis.onvoiceschanged = () => {
   speechSynthesis.getVoices();
 };
 
-/* Load words JSON */
+/* ---------------------------
+   Load words
+--------------------------- */
 fetch("words.json")
   .then(res => res.json())
   .then(data => {
@@ -19,7 +25,9 @@ fetch("words.json")
     updateProgress();
   });
 
-/* 🆕 Search input listener */
+/* ---------------------------
+   Search
+--------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   if (!searchInput) return;
@@ -30,7 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* Map difficulty to display label */
+/* ---------------------------
+   Difficulty labels
+--------------------------- */
 function difficultyLabel(level) {
   if (level === "one") return "One Bee 🐝";
   if (level === "two") return "Two Bee 🐝🐝";
@@ -38,7 +48,9 @@ function difficultyLabel(level) {
   return "All Bees";
 }
 
-/* Apply Bee-level + search filter */
+/* ---------------------------
+   Filtering
+--------------------------- */
 function applyFilter() {
   const level = document.getElementById("difficultyFilter").value;
 
@@ -53,7 +65,9 @@ function applyFilter() {
   updateProgress();
 }
 
-/* Render word list */
+/* ---------------------------
+   Render list
+--------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
   list.innerHTML = "";
@@ -64,63 +78,36 @@ function renderWordList() {
     div.innerText = item.word;
     div.onclick = () => selectWord(index);
 
-    if (selectedIndexes.has(item.word)) {
-      div.classList.add("selected");
-    }
-    if (index === currentIndex) {
-      div.classList.add("active");
-    }
+    if (selectedIndexes.has(item.word)) div.classList.add("selected");
+    if (index === currentIndex) div.classList.add("active");
 
     list.appendChild(div);
   });
 }
 
-/* Select word → ACTIVE + SELECTED + speak */
-function selectWord(index) {
-  currentIndex = index;
-  const item = filteredWords[index];
-
-  /* ✅ Track by WORD (safe across filters/search) */
-  selectedIndexes.add(item.word);
-
-  document.getElementById("word").innerText = item.word;
-  document.getElementById("difficulty").innerText =
-    difficultyLabel(item.difficulty);
-  document.getElementById("pos").innerText = item.part_of_speech;
-  document.getElementById("definition").innerText = item.definition;
-  document.getElementById("sentence").innerText = item.sentence;
-
-  document.getElementById("ipa").innerText =
-    item.alternate_pronunciations
-      .map(p => `${p.dialect}: ${p.ipa}`)
-      .join(" | ");
-
+/* ---------------------------
+   Audio helpers
+--------------------------- */
+function stopAllAudio() {
   speechSynthesis.cancel();
-  speakText(item.word);
 
-  renderWordList();
-  updateProgress();
+  if (audioPlayer) {
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    audioPlayer = null;
+  }
 }
 
-/* 🔊 Manual audio buttons */
-function readPOS() {
-  if (currentIndex === -1) return;
-  speakText(filteredWords[currentIndex].part_of_speech);
+function playMWAudio(url) {
+  stopAllAudio();
+  audioPlayer = new Audio(url);
+  audioPlayer.play().catch(() => {
+    console.warn("Dictionary audio failed");
+  });
 }
 
-function readDefinition() {
-  if (currentIndex === -1) return;
-  speakText(filteredWords[currentIndex].definition);
-}
-
-function readSentence() {
-  if (currentIndex === -1) return;
-  speakText(filteredWords[currentIndex].sentence);
-}
-
-/* Core speech helper */
-function speakText(text) {
-  speechSynthesis.cancel();
+function speakAmerican(text) {
+  stopAllAudio();
 
   const utterance = new SpeechSynthesisUtterance(`\u200B ${text}`);
   utterance.lang = "en-US";
@@ -132,10 +119,86 @@ function speakText(text) {
   setTimeout(() => {
     speechSynthesis.resume();
     speechSynthesis.speak(utterance);
-  }, 250);
+  }, 200);
 }
 
-/* Progress */
+/* ---------------------------
+   Dictionary button state
+--------------------------- */
+function updateMWButtonState(item) {
+  const btn = document.getElementById("mwPronunciationBtn");
+  if (!btn) return;
+
+  btn.disabled = !item?.audio_url;
+}
+
+/* ---------------------------
+   Select word
+--------------------------- */
+function selectWord(index) {
+  currentIndex = index;
+  const item = filteredWords[index];
+
+  selectedIndexes.add(item.word);
+
+  document.getElementById("word").innerText = item.word;
+  document.getElementById("difficulty").innerText =
+    difficultyLabel(item.difficulty);
+  document.getElementById("pos").innerText = item.part_of_speech;
+  document.getElementById("definition").innerText = item.definition;
+  document.getElementById("sentence").innerText = item.sentence;
+
+  updateMWButtonState(item);
+
+  /* 🔊 Default pronunciation */
+  if (item.audio_url) {
+    playMWAudio(item.audio_url);
+  } else {
+    speakAmerican(item.word);
+  }
+
+  renderWordList();
+  updateProgress();
+}
+
+/* ---------------------------
+   Manual pronunciation
+--------------------------- */
+function playMWPronunciation() {
+  if (currentIndex === -1) return;
+
+  const item = filteredWords[currentIndex];
+  if (!item.audio_url) return;
+
+  playMWAudio(item.audio_url);
+}
+
+function playAmericanPronunciation() {
+  if (currentIndex === -1) return;
+  speakAmerican(filteredWords[currentIndex].word);
+}
+
+/* ---------------------------
+   Manual reads (TTS only)
+--------------------------- */
+function readPOS() {
+  if (currentIndex === -1) return;
+  speakAmerican(filteredWords[currentIndex].part_of_speech);
+}
+
+function readDefinition() {
+  if (currentIndex === -1) return;
+  speakAmerican(filteredWords[currentIndex].definition);
+}
+
+function readSentence() {
+  if (currentIndex === -1) return;
+  speakAmerican(filteredWords[currentIndex].sentence);
+}
+
+/* ---------------------------
+   Progress
+--------------------------- */
 function updateProgress() {
   const categoryCountEl = document.getElementById("categoryCount");
   const progressTextEl = document.getElementById("progressText");
@@ -152,19 +215,22 @@ function updateProgress() {
   progressTextEl.innerText = `${completed} / ${total} completed`;
 }
 
-/* Reset */
+/* ---------------------------
+   Reset
+--------------------------- */
 function resetSelection(clearFilter = true) {
   currentIndex = -1;
   selectedIndexes.clear();
   searchQuery = "";
-  speechSynthesis.cancel();
+  stopAllAudio();
 
   document.getElementById("word").innerText = "Select a word";
   document.getElementById("difficulty").innerText = "—";
   document.getElementById("pos").innerText = "—";
   document.getElementById("definition").innerText = "—";
   document.getElementById("sentence").innerText = "—";
-  document.getElementById("ipa").innerText = "—";
+
+  updateMWButtonState(null);
 
   const searchInput = document.getElementById("searchInput");
   if (searchInput) searchInput.value = "";
@@ -179,7 +245,9 @@ function resetSelection(clearFilter = true) {
   updateProgress();
 }
 
-/* Get American English voice */
+/* ---------------------------
+   Voice selection
+--------------------------- */
 function getUSVoice() {
   const voices = speechSynthesis.getVoices();
   return (
