@@ -3,87 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spelling Bee Practice</title>
+  <title>Nidhi's Spelling Bee Practice</title>
 
   <style>
-    /* ===== Global ===== */
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --accent: #1f6feb;
+      --reset: #6e7681; /* meaningful neutral reset */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #0d1117;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background: var(--bg);
       color: #e6edf3;
-      padding: 20px;
+      padding: 12px;
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: auto;
     }
 
-    h1, h2, h3 {
-      color: #f0f6fc;
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
     }
 
-    /* ===== Difficulty + Search ===== */
+    /* ===== Filters ===== */
     .difficulty-bar {
-      display: flex;
-      gap: 12px;
-      background: #161b22;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid #30363d;
-      margin: 12px 0 14px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      background: var(--card);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
     }
 
     .difficulty-bar select,
     .search-box {
-      background: #0d1117;
+      background: var(--bg);
       color: #e6edf3;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid #30363d;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 16px;
     }
 
     .reset-btn {
-      background: #da3633;
+      background: var(--reset);
       color: white;
-      padding: 8px 14px;
-      border-radius: 6px;
+      padding: 12px;
+      border-radius: 10px;
       border: none;
+      font-size: 16px;
       cursor: pointer;
+    }
+
+    .reset-btn:hover {
+      background: #8b949e;
+    }
+
+    /* ===== Progress ===== */
+    #categoryCount,
+    #progressText {
+      font-size: 14px;
+      margin-bottom: 6px;
     }
 
     /* ===== Layout ===== */
     .layout {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 14px;
     }
 
     /* ===== Word List ===== */
     .word-list {
       flex: 1;
-      background: #161b22;
-      padding: 15px;
+      background: var(--card);
+      padding: 12px;
       border-radius: 12px;
-      border: 1px solid #30363d;
-      max-height: 70vh;
+      border: 1px solid var(--border);
+      max-height: 60vh;
       overflow-y: auto;
     }
 
     .word-item {
-      padding: 10px;
+      padding: 14px 12px;
+      font-size: 16px;
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
-      border-bottom: 1px solid #30363d;
-    }
-
-    .word-item:hover {
-      background: #21262d;
     }
 
     .word-item.selected {
       background: #238636;
-      color: white;
       font-weight: bold;
     }
 
@@ -93,68 +114,71 @@
       font-weight: bold;
     }
 
-    /* ===== Details Card ===== */
+    .word-item.correct {
+      border-left: 5px solid #2ecc71;
+    }
+
+    .word-item.wrong {
+      border-left: 5px solid #e74c3c;
+    }
+
+    /* ===== Card ===== */
     .card {
       flex: 2;
-      background: #161b22;
-      padding: 20px;
+      background: var(--card);
+      padding: 14px;
       border-radius: 12px;
-      border: 1px solid #30363d;
+      border: 1px solid var(--border);
     }
 
-    /* ===== Audio Buttons ===== */
-    .audio-buttons button {
-      background: #1f6feb;
-      color: white;
-      margin: 6px 6px 0 0;
-      padding: 8px 12px;
-      border-radius: 6px;
+    /* ===== Buttons ===== */
+    .audio-buttons,
+    .mark-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .audio-buttons button,
+    .mark-buttons button {
+      flex: 1;
+      min-width: 140px;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
+      color: white;
+      background: var(--accent);
     }
 
-    .audio-buttons button:hover {
-      background: #388bfd;
+    .mark-buttons button.correct {
+      background: #2ecc71;
+    }
+
+    .mark-buttons button.wrong {
+      background: #e74c3c;
     }
 
     .audio-buttons button:disabled {
       background: #30363d;
       color: #8b949e;
-      cursor: not-allowed;
-      opacity: 0.6;
     }
 
-    /* ===== Labels ===== */
     .label {
       margin-top: 12px;
       font-weight: bold;
       color: #8b949e;
     }
 
-    /* ===== Mobile ===== */
     @media (max-width: 768px) {
-      body {
-        padding: 12px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      .difficulty-bar {
+      .layout {
         flex-direction: column;
-      }
-
-      .reset-btn {
-        width: 100%;
       }
 
       .word-list {
         max-height: 35vh;
-      }
-
-      .card {
-        padding: 15px;
       }
     }
   </style>
@@ -162,56 +186,60 @@
 
 <body>
   <div class="container">
-    <h1>🐝 Spelling Bee Practice</h1>
+    <h1>🐝 Nidhi's Spelling Bee Practice</h1>
 
-    <!-- Difficulty + Search -->
     <div class="difficulty-bar">
-      <select id="difficultyFilter" onchange="applyFilter()">
+      <select id="difficultyFilter">
         <option value="all">All Bees</option>
         <option value="one">One Bee 🐝</option>
         <option value="two">Two Bee 🐝🐝</option>
         <option value="three">Three Bee 🐝🐝🐝</option>
       </select>
 
-      <input
-        id="searchInput"
-        class="search-box"
-        type="text"
-        placeholder="🔍 Search words..."
-      />
+      <!-- NEW: Original sort option -->
+      <select id="sortFilter">
+        <option value="original">Original Order</option>
+        <option value="az">Sort A → Z</option>
+        <option value="za">Sort Z → A</option>
+      </select>
 
-      <button class="reset-btn" onclick="resetSelection()">🔄 Reset</button>
+      <select id="resultFilter">
+        <option value="all">All Results</option>
+        <option value="correct">Correct</option>
+        <option value="wrong">Wrong</option>
+      </select>
+
+      <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
+
+      <button class="reset-btn" onclick="resetSelection()">♻️ Start Over</button>
     </div>
 
-    <!-- Progress -->
     <div id="categoryCount"></div>
     <div id="progressText"></div>
 
-    <!-- Main Layout -->
     <div class="layout">
-      <!-- Word List -->
       <div class="word-list">
         <h3>Word List</h3>
         <div id="wordList"></div>
       </div>
 
-      <!-- Details -->
       <div class="card">
         <h2 id="word">Select a word</h2>
 
-        <!-- Pronunciation -->
-        <div class="audio-buttons">
-          <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-            🔊 Dictionary Pronunciation
-          </button>
-          <button onclick="playAmericanPronunciation()">
-            🗣️ American Pronunciation
-          </button>
+        <div class="mark-buttons">
+          <button class="correct" onclick="markAnswer('correct')">✅ Correct</button>
+          <button class="wrong" onclick="markAnswer('wrong')">❌ Wrong</button>
         </div>
 
-        <!-- Read Aloud -->
         <div class="audio-buttons">
-          <button onclick="readPOS()">▶️ Part of Speech</button>
+          <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
+            🔊 Dictionary
+          </button>
+          <button onclick="playAmericanPronunciation()">🗣️ American</button>
+        </div>
+
+        <div class="audio-buttons">
+          <button onclick="readPOS()">▶️ POS</button>
           <button onclick="readDefinition()">▶️ Definition</button>
           <button onclick="readSentence()">▶️ Sentence</button>
         </div>
