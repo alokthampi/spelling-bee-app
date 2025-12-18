@@ -161,7 +161,7 @@ function markAnswer(result) {
 }
 
 /* ---------------------------
-   Pronunciation / TTS
+   Pronunciation / TTS-Google
 --------------------------- */
 function playMWPronunciation() {
   if (currentIndex !== -1 && filteredWords[currentIndex].audio_url)
