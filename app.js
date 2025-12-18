@@ -18,7 +18,6 @@ window.speechSynthesis.onvoiceschanged = () => {
 fetch("words.json")
   .then(res => res.json())
   .then(data => {
-    // preserve original order
     words = data.map((w, i) => ({
       ...w,
       _originalIndex: i,
@@ -44,13 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ---------------------------
-   Helpers
+   Difficulty labels
 --------------------------- */
-function isCurrentWordLocked() {
-  if (currentIndex === -1) return false;
-  return !filteredWords[currentIndex]?.result;
-}
-
 function difficultyLabel(level) {
   if (level === "one") return "One Bee 🐝";
   if (level === "two") return "Two Bee 🐝🐝";
@@ -80,13 +74,12 @@ function applyFilter() {
     filteredWords.sort((a, b) => a._originalIndex - b._originalIndex);
   }
 
-  currentIndex = -1;
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Render list (LOCKED)
+   Render list (FREE NAVIGATION)
 --------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
@@ -97,10 +90,8 @@ function renderWordList() {
     div.className = "word-item";
     div.innerText = item.word;
 
-    div.onclick = () => {
-      if (currentIndex !== -1 && index !== currentIndex && isCurrentWordLocked()) return;
-      selectWord(index);
-    };
+    // ✅ Always allow selection
+    div.onclick = () => selectWord(index);
 
     if (selectedIndexes.has(item.word)) div.classList.add("selected");
     if (index === currentIndex) div.classList.add("active");
@@ -212,17 +203,15 @@ function updateProgress() {
 }
 
 /* ---------------------------
-   Reset (FIXED)
+   Reset
 --------------------------- */
 function resetSelection() {
   currentIndex = -1;
   selectedIndexes.clear();
   searchQuery = "";
 
-  // clear results
   words.forEach(w => (w.result = null));
 
-  // reset UI filters
   document.getElementById("difficultyFilter").value = "all";
   document.getElementById("sortFilter").value = "original";
   document.getElementById("resultFilter").value = "all";
