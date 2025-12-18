@@ -3,7 +3,6 @@ let filteredWords = [];
 let currentIndex = -1;
 let selectedIndexes = new Set();
 let searchQuery = "";
-
 let audioPlayer = null;
 
 /* ---------------------------
@@ -19,28 +18,39 @@ window.speechSynthesis.onvoiceschanged = () => {
 fetch("words.json")
   .then(res => res.json())
   .then(data => {
-    words = data;
+    // preserve original order
+    words = data.map((w, i) => ({
+      ...w,
+      _originalIndex: i,
+      result: null
+    }));
     filteredWords = words;
     renderWordList();
     updateProgress();
   });
 
 /* ---------------------------
-   Search
+   Search + Filters
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("searchInput");
-  if (!searchInput) return;
-
-  searchInput.addEventListener("input", e => {
+  document.getElementById("searchInput")?.addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
     applyFilter();
   });
+
+  document.getElementById("difficultyFilter")?.addEventListener("change", applyFilter);
+  document.getElementById("sortFilter")?.addEventListener("change", applyFilter);
+  document.getElementById("resultFilter")?.addEventListener("change", applyFilter);
 });
 
 /* ---------------------------
-   Difficulty labels
+   Helpers
 --------------------------- */
+function isCurrentWordLocked() {
+  if (currentIndex === -1) return false;
+  return !filteredWords[currentIndex]?.result;
+}
+
 function difficultyLabel(level) {
   if (level === "one") return "One Bee 🐝";
   if (level === "two") return "Two Bee 🐝🐝";
@@ -49,16 +59,26 @@ function difficultyLabel(level) {
 }
 
 /* ---------------------------
-   Filtering
+   Filtering + Sorting
 --------------------------- */
 function applyFilter() {
-  const level = document.getElementById("difficultyFilter").value;
+  const level = document.getElementById("difficultyFilter")?.value || "all";
+  const sort = document.getElementById("sortFilter")?.value || "original";
+  const resultFilter = document.getElementById("resultFilter")?.value || "all";
 
-  filteredWords = words.filter(w => {
-    const matchesLevel = level === "all" || w.difficulty === level;
-    const matchesSearch = w.word.toLowerCase().includes(searchQuery);
-    return matchesLevel && matchesSearch;
-  });
+  filteredWords = words.filter(w =>
+    (level === "all" || w.difficulty === level) &&
+    w.word.toLowerCase().includes(searchQuery) &&
+    (resultFilter === "all" || w.result === resultFilter)
+  );
+
+  if (sort === "az") {
+    filteredWords.sort((a, b) => a.word.localeCompare(b.word));
+  } else if (sort === "za") {
+    filteredWords.sort((a, b) => b.word.localeCompare(a.word));
+  } else {
+    filteredWords.sort((a, b) => a._originalIndex - b._originalIndex);
+  }
 
   currentIndex = -1;
   renderWordList();
@@ -66,7 +86,7 @@ function applyFilter() {
 }
 
 /* ---------------------------
-   Render list
+   Render list (LOCKED)
 --------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
@@ -76,10 +96,16 @@ function renderWordList() {
     const div = document.createElement("div");
     div.className = "word-item";
     div.innerText = item.word;
-    div.onclick = () => selectWord(index);
+
+    div.onclick = () => {
+      if (currentIndex !== -1 && index !== currentIndex && isCurrentWordLocked()) return;
+      selectWord(index);
+    };
 
     if (selectedIndexes.has(item.word)) div.classList.add("selected");
     if (index === currentIndex) div.classList.add("active");
+    if (item.result === "correct") div.classList.add("correct");
+    if (item.result === "wrong") div.classList.add("wrong");
 
     list.appendChild(div);
   });
@@ -90,7 +116,6 @@ function renderWordList() {
 --------------------------- */
 function stopAllAudio() {
   speechSynthesis.cancel();
-
   if (audioPlayer) {
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
@@ -101,35 +126,17 @@ function stopAllAudio() {
 function playMWAudio(url) {
   stopAllAudio();
   audioPlayer = new Audio(url);
-  audioPlayer.play().catch(() => {
-    console.warn("Dictionary audio failed");
-  });
+  audioPlayer.play().catch(() => {});
 }
 
 function speakAmerican(text) {
   stopAllAudio();
-
-  const utterance = new SpeechSynthesisUtterance(`\u200B ${text}`);
-  utterance.lang = "en-US";
-  utterance.rate = 0.85;
-
+  const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
+  u.lang = "en-US";
+  u.rate = 0.85;
   const voice = getUSVoice();
-  if (voice) utterance.voice = voice;
-
-  setTimeout(() => {
-    speechSynthesis.resume();
-    speechSynthesis.speak(utterance);
-  }, 200);
-}
-
-/* ---------------------------
-   Dictionary button state
---------------------------- */
-function updateMWButtonState(item) {
-  const btn = document.getElementById("mwPronunciationBtn");
-  if (!btn) return;
-
-  btn.disabled = !item?.audio_url;
+  if (voice) u.voice = voice;
+  setTimeout(() => speechSynthesis.speak(u), 200);
 }
 
 /* ---------------------------
@@ -138,120 +145,103 @@ function updateMWButtonState(item) {
 function selectWord(index) {
   currentIndex = index;
   const item = filteredWords[index];
-
   selectedIndexes.add(item.word);
 
   document.getElementById("word").innerText = item.word;
-  document.getElementById("difficulty").innerText =
-    difficultyLabel(item.difficulty);
+  document.getElementById("difficulty").innerText = difficultyLabel(item.difficulty);
   document.getElementById("pos").innerText = item.part_of_speech;
   document.getElementById("definition").innerText = item.definition;
   document.getElementById("sentence").innerText = item.sentence;
 
   updateMWButtonState(item);
-
-  /* 🔊 Default pronunciation */
-  if (item.audio_url) {
-    playMWAudio(item.audio_url);
-  } else {
-    speakAmerican(item.word);
-  }
+  item.audio_url ? playMWAudio(item.audio_url) : speakAmerican(item.word);
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Manual pronunciation
+   Correct / Wrong
 --------------------------- */
-function playMWPronunciation() {
+function markAnswer(result) {
   if (currentIndex === -1) return;
-
-  const item = filteredWords[currentIndex];
-  if (!item.audio_url) return;
-
-  playMWAudio(item.audio_url);
-}
-
-function playAmericanPronunciation() {
-  if (currentIndex === -1) return;
-  speakAmerican(filteredWords[currentIndex].word);
+  filteredWords[currentIndex].result = result;
+  renderWordList();
 }
 
 /* ---------------------------
-   Manual reads (TTS only)
+   Pronunciation / TTS
 --------------------------- */
+function playMWPronunciation() {
+  if (currentIndex !== -1 && filteredWords[currentIndex].audio_url)
+    playMWAudio(filteredWords[currentIndex].audio_url);
+}
+
+function playAmericanPronunciation() {
+  if (currentIndex !== -1)
+    speakAmerican(filteredWords[currentIndex].word);
+}
+
 function readPOS() {
-  if (currentIndex === -1) return;
-  speakAmerican(filteredWords[currentIndex].part_of_speech);
+  if (currentIndex !== -1)
+    speakAmerican(filteredWords[currentIndex].part_of_speech);
 }
 
 function readDefinition() {
-  if (currentIndex === -1) return;
-  speakAmerican(filteredWords[currentIndex].definition);
+  if (currentIndex !== -1)
+    speakAmerican(filteredWords[currentIndex].definition);
 }
 
 function readSentence() {
-  if (currentIndex === -1) return;
-  speakAmerican(filteredWords[currentIndex].sentence);
+  if (currentIndex !== -1)
+    speakAmerican(filteredWords[currentIndex].sentence);
 }
 
 /* ---------------------------
    Progress
 --------------------------- */
 function updateProgress() {
-  const categoryCountEl = document.getElementById("categoryCount");
-  const progressTextEl = document.getElementById("progressText");
-  const level = document.getElementById("difficultyFilter")?.value || "all";
-
-  if (!categoryCountEl || !progressTextEl) return;
-
   const total = filteredWords.length;
-  const completed = filteredWords.filter(w =>
-    selectedIndexes.has(w.word)
-  ).length;
+  const completed = filteredWords.filter(w => selectedIndexes.has(w.word)).length;
 
-  categoryCountEl.innerText = `${difficultyLabel(level)} — ${total} words`;
-  progressTextEl.innerText = `${completed} / ${total} completed`;
+  document.getElementById("categoryCount").innerText =
+    `${difficultyLabel(document.getElementById("difficultyFilter")?.value)} — ${total} words`;
+
+  document.getElementById("progressText").innerText =
+    `${completed} / ${total} completed`;
 }
 
 /* ---------------------------
-   Reset
+   Reset (FIXED)
 --------------------------- */
-function resetSelection(clearFilter = true) {
+function resetSelection() {
   currentIndex = -1;
   selectedIndexes.clear();
   searchQuery = "";
+
+  // clear results
+  words.forEach(w => (w.result = null));
+
+  // reset UI filters
+  document.getElementById("difficultyFilter").value = "all";
+  document.getElementById("sortFilter").value = "original";
+  document.getElementById("resultFilter").value = "all";
+  document.getElementById("searchInput").value = "";
+
   stopAllAudio();
-
-  document.getElementById("word").innerText = "Select a word";
-  document.getElementById("difficulty").innerText = "—";
-  document.getElementById("pos").innerText = "—";
-  document.getElementById("definition").innerText = "—";
-  document.getElementById("sentence").innerText = "—";
-
-  updateMWButtonState(null);
-
-  const searchInput = document.getElementById("searchInput");
-  if (searchInput) searchInput.value = "";
-
-  if (clearFilter) {
-    const dropdown = document.getElementById("difficultyFilter");
-    if (dropdown) dropdown.value = "all";
-    filteredWords = words;
-  }
-
-  renderWordList();
-  updateProgress();
+  applyFilter();
 }
 
 /* ---------------------------
-   Voice selection
+   Voice helpers
 --------------------------- */
 function getUSVoice() {
   const voices = speechSynthesis.getVoices();
-  return (
-    voices.find(v => v.name.includes("Google US")) ||
-    voices.find(v => v.lang === "en-US")
-  );
+  return voices.find(v => v.name.includes("Google US")) ||
+         voices.find(v => v.lang === "en-US");
+}
+
+function updateMWButtonState(item) {
+  const btn = document.getElementById("mwPronunciationBtn");
+  if (btn) btn.disabled = !item?.audio_url;
 }
