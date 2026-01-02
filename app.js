@@ -88,9 +88,10 @@ function renderWordList() {
   filteredWords.forEach((item, index) => {
     const div = document.createElement("div");
     div.className = "word-item";
-    div.innerText = item.word;
 
-    // ✅ Always allow selection
+    // Numbered list (keeps all existing behavior)
+    div.innerHTML = `<span class="word-number">${index + 1}.</span> ${item.word}`;
+
     div.onclick = () => selectWord(index);
 
     if (selectedIndexes.has(item.word)) div.classList.add("selected");
@@ -114,10 +115,24 @@ function stopAllAudio() {
   }
 }
 
+/* 🔊 IMPROVED FOR iPHONE VOLUME */
 function playMWAudio(url) {
   stopAllAudio();
+
   audioPlayer = new Audio(url);
-  audioPlayer.play().catch(() => {});
+
+  // Explicit iOS-friendly settings
+  audioPlayer.volume = 1.0;
+  audioPlayer.muted = false;
+  audioPlayer.playsInline = true;
+  audioPlayer.preload = "auto";
+
+  // Force load before play
+  audioPlayer.load();
+
+  audioPlayer.play().catch(err => {
+    console.warn("MW audio play failed:", err);
+  });
 }
 
 function speakAmerican(text) {
@@ -145,7 +160,12 @@ function selectWord(index) {
   document.getElementById("sentence").innerText = item.sentence;
 
   updateMWButtonState(item);
-  item.audio_url ? playMWAudio(item.audio_url) : speakAmerican(item.word);
+
+  if (item.audio_url) {
+    playMWAudio(item.audio_url);
+  } else {
+    speakAmerican(item.word);
+  }
 
   renderWordList();
   updateProgress();
