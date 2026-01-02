@@ -115,11 +115,22 @@
     }
 
     .word-item.correct {
-      border-left: 5px solid #2ecc71;
+      background: #1f8b4c;
+      color: white;
+      font-weight: bold;
     }
 
+    /* ✅ FULL RED HIGHLIGHT — NO LEFT BAR */
     .word-item.wrong {
-      border-left: 5px solid #e74c3c;
+      background: #e74c3c;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Ensure active does NOT override wrong */
+    .word-item.wrong.active {
+      background: #e74c3c;
+      color: white;
     }
 
     /* ===== Card ===== */
