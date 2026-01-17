@@ -13,33 +13,48 @@ window.speechSynthesis.onvoiceschanged = () => {
 };
 
 /* ---------------------------
-   Load words
+   Load words by scope
 --------------------------- */
-fetch("words.json")
-  .then(res => res.json())
-  .then(data => {
-    words = data.map((w, i) => ({
-      ...w,
-      _originalIndex: i,
-      result: null
-    }));
-    filteredWords = words;
-    renderWordList();
-    updateProgress();
-  });
+function loadWords(scope = "regional") {
+  const file =
+    scope === "school" ? "words_school.json" : "words_regional.json";
+
+  stopAllAudio();
+  currentIndex = -1;
+  selectedIndexes.clear();
+
+  fetch(file)
+    .then(res => res.json())
+    .then(data => {
+      words = data.map((w, i) => ({
+        ...w,
+        _originalIndex: i,
+        result: null
+      }));
+      filteredWords = words;
+      applyFilter();
+    });
+}
 
 /* ---------------------------
    Search + Filters
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("scopeFilter")?.addEventListener("change", e => {
+    loadWords(e.target.value);
+  });
+
+  document.getElementById("alphabetFilter")?.addEventListener("change", applyFilter);
+
   document.getElementById("searchInput")?.addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
     applyFilter();
   });
 
   document.getElementById("difficultyFilter")?.addEventListener("change", applyFilter);
-  document.getElementById("sortFilter")?.addEventListener("change", applyFilter);
   document.getElementById("resultFilter")?.addEventListener("change", applyFilter);
+
+  loadWords("regional");
 });
 
 /* ---------------------------
@@ -53,33 +68,29 @@ function difficultyLabel(level) {
 }
 
 /* ---------------------------
-   Filtering + Sorting
+   Filtering
 --------------------------- */
 function applyFilter() {
-  const level = document.getElementById("difficultyFilter")?.value || "all";
-  const sort = document.getElementById("sortFilter")?.value || "original";
-  const resultFilter = document.getElementById("resultFilter")?.value || "all";
+  const level = document.getElementById("difficultyFilter").value;
+  const resultFilter = document.getElementById("resultFilter").value;
+  const alphabet = document.getElementById("alphabetFilter").value.toLowerCase();
 
-  filteredWords = words.filter(w =>
-    (level === "all" || w.difficulty === level) &&
-    w.word.toLowerCase().includes(searchQuery) &&
-    (resultFilter === "all" || w.result === resultFilter)
-  );
+  filteredWords = words.filter(w => {
+    const matchesLevel = level === "all" || w.difficulty === level;
+    const matchesResult = resultFilter === "all" || w.result === resultFilter;
+    const matchesSearch = w.word.toLowerCase().includes(searchQuery);
+    const matchesAlphabet =
+      alphabet === "all" || w.word.toLowerCase().startsWith(alphabet);
 
-  if (sort === "az") {
-    filteredWords.sort((a, b) => a.word.localeCompare(b.word));
-  } else if (sort === "za") {
-    filteredWords.sort((a, b) => b.word.localeCompare(a.word));
-  } else {
-    filteredWords.sort((a, b) => a._originalIndex - b._originalIndex);
-  }
+    return matchesLevel && matchesResult && matchesSearch && matchesAlphabet;
+  });
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Render list (FREE NAVIGATION)
+   Render list
 --------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
@@ -88,10 +99,7 @@ function renderWordList() {
   filteredWords.forEach((item, index) => {
     const div = document.createElement("div");
     div.className = "word-item";
-
-    // Numbered list (keeps all existing behavior)
     div.innerHTML = `<span class="word-number">${index + 1}.</span> ${item.word}`;
-
     div.onclick = () => selectWord(index);
 
     if (selectedIndexes.has(item.word)) div.classList.add("selected");
@@ -115,24 +123,12 @@ function stopAllAudio() {
   }
 }
 
-/* 🔊 IMPROVED FOR iPHONE VOLUME */
 function playMWAudio(url) {
   stopAllAudio();
-
   audioPlayer = new Audio(url);
-
-  // Explicit iOS-friendly settings
-  audioPlayer.volume = 1.0;
-  audioPlayer.muted = false;
   audioPlayer.playsInline = true;
   audioPlayer.preload = "auto";
-
-  // Force load before play
-  audioPlayer.load();
-
-  audioPlayer.play().catch(err => {
-    console.warn("MW audio play failed:", err);
-  });
+  audioPlayer.play().catch(() => {});
 }
 
 function speakAmerican(text) {
@@ -140,9 +136,7 @@ function speakAmerican(text) {
   const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
   u.lang = "en-US";
   u.rate = 0.85;
-  const voice = getUSVoice();
-  if (voice) u.voice = voice;
-  setTimeout(() => speechSynthesis.speak(u), 200);
+  speechSynthesis.speak(u);
 }
 
 /* ---------------------------
@@ -155,17 +149,15 @@ function selectWord(index) {
 
   document.getElementById("word").innerText = item.word;
   document.getElementById("difficulty").innerText = difficultyLabel(item.difficulty);
-  document.getElementById("pos").innerText = item.part_of_speech;
+  document.getElementById("origin").innerText = item.origin || "—";
   document.getElementById("definition").innerText = item.definition;
   document.getElementById("sentence").innerText = item.sentence;
+  document.getElementById("pos").innerText = item.part_of_speech;
 
   updateMWButtonState(item);
 
-  if (item.audio_url) {
-    playMWAudio(item.audio_url);
-  } else {
-    speakAmerican(item.word);
-  }
+  if (item.audio_url) playMWAudio(item.audio_url);
+  else speakAmerican(item.word);
 
   renderWordList();
   updateProgress();
@@ -181,7 +173,7 @@ function markAnswer(result) {
 }
 
 /* ---------------------------
-   Pronunciation / TTS-Google
+   Pronunciation
 --------------------------- */
 function playMWPronunciation() {
   if (currentIndex !== -1 && filteredWords[currentIndex].audio_url)
@@ -191,11 +183,6 @@ function playMWPronunciation() {
 function playAmericanPronunciation() {
   if (currentIndex !== -1)
     speakAmerican(filteredWords[currentIndex].word);
-}
-
-function readPOS() {
-  if (currentIndex !== -1)
-    speakAmerican(filteredWords[currentIndex].part_of_speech);
 }
 
 function readDefinition() {
@@ -216,7 +203,7 @@ function updateProgress() {
   const completed = filteredWords.filter(w => selectedIndexes.has(w.word)).length;
 
   document.getElementById("categoryCount").innerText =
-    `${difficultyLabel(document.getElementById("difficultyFilter")?.value)} — ${total} words`;
+    `${difficultyLabel(document.getElementById("difficultyFilter").value)} — ${total} words`;
 
   document.getElementById("progressText").innerText =
     `${completed} / ${total} completed`;
@@ -233,21 +220,12 @@ function resetSelection() {
   words.forEach(w => (w.result = null));
 
   document.getElementById("difficultyFilter").value = "all";
-  document.getElementById("sortFilter").value = "original";
   document.getElementById("resultFilter").value = "all";
+  document.getElementById("alphabetFilter").value = "all";
   document.getElementById("searchInput").value = "";
 
   stopAllAudio();
   applyFilter();
-}
-
-/* ---------------------------
-   Voice helpers
---------------------------- */
-function getUSVoice() {
-  const voices = speechSynthesis.getVoices();
-  return voices.find(v => v.name.includes("Google US")) ||
-         voices.find(v => v.lang === "en-US");
 }
 
 function updateMWButtonState(item) {
