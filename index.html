@@ -14,9 +14,7 @@
       --reset: #6e7681;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -36,7 +34,6 @@
       margin-bottom: 10px;
     }
 
-    /* ===== Filters ===== */
     .difficulty-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -48,7 +45,26 @@
       margin-bottom: 12px;
     }
 
-    .difficulty-bar select,
+    /* ✅ Custom arrow (dark mode safe) */
+    .difficulty-bar select {
+      background-color: var(--bg);
+      color: #e6edf3;
+      padding: 12px 40px 12px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 16px;
+
+      appearance: none;
+      -webkit-appearance: none;
+
+      background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6edf3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>\
+<polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 18px;
+    }
+
     .search-box {
       background: var(--bg);
       color: #e6edf3;
@@ -68,24 +84,17 @@
       cursor: pointer;
     }
 
-    .reset-btn:hover {
-      background: #8b949e;
-    }
-
-    /* ===== Progress ===== */
     #categoryCount,
     #progressText {
       font-size: 14px;
       margin-bottom: 6px;
     }
 
-    /* ===== Layout ===== */
     .layout {
       display: flex;
       gap: 14px;
     }
 
-    /* ===== Word List ===== */
     .word-list {
       flex: 1;
       background: var(--card);
@@ -103,37 +112,11 @@
       cursor: pointer;
     }
 
-    .word-item.selected {
-      background: #238636;
-      font-weight: bold;
-    }
+    .word-item.selected { background: #238636; font-weight: bold; }
+    .word-item.active { background: #f1c40f; color: black; font-weight: bold; }
+    .word-item.correct { background: #1f8b4c; color: white; font-weight: bold; }
+    .word-item.wrong { background: #e74c3c; color: white; font-weight: bold; }
 
-    .word-item.active {
-      background: #f1c40f;
-      color: black;
-      font-weight: bold;
-    }
-
-    .word-item.correct {
-      background: #1f8b4c;
-      color: white;
-      font-weight: bold;
-    }
-
-    /* ✅ FULL RED HIGHLIGHT — NO LEFT BAR */
-    .word-item.wrong {
-      background: #e74c3c;
-      color: white;
-      font-weight: bold;
-    }
-
-    /* Ensure active does NOT override wrong */
-    .word-item.wrong.active {
-      background: #e74c3c;
-      color: white;
-    }
-
-    /* ===== Card ===== */
     .card {
       flex: 2;
       background: var(--card);
@@ -142,7 +125,6 @@
       border: 1px solid var(--border);
     }
 
-    /* ===== Buttons ===== */
     .audio-buttons,
     .mark-buttons {
       display: flex;
@@ -164,13 +146,8 @@
       background: var(--accent);
     }
 
-    .mark-buttons button.correct {
-      background: #2ecc71;
-    }
-
-    .mark-buttons button.wrong {
-      background: #e74c3c;
-    }
+    .mark-buttons .correct { background: #2ecc71; }
+    .mark-buttons .wrong { background: #e74c3c; }
 
     .audio-buttons button:disabled {
       background: #30363d;
@@ -184,13 +161,8 @@
     }
 
     @media (max-width: 768px) {
-      .layout {
-        flex-direction: column;
-      }
-
-      .word-list {
-        max-height: 35vh;
-      }
+      .layout { flex-direction: column; }
+      .word-list { max-height: 35vh; }
     }
   </style>
 </head>
@@ -200,17 +172,27 @@
     <h1>🐝 Nikku's Spelling Bee Practice</h1>
 
     <div class="difficulty-bar">
+      <select id="scopeFilter">
+        <option value="regional" selected>Regional</option>
+        <option value="school">School</option>
+      </select>
+
+      <select id="alphabetFilter">
+        <option value="all">All Letters</option>
+        <option>A</option><option>B</option><option>C</option><option>D</option>
+        <option>E</option><option>F</option><option>G</option><option>H</option>
+        <option>I</option><option>J</option><option>K</option><option>L</option>
+        <option>M</option><option>N</option><option>O</option><option>P</option>
+        <option>Q</option><option>R</option><option>S</option><option>T</option>
+        <option>U</option><option>V</option><option>W</option><option>X</option>
+        <option>Y</option><option>Z</option>
+      </select>
+
       <select id="difficultyFilter">
         <option value="all">All Bees</option>
         <option value="one">One Bee 🐝</option>
         <option value="two">Two Bee 🐝🐝</option>
         <option value="three">Three Bee 🐝🐝🐝</option>
-      </select>
-
-      <select id="sortFilter">
-        <option value="original">Original Order</option>
-        <option value="az">Sort A → Z</option>
-        <option value="za">Sort Z → A</option>
       </select>
 
       <select id="resultFilter">
@@ -220,7 +202,6 @@
       </select>
 
       <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
-
       <button class="reset-btn" onclick="resetSelection()">♻️ Start Over</button>
     </div>
 
@@ -249,7 +230,6 @@
         </div>
 
         <div class="audio-buttons">
-          <button onclick="readPOS()">▶️ POS</button>
           <button onclick="readDefinition()">▶️ Definition</button>
           <button onclick="readSentence()">▶️ Sentence</button>
         </div>
@@ -257,14 +237,17 @@
         <div class="label">Difficulty</div>
         <div id="difficulty">—</div>
 
-        <div class="label">Part of Speech</div>
-        <div id="pos">—</div>
+        <div class="label">Origin</div>
+        <div id="origin">—</div>
 
         <div class="label">Definition</div>
         <div id="definition">—</div>
 
         <div class="label">Sentence</div>
         <div id="sentence">—</div>
+
+        <div class="label">Part of Speech</div>
+        <div id="pos">—</div>
       </div>
     </div>
   </div>
