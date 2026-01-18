@@ -45,7 +45,6 @@
       margin-bottom: 12px;
     }
 
-    /* Custom arrow (dark/light safe) */
     .difficulty-bar select {
       background-color: var(--bg);
       color: #e6edf3;
@@ -53,16 +52,8 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       font-size: 16px;
-
       appearance: none;
       -webkit-appearance: none;
-
-      background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6edf3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>\
-<polyline points='6 9 12 15 18 9'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 18px;
     }
 
     .search-box {
@@ -112,10 +103,26 @@
       cursor: pointer;
     }
 
-    .word-item.selected { background: #238636; font-weight: bold; }
-    .word-item.active { background: #f1c40f; color: black; font-weight: bold; }
-    .word-item.correct { background: #1f8b4c; color: white; font-weight: bold; }
-    .word-item.wrong { background: #e74c3c; color: white; font-weight: bold; }
+    /* 🟢 Correct */
+    .word-item.correct {
+      background: #1f8b4c;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* 🟡 Active (focus only) */
+    .word-item.active {
+      background: #f1c40f;
+      color: black;
+      font-weight: bold;
+    }
+
+    /* 🔴 Wrong ALWAYS wins */
+    .word-item.wrong {
+      background: #e74c3c !important;
+      color: white !important;
+      font-weight: bold;
+    }
 
     .card {
       flex: 2;
@@ -250,7 +257,6 @@
       </div>
     </div>
 
-    <!-- Start Over button moved to bottom -->
     <div style="margin-top: 20px; text-align: center;">
       <button
         class="reset-btn"
@@ -262,7 +268,7 @@
     </div>
   </div>
 
-  <!-- Firebase initialization -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -271,7 +277,6 @@
       apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
       authDomain: "spelling-bee-practice-e4b0c.firebaseapp.com",
       projectId: "spelling-bee-practice-e4b0c",
-      storageBucket: "spelling-bee-practice-e4b0c.firebasestorage.app",
       messagingSenderId: "431771439388",
       appId: "1:431771439388:web:598787f7878e564ddc2ad9"
     };
