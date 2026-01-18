@@ -45,7 +45,7 @@
       margin-bottom: 12px;
     }
 
-    /* ✅ Custom arrow (dark mode safe) */
+    /* Custom arrow (dark/light safe) */
     .difficulty-bar select {
       background-color: var(--bg);
       color: #e6edf3;
@@ -77,8 +77,8 @@
     .reset-btn {
       background: var(--reset);
       color: white;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
       border: none;
       font-size: 16px;
       cursor: pointer;
@@ -202,7 +202,6 @@
       </select>
 
       <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
-      <button class="reset-btn" onclick="resetSelection()">♻️ Start Over</button>
     </div>
 
     <div id="categoryCount"></div>
@@ -250,7 +249,36 @@
         <div id="pos">—</div>
       </div>
     </div>
+
+    <!-- Start Over button moved to bottom -->
+    <div style="margin-top: 20px; text-align: center;">
+      <button
+        class="reset-btn"
+        style="width: 100%; max-width: 400px;"
+        onclick="confirmReset()"
+      >
+        ♻️ Start Over
+      </button>
+    </div>
   </div>
+
+  <!-- Firebase initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
+      authDomain: "spelling-bee-practice-e4b0c.firebaseapp.com",
+      projectId: "spelling-bee-practice-e4b0c",
+      storageBucket: "spelling-bee-practice-e4b0c.firebasestorage.app",
+      messagingSenderId: "431771439388",
+      appId: "1:431771439388:web:598787f7878e564ddc2ad9"
+    };
+
+    window.firebaseApp = initializeApp(firebaseConfig);
+    window.db = getFirestore(firebaseApp);
+  </script>
 
   <script src="app.js"></script>
 </body>
