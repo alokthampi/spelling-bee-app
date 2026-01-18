@@ -5,6 +5,8 @@ let selectedIndexes = new Set();
 let searchQuery = "";
 let audioPlayer = null;
 
+const USER_ID = "nikku";
+
 /* ---------------------------
    Speech setup
 --------------------------- */
@@ -13,9 +15,51 @@ window.speechSynthesis.onvoiceschanged = () => {
 };
 
 /* ---------------------------
-   Load words by scope
+   Firestore helpers
 --------------------------- */
-function loadWords(scope = "regional") {
+async function loadProgress(scope) {
+  if (!window.db) return {};
+
+  const { doc, getDoc } = await import(
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+  );
+
+  const snap = await getDoc(doc(window.db, "progress", USER_ID));
+  return snap.exists() ? snap.data()?.[scope] || {} : {};
+}
+
+async function saveProgress(scope, word, result) {
+  if (!window.db) return;
+
+  const { doc, setDoc } = await import(
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+  );
+
+  await setDoc(
+    doc(window.db, "progress", USER_ID),
+    {
+      [scope]: {
+        [word]: result
+      }
+    },
+    { merge: true }
+  );
+}
+
+async function resetCloudProgress() {
+  if (!window.db) return;
+
+  const { doc, setDoc } = await import(
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+  );
+
+  await setDoc(doc(window.db, "progress", USER_ID), {}, { merge: false });
+}
+
+/* ---------------------------
+   Load words
+--------------------------- */
+async function loadWords(scope = "regional") {
   const file =
     scope === "school" ? "words_school.json" : "words_regional.json";
 
@@ -23,36 +67,41 @@ function loadWords(scope = "regional") {
   currentIndex = -1;
   selectedIndexes.clear();
 
-  fetch(file)
-    .then(res => res.json())
-    .then(data => {
-      words = data.map((w, i) => ({
-        ...w,
-        _originalIndex: i,
-        result: null
-      }));
-      filteredWords = words;
-      applyFilter();
-    });
+  const savedProgress = await loadProgress(scope);
+
+  const res = await fetch(file);
+  const data = await res.json();
+
+  words = data.map((w, i) => ({
+    ...w,
+    _originalIndex: i,
+    result: savedProgress[w.word] || null
+  }));
+
+  words.forEach(w => {
+    if (w.result) selectedIndexes.add(w.word);
+  });
+
+  filteredWords = words;
+  applyFilter();
 }
 
 /* ---------------------------
-   Search + Filters
+   Init
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("scopeFilter")?.addEventListener("change", e => {
+  document.getElementById("scopeFilter").addEventListener("change", e => {
     loadWords(e.target.value);
   });
 
-  document.getElementById("alphabetFilter")?.addEventListener("change", applyFilter);
+  document.getElementById("alphabetFilter").addEventListener("change", applyFilter);
+  document.getElementById("difficultyFilter").addEventListener("change", applyFilter);
+  document.getElementById("resultFilter").addEventListener("change", applyFilter);
 
-  document.getElementById("searchInput")?.addEventListener("input", e => {
+  document.getElementById("searchInput").addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
     applyFilter();
   });
-
-  document.getElementById("difficultyFilter")?.addEventListener("change", applyFilter);
-  document.getElementById("resultFilter")?.addEventListener("change", applyFilter);
 
   loadWords("regional");
 });
@@ -76,13 +125,12 @@ function applyFilter() {
   const alphabet = document.getElementById("alphabetFilter").value.toLowerCase();
 
   filteredWords = words.filter(w => {
-    const matchesLevel = level === "all" || w.difficulty === level;
-    const matchesResult = resultFilter === "all" || w.result === resultFilter;
-    const matchesSearch = w.word.toLowerCase().includes(searchQuery);
-    const matchesAlphabet =
-      alphabet === "all" || w.word.toLowerCase().startsWith(alphabet);
-
-    return matchesLevel && matchesResult && matchesSearch && matchesAlphabet;
+    return (
+      (level === "all" || w.difficulty === level) &&
+      (resultFilter === "all" || w.result === resultFilter) &&
+      w.word.toLowerCase().includes(searchQuery) &&
+      (alphabet === "all" || w.word.toLowerCase().startsWith(alphabet))
+    );
   });
 
   renderWordList();
@@ -90,7 +138,7 @@ function applyFilter() {
 }
 
 /* ---------------------------
-   Render list
+   Render list (FIXED)
 --------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
@@ -99,7 +147,7 @@ function renderWordList() {
   filteredWords.forEach((item, index) => {
     const div = document.createElement("div");
     div.className = "word-item";
-    div.innerHTML = `<span class="word-number">${index + 1}.</span> ${item.word}`;
+    div.textContent = `${index + 1}. ${item.word}`;
     div.onclick = () => selectWord(index);
 
     if (selectedIndexes.has(item.word)) div.classList.add("selected");
@@ -127,7 +175,6 @@ function playMWAudio(url) {
   stopAllAudio();
   audioPlayer = new Audio(url);
   audioPlayer.playsInline = true;
-  audioPlayer.preload = "auto";
   audioPlayer.play().catch(() => {});
 }
 
@@ -140,12 +187,21 @@ function speakAmerican(text) {
 }
 
 /* ---------------------------
-   Select word
+   Select word (AUTO-CORRECT)
 --------------------------- */
-function selectWord(index) {
+async function selectWord(index) {
   currentIndex = index;
   const item = filteredWords[index];
   selectedIndexes.add(item.word);
+
+  if (!item.result) {
+    item.result = "correct";
+    await saveProgress(
+      document.getElementById("scopeFilter").value,
+      item.word,
+      "correct"
+    );
+  }
 
   document.getElementById("word").innerText = item.word;
   document.getElementById("difficulty").innerText = difficultyLabel(item.difficulty);
@@ -164,35 +220,50 @@ function selectWord(index) {
 }
 
 /* ---------------------------
-   Correct / Wrong
+   Correct / Wrong (manual)
 --------------------------- */
-function markAnswer(result) {
+async function markAnswer(result) {
   if (currentIndex === -1) return;
-  filteredWords[currentIndex].result = result;
+
+  const item = filteredWords[currentIndex];
+  item.result = result;
+  selectedIndexes.add(item.word);
+
+  await saveProgress(
+    document.getElementById("scopeFilter").value,
+    item.word,
+    result
+  );
+
   renderWordList();
+  updateProgress();
 }
 
 /* ---------------------------
    Pronunciation
 --------------------------- */
 function playMWPronunciation() {
-  if (currentIndex !== -1 && filteredWords[currentIndex].audio_url)
+  if (currentIndex !== -1 && filteredWords[currentIndex].audio_url) {
     playMWAudio(filteredWords[currentIndex].audio_url);
+  }
 }
 
 function playAmericanPronunciation() {
-  if (currentIndex !== -1)
+  if (currentIndex !== -1) {
     speakAmerican(filteredWords[currentIndex].word);
+  }
 }
 
 function readDefinition() {
-  if (currentIndex !== -1)
+  if (currentIndex !== -1) {
     speakAmerican(filteredWords[currentIndex].definition);
+  }
 }
 
 function readSentence() {
-  if (currentIndex !== -1)
+  if (currentIndex !== -1) {
     speakAmerican(filteredWords[currentIndex].sentence);
+  }
 }
 
 /* ---------------------------
@@ -200,7 +271,9 @@ function readSentence() {
 --------------------------- */
 function updateProgress() {
   const total = filteredWords.length;
-  const completed = filteredWords.filter(w => selectedIndexes.has(w.word)).length;
+  const completed = filteredWords.filter(w =>
+    selectedIndexes.has(w.word)
+  ).length;
 
   document.getElementById("categoryCount").innerText =
     `${difficultyLabel(document.getElementById("difficultyFilter").value)} — ${total} words`;
@@ -210,9 +283,23 @@ function updateProgress() {
 }
 
 /* ---------------------------
-   Reset
+   Reset (DOUBLE CONFIRM)
 --------------------------- */
-function resetSelection() {
+async function confirmReset() {
+  const first = confirm(
+    "⚠️ This will reset ALL progress.\n\nDo you want to continue?"
+  );
+  if (!first) return;
+
+  const second = confirm(
+    "❗ Are you REALLY sure?\n\nThis cannot be undone."
+  );
+  if (!second) return;
+
+  await resetSelection();
+}
+
+async function resetSelection() {
   currentIndex = -1;
   selectedIndexes.clear();
   searchQuery = "";
@@ -225,9 +312,13 @@ function resetSelection() {
   document.getElementById("searchInput").value = "";
 
   stopAllAudio();
+  await resetCloudProgress();
   applyFilter();
 }
 
+/* ---------------------------
+   MW button state
+--------------------------- */
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
   if (btn) btn.disabled = !item?.audio_url;
