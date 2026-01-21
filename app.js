@@ -8,11 +8,25 @@ let audioPlayer = null;
 const USER_ID = "nikku";
 
 /* ---------------------------
-   Speech setup
+   Speech setup (FORCE AMERICAN)
 --------------------------- */
-window.speechSynthesis.onvoiceschanged = () => {
-  speechSynthesis.getVoices();
-};
+let americanVoice = null;
+
+function loadAmericanVoice() {
+  const voices = speechSynthesis.getVoices();
+
+  if (!voices.length) return;
+
+  // Priority order for Apple devices
+  americanVoice =
+    voices.find(v => v.lang === "en-US" && v.name.includes("Samantha")) ||
+    voices.find(v => v.lang === "en-US" && v.name.includes("Alex")) ||
+    voices.find(v => v.lang === "en-US") ||
+    null;
+}
+
+// Safari / iOS requires this event
+speechSynthesis.onvoiceschanged = loadAmericanVoice;
 
 /* ---------------------------
    Firestore helpers
@@ -31,9 +45,11 @@ async function saveProgress(scope, word, result) {
   const { doc, setDoc } = await import(
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
   );
-  await setDoc(doc(window.db, "progress", USER_ID), {
-    [scope]: { [word]: result }
-  }, { merge: true });
+  await setDoc(
+    doc(window.db, "progress", USER_ID),
+    { [scope]: { [word]: result } },
+    { merge: true }
+  );
 }
 
 async function resetCloudProgress() {
@@ -49,6 +65,7 @@ async function resetCloudProgress() {
 --------------------------- */
 async function loadWords(scope = "regional") {
   const file = scope === "school" ? "words_school.json" : "words_regional.json";
+
   stopAllAudio();
   currentIndex = -1;
   selectedIndexes.clear();
@@ -74,6 +91,8 @@ async function loadWords(scope = "regional") {
    Init
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  loadAmericanVoice(); // pre-load if possible
+
   document.getElementById("scopeFilter").addEventListener("change", e => {
     loadWords(e.target.value);
   });
@@ -133,7 +152,9 @@ function applyFilter() {
     (alphabet === "all" || w.word.toLowerCase().startsWith(alphabet))
   ));
 
-  shuffleBtn.style.display = resultFilter === "wrong" ? "block" : "none";
+  if (shuffleBtn) {
+    shuffleBtn.style.display = resultFilter === "wrong" ? "inline-block" : "none";
+  }
 
   renderWordList();
   updateProgress();
@@ -161,12 +182,13 @@ function renderWordList() {
 }
 
 /* ---------------------------
-   Audio helpers
+   Audio helpers (AMERICAN ONLY)
 --------------------------- */
 function stopAllAudio() {
   speechSynthesis.cancel();
   if (audioPlayer) {
     audioPlayer.pause();
+    audioPlayer.currentTime = 0;
     audioPlayer = null;
   }
 }
@@ -174,14 +196,21 @@ function stopAllAudio() {
 function playMWAudio(url) {
   stopAllAudio();
   audioPlayer = new Audio(url);
+  audioPlayer.playsInline = true;
   audioPlayer.play().catch(() => {});
 }
 
 function speakAmerican(text) {
   stopAllAudio();
+
   const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
   u.lang = "en-US";
   u.rate = 0.85;
+
+  if (americanVoice) {
+    u.voice = americanVoice; // 🔒 FORCE AMERICAN
+  }
+
   speechSynthesis.speak(u);
 }
 
@@ -210,7 +239,9 @@ async function selectWord(index) {
   document.getElementById("pos").innerText = item.part_of_speech;
 
   updateMWButtonState(item);
-  item.audio_url ? playMWAudio(item.audio_url) : speakAmerican(item.word);
+
+  if (item.audio_url) playMWAudio(item.audio_url);
+  else speakAmerican(item.word);
 
   renderWordList();
   updateProgress();
@@ -236,7 +267,7 @@ async function markAnswer(result) {
 }
 
 /* ---------------------------
-   Pronunciation
+   Pronunciation buttons
 --------------------------- */
 function playMWPronunciation() {
   if (currentIndex !== -1 && filteredWords[currentIndex].audio_url) {
@@ -245,15 +276,21 @@ function playMWPronunciation() {
 }
 
 function playAmericanPronunciation() {
-  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].word);
+  if (currentIndex !== -1) {
+    speakAmerican(filteredWords[currentIndex].word);
+  }
 }
 
 function readDefinition() {
-  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].definition);
+  if (currentIndex !== -1) {
+    speakAmerican(filteredWords[currentIndex].definition);
+  }
 }
 
 function readSentence() {
-  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].sentence);
+  if (currentIndex !== -1) {
+    speakAmerican(filteredWords[currentIndex].sentence);
+  }
 }
 
 /* ---------------------------
