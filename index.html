@@ -48,12 +48,10 @@
     .difficulty-bar select {
       background-color: var(--bg);
       color: #e6edf3;
-      padding: 12px 40px 12px 12px;
+      padding: 12px;
       border-radius: 10px;
       border: 1px solid var(--border);
       font-size: 16px;
-      appearance: none;
-      -webkit-appearance: none;
     }
 
     .search-box {
@@ -68,11 +66,13 @@
     .reset-btn {
       background: var(--reset);
       color: white;
-      padding: 14px;
-      border-radius: 12px;
+      border-radius: 8px;
       border: none;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
+      padding: 8px 12px;
+      line-height: 1;
+      min-height: 44px;
     }
 
     #categoryCount,
@@ -88,12 +88,37 @@
 
     .word-list {
       flex: 1;
+      position: relative;
       background: var(--card);
       padding: 12px;
       border-radius: 12px;
       border: 1px solid var(--border);
       max-height: 60vh;
       overflow-y: auto;
+    }
+
+    /* Header row */
+    .word-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .word-list-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    /* 🔀 Desktop floating button */
+    .shuffle-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      padding: 6px 10px;
+      font-size: 13px;
     }
 
     .word-item {
@@ -103,21 +128,18 @@
       cursor: pointer;
     }
 
-    /* 🟢 Correct */
     .word-item.correct {
       background: #1f8b4c;
       color: white;
       font-weight: bold;
     }
 
-    /* 🟡 Active (focus only) */
     .word-item.active {
       background: #f1c40f;
       color: black;
       font-weight: bold;
     }
 
-    /* 🔴 Wrong ALWAYS wins */
     .word-item.wrong {
       background: #e74c3c !important;
       color: white !important;
@@ -135,9 +157,9 @@
     .audio-buttons,
     .mark-buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .audio-buttons button,
@@ -167,124 +189,141 @@
       color: #8b949e;
     }
 
+    /* 📱 Mobile behavior */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
       .word-list { max-height: 35vh; }
+
+      /* Button becomes inline, not floating */
+      .shuffle-btn {
+        position: static;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🐝 Nikku's Spelling Bee Practice</h1>
+<div class="container">
+  <h1>🐝 Nikku's Spelling Bee Practice</h1>
 
-    <div class="difficulty-bar">
-      <select id="scopeFilter">
-        <option value="regional" selected>Regional</option>
-        <option value="school">School</option>
-      </select>
+  <div class="difficulty-bar">
+    <select id="scopeFilter">
+      <option value="regional" selected>Regional</option>
+      <option value="school">School</option>
+    </select>
 
-      <select id="alphabetFilter">
-        <option value="all">All Letters</option>
-        <option>A</option><option>B</option><option>C</option><option>D</option>
-        <option>E</option><option>F</option><option>G</option><option>H</option>
-        <option>I</option><option>J</option><option>K</option><option>L</option>
-        <option>M</option><option>N</option><option>O</option><option>P</option>
-        <option>Q</option><option>R</option><option>S</option><option>T</option>
-        <option>U</option><option>V</option><option>W</option><option>X</option>
-        <option>Y</option><option>Z</option>
-      </select>
+    <select id="alphabetFilter">
+      <option value="all">All Letters</option>
+      <option>A</option><option>B</option><option>C</option><option>D</option>
+      <option>E</option><option>F</option><option>G</option><option>H</option>
+      <option>I</option><option>J</option><option>K</option><option>L</option>
+      <option>M</option><option>N</option><option>O</option><option>P</option>
+      <option>Q</option><option>R</option><option>S</option><option>T</option>
+      <option>U</option><option>V</option><option>W</option><option>X</option>
+      <option>Y</option><option>Z</option>
+    </select>
 
-      <select id="difficultyFilter">
-        <option value="all">All Bees</option>
-        <option value="one">One Bee 🐝</option>
-        <option value="two">Two Bee 🐝🐝</option>
-        <option value="three">Three Bee 🐝🐝🐝</option>
-      </select>
+    <select id="difficultyFilter">
+      <option value="all">All Bees</option>
+      <option value="one">One Bee 🐝</option>
+      <option value="two">Two Bee 🐝🐝</option>
+      <option value="three">Three Bee 🐝🐝🐝</option>
+    </select>
 
-      <select id="resultFilter">
-        <option value="all">All Results</option>
-        <option value="correct">Correct</option>
-        <option value="wrong">Wrong</option>
-      </select>
+    <select id="resultFilter">
+      <option value="all">All Results</option>
+      <option value="correct">Correct</option>
+      <option value="wrong">Wrong</option>
+    </select>
 
-      <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
-    </div>
+    <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
+  </div>
 
-    <div id="categoryCount"></div>
-    <div id="progressText"></div>
+  <div id="categoryCount"></div>
+  <div id="progressText"></div>
 
-    <div class="layout">
-      <div class="word-list">
+  <div class="layout">
+    <div class="word-list">
+      <div class="word-list-header">
         <h3>Word List</h3>
-        <div id="wordList"></div>
+
+        <!-- 🔀 Shuffle button with text -->
+        <button
+          id="shuffleBtn"
+          class="reset-btn shuffle-btn"
+          style="display:none;"
+          onclick="shuffleFilteredWords()"
+        >
+          🔀 Shuffle
+        </button>
       </div>
 
-      <div class="card">
-        <h2 id="word">Select a word</h2>
-
-        <div class="mark-buttons">
-          <button class="correct" onclick="markAnswer('correct')">✅ Correct</button>
-          <button class="wrong" onclick="markAnswer('wrong')">❌ Wrong</button>
-        </div>
-
-        <div class="audio-buttons">
-          <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-            🔊 Dictionary
-          </button>
-          <button onclick="playAmericanPronunciation()">🗣️ American</button>
-        </div>
-
-        <div class="audio-buttons">
-          <button onclick="readDefinition()">▶️ Definition</button>
-          <button onclick="readSentence()">▶️ Sentence</button>
-        </div>
-
-        <div class="label">Difficulty</div>
-        <div id="difficulty">—</div>
-
-        <div class="label">Origin</div>
-        <div id="origin">—</div>
-
-        <div class="label">Definition</div>
-        <div id="definition">—</div>
-
-        <div class="label">Sentence</div>
-        <div id="sentence">—</div>
-
-        <div class="label">Part of Speech</div>
-        <div id="pos">—</div>
-      </div>
+      <div id="wordList"></div>
     </div>
 
-    <div style="margin-top: 20px; text-align: center;">
-      <button
-        class="reset-btn"
-        style="width: 100%; max-width: 400px;"
-        onclick="confirmReset()"
-      >
-        ♻️ Start Over
-      </button>
+    <div class="card">
+      <h2 id="word">Select a word</h2>
+
+      <div class="mark-buttons">
+        <button class="correct" onclick="markAnswer('correct')">✅ Correct</button>
+        <button class="wrong" onclick="markAnswer('wrong')">❌ Wrong</button>
+      </div>
+
+      <div class="audio-buttons">
+        <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
+          🔊 Dictionary
+        </button>
+        <button onclick="playAmericanPronunciation()">🗣️ American</button>
+      </div>
+
+      <div class="audio-buttons">
+        <button onclick="readDefinition()">▶️ Definition</button>
+        <button onclick="readSentence()">▶️ Sentence</button>
+      </div>
+
+      <div class="label">Difficulty</div>
+      <div id="difficulty">—</div>
+
+      <div class="label">Origin</div>
+      <div id="origin">—</div>
+
+      <div class="label">Definition</div>
+      <div id="definition">—</div>
+
+      <div class="label">Sentence</div>
+      <div id="sentence">—</div>
+
+      <div class="label">Part of Speech</div>
+      <div id="pos">—</div>
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  <div style="margin-top:20px;text-align:center;">
+    <button class="reset-btn" style="width:100%;max-width:400px;" onclick="confirmReset()">
+      ♻️ Start Over
+    </button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
-      authDomain: "spelling-bee-practice-e4b0c.firebaseapp.com",
-      projectId: "spelling-bee-practice-e4b0c",
-      messagingSenderId: "431771439388",
-      appId: "1:431771439388:web:598787f7878e564ddc2ad9"
-    };
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    window.firebaseApp = initializeApp(firebaseConfig);
-    window.db = getFirestore(firebaseApp);
-  </script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
+    authDomain: "spelling-bee-practice-e4b0c.firebaseapp.com",
+    projectId: "spelling-bee-practice-e4b0c",
+    messagingSenderId: "431771439388",
+    appId: "1:431771439388:web:598787f7878e564ddc2ad9"
+  };
 
-  <script src="app.js"></script>
+  window.firebaseApp = initializeApp(firebaseConfig);
+  window.db = getFirestore(firebaseApp);
+</script>
+
+<script src="app.js"></script>
 </body>
 </html>
