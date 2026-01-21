@@ -19,40 +19,28 @@ window.speechSynthesis.onvoiceschanged = () => {
 --------------------------- */
 async function loadProgress(scope) {
   if (!window.db) return {};
-
   const { doc, getDoc } = await import(
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
   );
-
   const snap = await getDoc(doc(window.db, "progress", USER_ID));
   return snap.exists() ? snap.data()?.[scope] || {} : {};
 }
 
 async function saveProgress(scope, word, result) {
   if (!window.db) return;
-
   const { doc, setDoc } = await import(
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
   );
-
-  await setDoc(
-    doc(window.db, "progress", USER_ID),
-    {
-      [scope]: {
-        [word]: result
-      }
-    },
-    { merge: true }
-  );
+  await setDoc(doc(window.db, "progress", USER_ID), {
+    [scope]: { [word]: result }
+  }, { merge: true });
 }
 
 async function resetCloudProgress() {
   if (!window.db) return;
-
   const { doc, setDoc } = await import(
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
   );
-
   await setDoc(doc(window.db, "progress", USER_ID), {}, { merge: false });
 }
 
@@ -60,15 +48,12 @@ async function resetCloudProgress() {
    Load words
 --------------------------- */
 async function loadWords(scope = "regional") {
-  const file =
-    scope === "school" ? "words_school.json" : "words_regional.json";
-
+  const file = scope === "school" ? "words_school.json" : "words_regional.json";
   stopAllAudio();
   currentIndex = -1;
   selectedIndexes.clear();
 
   const savedProgress = await loadProgress(scope);
-
   const res = await fetch(file);
   const data = await res.json();
 
@@ -82,7 +67,6 @@ async function loadWords(scope = "regional") {
     if (w.result) selectedIndexes.add(w.word);
   });
 
-  filteredWords = words;
   applyFilter();
 }
 
@@ -117,28 +101,46 @@ function difficultyLabel(level) {
 }
 
 /* ---------------------------
+   Shuffle helpers
+--------------------------- */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function shuffleFilteredWords() {
+  if (!filteredWords.length) return;
+  shuffleArray(filteredWords);
+  currentIndex = -1;
+  renderWordList();
+}
+
+/* ---------------------------
    Filtering
 --------------------------- */
 function applyFilter() {
   const level = document.getElementById("difficultyFilter").value;
   const resultFilter = document.getElementById("resultFilter").value;
   const alphabet = document.getElementById("alphabetFilter").value.toLowerCase();
+  const shuffleBtn = document.getElementById("shuffleBtn");
 
-  filteredWords = words.filter(w => {
-    return (
-      (level === "all" || w.difficulty === level) &&
-      (resultFilter === "all" || w.result === resultFilter) &&
-      w.word.toLowerCase().includes(searchQuery) &&
-      (alphabet === "all" || w.word.toLowerCase().startsWith(alphabet))
-    );
-  });
+  filteredWords = words.filter(w => (
+    (level === "all" || w.difficulty === level) &&
+    (resultFilter === "all" || w.result === resultFilter) &&
+    w.word.toLowerCase().includes(searchQuery) &&
+    (alphabet === "all" || w.word.toLowerCase().startsWith(alphabet))
+  ));
+
+  shuffleBtn.style.display = resultFilter === "wrong" ? "block" : "none";
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Render list (FIXED)
+   Render list
 --------------------------- */
 function renderWordList() {
   const list = document.getElementById("wordList");
@@ -150,7 +152,6 @@ function renderWordList() {
     div.textContent = `${index + 1}. ${item.word}`;
     div.onclick = () => selectWord(index);
 
-    if (selectedIndexes.has(item.word)) div.classList.add("selected");
     if (index === currentIndex) div.classList.add("active");
     if (item.result === "correct") div.classList.add("correct");
     if (item.result === "wrong") div.classList.add("wrong");
@@ -166,7 +167,6 @@ function stopAllAudio() {
   speechSynthesis.cancel();
   if (audioPlayer) {
     audioPlayer.pause();
-    audioPlayer.currentTime = 0;
     audioPlayer = null;
   }
 }
@@ -174,7 +174,6 @@ function stopAllAudio() {
 function playMWAudio(url) {
   stopAllAudio();
   audioPlayer = new Audio(url);
-  audioPlayer.playsInline = true;
   audioPlayer.play().catch(() => {});
 }
 
@@ -187,7 +186,7 @@ function speakAmerican(text) {
 }
 
 /* ---------------------------
-   Select word (AUTO-CORRECT)
+   Select word
 --------------------------- */
 async function selectWord(index) {
   currentIndex = index;
@@ -211,20 +210,17 @@ async function selectWord(index) {
   document.getElementById("pos").innerText = item.part_of_speech;
 
   updateMWButtonState(item);
-
-  if (item.audio_url) playMWAudio(item.audio_url);
-  else speakAmerican(item.word);
+  item.audio_url ? playMWAudio(item.audio_url) : speakAmerican(item.word);
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Correct / Wrong (manual)
+   Correct / Wrong
 --------------------------- */
 async function markAnswer(result) {
   if (currentIndex === -1) return;
-
   const item = filteredWords[currentIndex];
   item.result = result;
   selectedIndexes.add(item.word);
@@ -249,21 +245,15 @@ function playMWPronunciation() {
 }
 
 function playAmericanPronunciation() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].word);
-  }
+  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].word);
 }
 
 function readDefinition() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].definition);
-  }
+  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].definition);
 }
 
 function readSentence() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].sentence);
-  }
+  if (currentIndex !== -1) speakAmerican(filteredWords[currentIndex].sentence);
 }
 
 /* ---------------------------
@@ -283,19 +273,11 @@ function updateProgress() {
 }
 
 /* ---------------------------
-   Reset (DOUBLE CONFIRM)
+   Reset
 --------------------------- */
 async function confirmReset() {
-  const first = confirm(
-    "⚠️ This will reset ALL progress.\n\nDo you want to continue?"
-  );
-  if (!first) return;
-
-  const second = confirm(
-    "❗ Are you REALLY sure?\n\nThis cannot be undone."
-  );
-  if (!second) return;
-
+  if (!confirm("⚠️ This will reset ALL progress.\n\nContinue?")) return;
+  if (!confirm("❗ Are you REALLY sure?")) return;
   await resetSelection();
 }
 
