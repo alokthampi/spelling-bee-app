@@ -1,9 +1,11 @@
 let words = [];
 let filteredWords = [];
 let currentIndex = -1;
+let currentItem = null;               // canonical selected word
 let selectedIndexes = new Set();
 let searchQuery = "";
 let audioPlayer = null;
+let suppressActiveHighlight = false;  // controls yellow highlight only
 
 const USER_ID = "nikku";
 
@@ -14,10 +16,8 @@ let americanVoice = null;
 
 function loadAmericanVoice() {
   const voices = speechSynthesis.getVoices();
-
   if (!voices.length) return;
 
-  // Priority order for Apple devices
   americanVoice =
     voices.find(v => v.lang === "en-US" && v.name.includes("Samantha")) ||
     voices.find(v => v.lang === "en-US" && v.name.includes("Alex")) ||
@@ -25,7 +25,6 @@ function loadAmericanVoice() {
     null;
 }
 
-// Safari / iOS requires this event
 speechSynthesis.onvoiceschanged = loadAmericanVoice;
 
 /* ---------------------------
@@ -52,6 +51,17 @@ async function saveProgress(scope, word, result) {
   );
 }
 
+async function deleteProgress(scope, word) {
+  if (!window.db) return;
+  const { doc, updateDoc, deleteField } = await import(
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+  );
+  await updateDoc(
+    doc(window.db, "progress", USER_ID),
+    { [`${scope}.${word}`]: deleteField() }
+  );
+}
+
 async function resetCloudProgress() {
   if (!window.db) return;
   const { doc, setDoc } = await import(
@@ -68,6 +78,8 @@ async function loadWords(scope = "regional") {
 
   stopAllAudio();
   currentIndex = -1;
+  currentItem = null;
+  suppressActiveHighlight = false;
   selectedIndexes.clear();
 
   const savedProgress = await loadProgress(scope);
@@ -91,13 +103,12 @@ async function loadWords(scope = "regional") {
    Init
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  loadAmericanVoice(); // pre-load if possible
+  loadAmericanVoice();
 
   document.getElementById("scopeFilter").addEventListener("change", e => {
     loadWords(e.target.value);
   });
 
-  document.getElementById("alphabetFilter").addEventListener("change", applyFilter);
   document.getElementById("difficultyFilter").addEventListener("change", applyFilter);
   document.getElementById("resultFilter").addEventListener("change", applyFilter);
 
@@ -120,45 +131,38 @@ function difficultyLabel(level) {
 }
 
 /* ---------------------------
-   Shuffle helpers
---------------------------- */
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
-
-function shuffleFilteredWords() {
-  if (!filteredWords.length) return;
-  shuffleArray(filteredWords);
-  currentIndex = -1;
-  renderWordList();
-}
-
-/* ---------------------------
    Filtering
 --------------------------- */
 function applyFilter() {
   const level = document.getElementById("difficultyFilter").value;
   const resultFilter = document.getElementById("resultFilter").value;
-  const alphabet = document.getElementById("alphabetFilter").value.toLowerCase();
   const shuffleBtn = document.getElementById("shuffleBtn");
 
-  filteredWords = words.filter(w => (
-    (level === "all" || w.difficulty === level) &&
-    (resultFilter === "all" || w.result === resultFilter) &&
-    w.word.toLowerCase().includes(searchQuery) &&
-    (alphabet === "all" || w.word.toLowerCase().startsWith(alphabet))
-  ));
+  filteredWords = words.filter(w => {
+    const firstLetter = w.word?.charAt(0)?.toUpperCase();
+    const letterMatch =
+      !window.selectedLetters ||
+      window.selectedLetters.size === 0 ||
+      window.selectedLetters.has(firstLetter);
+
+    return (
+      (level === "all" || w.difficulty === level) &&
+      (resultFilter === "all" || w.result === resultFilter) &&
+      w.word.toLowerCase().includes(searchQuery) &&
+      letterMatch
+    );
+  });
 
   if (shuffleBtn) {
-    shuffleBtn.style.display = resultFilter === "wrong" ? "inline-block" : "none";
+    shuffleBtn.style.display =
+      resultFilter === "wrong" ? "inline-block" : "none";
   }
 
   renderWordList();
   updateProgress();
 }
+
+window.applyFilters = applyFilter;
 
 /* ---------------------------
    Render list
@@ -173,7 +177,9 @@ function renderWordList() {
     div.textContent = `${index + 1}. ${item.word}`;
     div.onclick = () => selectWord(index);
 
-    if (index === currentIndex) div.classList.add("active");
+    if (index === currentIndex && !suppressActiveHighlight) {
+      div.classList.add("active");
+    }
     if (item.result === "correct") div.classList.add("correct");
     if (item.result === "wrong") div.classList.add("wrong");
 
@@ -182,7 +188,7 @@ function renderWordList() {
 }
 
 /* ---------------------------
-   Audio helpers (AMERICAN ONLY)
+   Audio helpers
 --------------------------- */
 function stopAllAudio() {
   speechSynthesis.cancel();
@@ -202,94 +208,108 @@ function playMWAudio(url) {
 
 function speakAmerican(text) {
   stopAllAudio();
-
   const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
   u.lang = "en-US";
   u.rate = 0.85;
-
-  if (americanVoice) {
-    u.voice = americanVoice; // 🔒 FORCE AMERICAN
-  }
-
+  if (americanVoice) u.voice = americanVoice;
   speechSynthesis.speak(u);
 }
 
 /* ---------------------------
-   Select word
+   Select word (auto-correct preserved)
 --------------------------- */
 async function selectWord(index) {
   currentIndex = index;
-  const item = filteredWords[index];
-  selectedIndexes.add(item.word);
+  currentItem = filteredWords[index];
+  suppressActiveHighlight = false;
 
-  if (!item.result) {
-    item.result = "correct";
-    await saveProgress(
-      document.getElementById("scopeFilter").value,
-      item.word,
-      "correct"
-    );
+  const scope = document.getElementById("scopeFilter").value;
+
+  if (!currentItem.result) {
+    currentItem.result = "correct";
+    selectedIndexes.add(currentItem.word);
+    await saveProgress(scope, currentItem.word, "correct");
   }
 
-  document.getElementById("word").innerText = item.word;
-  document.getElementById("difficulty").innerText = difficultyLabel(item.difficulty);
-  document.getElementById("origin").innerText = item.origin || "—";
-  document.getElementById("definition").innerText = item.definition;
-  document.getElementById("sentence").innerText = item.sentence;
-  document.getElementById("pos").innerText = item.part_of_speech;
+  document.getElementById("word").innerText = currentItem.word;
+  document.getElementById("difficulty").innerText =
+    difficultyLabel(currentItem.difficulty);
+  document.getElementById("origin").innerText =
+    currentItem.origin || "—";
+  document.getElementById("definition").innerText =
+    currentItem.definition;
+  document.getElementById("sentence").innerText =
+    currentItem.sentence;
+  document.getElementById("pos").innerText =
+    currentItem.part_of_speech;
 
-  updateMWButtonState(item);
+  updateMWButtonState(currentItem);
 
-  if (item.audio_url) playMWAudio(item.audio_url);
-  else speakAmerican(item.word);
+  if (currentItem.audio_url) playMWAudio(currentItem.audio_url);
+  else speakAmerican(currentItem.word);
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Correct / Wrong
+   Correct / Wrong (FIXED)
 --------------------------- */
 async function markAnswer(result) {
-  if (currentIndex === -1) return;
-  const item = filteredWords[currentIndex];
-  item.result = result;
-  selectedIndexes.add(item.word);
+  if (!currentItem) return;
 
-  await saveProgress(
-    document.getElementById("scopeFilter").value,
-    item.word,
-    result
-  );
+  const scope = document.getElementById("scopeFilter").value;
+
+  currentItem.result = result;
+  selectedIndexes.add(currentItem.word);
+  await saveProgress(scope, currentItem.word, result);
 
   renderWordList();
   updateProgress();
 }
 
 /* ---------------------------
-   Pronunciation buttons
+   Clear result (no regressions)
+--------------------------- */
+async function clearResult() {
+  if (!currentItem) return;
+
+  const scope = document.getElementById("scopeFilter").value;
+
+  currentItem.result = null;
+  selectedIndexes.delete(currentItem.word);
+  await deleteProgress(scope, currentItem.word);
+
+  suppressActiveHighlight = true;
+
+  renderWordList();
+  updateProgress();
+}
+
+/* ---------------------------
+   Pronunciation / Text buttons
 --------------------------- */
 function playMWPronunciation() {
-  if (currentIndex !== -1 && filteredWords[currentIndex].audio_url) {
-    playMWAudio(filteredWords[currentIndex].audio_url);
+  if (currentItem?.audio_url) {
+    playMWAudio(currentItem.audio_url);
   }
 }
 
 function playAmericanPronunciation() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].word);
+  if (currentItem) {
+    speakAmerican(currentItem.word);
   }
 }
 
 function readDefinition() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].definition);
+  if (currentItem) {
+    speakAmerican(currentItem.definition);
   }
 }
 
 function readSentence() {
-  if (currentIndex !== -1) {
-    speakAmerican(filteredWords[currentIndex].sentence);
+  if (currentItem) {
+    speakAmerican(currentItem.sentence);
   }
 }
 
@@ -320,6 +340,8 @@ async function confirmReset() {
 
 async function resetSelection() {
   currentIndex = -1;
+  currentItem = null;
+  suppressActiveHighlight = false;
   selectedIndexes.clear();
   searchQuery = "";
 
@@ -327,8 +349,14 @@ async function resetSelection() {
 
   document.getElementById("difficultyFilter").value = "all";
   document.getElementById("resultFilter").value = "all";
-  document.getElementById("alphabetFilter").value = "all";
   document.getElementById("searchInput").value = "";
+
+  if (window.selectedLetters) {
+    window.selectedLetters.clear();
+    document
+      .querySelectorAll(".letter-btn.active")
+      .forEach(b => b.classList.remove("active"));
+  }
 
   stopAllAudio();
   await resetCloudProgress();
