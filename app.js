@@ -131,6 +131,27 @@ function difficultyLabel(level) {
 }
 
 /* ---------------------------
+   Shuffle helpers (RESTORED)
+--------------------------- */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function shuffleFilteredWords() {
+  if (!filteredWords.length) return;
+
+  shuffleArray(filteredWords);
+
+  currentIndex = -1;
+  suppressActiveHighlight = true;
+
+  renderWordList();
+}
+
+/* ---------------------------
    Filtering
 --------------------------- */
 function applyFilter() {
@@ -253,7 +274,7 @@ async function selectWord(index) {
 }
 
 /* ---------------------------
-   Correct / Wrong (FIXED)
+   Correct / Wrong
 --------------------------- */
 async function markAnswer(result) {
   if (!currentItem) return;
@@ -269,7 +290,7 @@ async function markAnswer(result) {
 }
 
 /* ---------------------------
-   Clear result (no regressions)
+   Clear result
 --------------------------- */
 async function clearResult() {
   if (!currentItem) return;
