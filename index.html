@@ -73,6 +73,7 @@
       padding: 8px 12px;
       line-height: 1;
       min-height: 44px;
+      white-space: nowrap;
     }
 
     #categoryCount,
@@ -213,10 +214,16 @@
       color: #8b949e;
     }
 
+    /* 📱 Mobile layout tweaks */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
       .word-list { max-height: 35vh; }
       .shuffle-btn { position: static; }
+
+      /* 🔒 Hide Clear button on mobile ONLY */
+      .desktop-only {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -246,7 +253,6 @@
 
     <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
 
-    <!-- 🔤 MULTI LETTER FILTER -->
     <div class="letter-filter" id="letterFilter"></div>
   </div>
 
@@ -276,7 +282,7 @@
       <div class="mark-buttons">
         <button class="correct" onclick="markAnswer('correct')">✅ Correct</button>
         <button class="wrong" onclick="markAnswer('wrong')">❌ Wrong</button>
-        <button class="reset-btn" onclick="clearResult()">↩️ Clear</button>
+        <button class="reset-btn desktop-only" onclick="clearResult()">↩️ Clear</button>
       </div>
 
       <div class="audio-buttons">
