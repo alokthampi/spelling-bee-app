@@ -385,7 +385,7 @@ async function resetSelection() {
 }
 
 /* ---------------------------
-   MW button state
+   MW button state 
 --------------------------- */
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
