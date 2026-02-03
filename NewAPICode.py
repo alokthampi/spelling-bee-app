@@ -129,7 +129,7 @@ def fetch_word(word: str) -> Dict:
 
     result = {
         "word": word,
-        "difficulty": "two",
+        "difficulty": "three",
         "part_of_speech": "",
         "definition": "",
         "sentence": "",
