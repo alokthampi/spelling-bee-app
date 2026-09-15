@@ -117,8 +117,26 @@ document.addEventListener("DOMContentLoaded", () => {
     applyFilter();
   });
 
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+  });
+
   loadWords("regional");
 });
+
+/* ---------------------------
+   Tabs
+--------------------------- */
+function switchTab(tab) {
+  document.querySelectorAll(".tab-btn").forEach(btn =>
+    btn.classList.toggle("active", btn.dataset.tab === tab)
+  );
+  document.querySelectorAll(".tab-panel").forEach(panel =>
+    panel.classList.toggle("active", panel.id === `${tab}Tab`)
+  );
+
+  if (tab === "stats") renderStats();
+}
 
 /* ---------------------------
    Difficulty labels
@@ -348,6 +366,106 @@ function updateProgress() {
 
   document.getElementById("progressText").innerText =
     `${completed} / ${total} completed`;
+
+  const fill = document.getElementById("progressBarFill");
+  if (fill) {
+    const pct = total ? Math.round((completed / total) * 100) : 0;
+    fill.style.width = `${pct}%`;
+  }
+
+  renderStats();
+}
+
+/* ---------------------------
+   Stats tab
+--------------------------- */
+function countResults(list) {
+  let correct = 0;
+  let wrong = 0;
+  list.forEach(w => {
+    if (w.result === "correct") correct++;
+    else if (w.result === "wrong") wrong++;
+  });
+  return { correct, wrong, total: list.length, unattempted: list.length - correct - wrong };
+}
+
+function renderStackBar(container, counts) {
+  container.innerHTML = "";
+  if (!counts.total) return;
+
+  const segments = [
+    { key: "correct", cls: "seg-correct", count: counts.correct },
+    { key: "wrong", cls: "seg-wrong", count: counts.wrong },
+    { key: "unattempted", cls: "seg-empty", count: counts.unattempted }
+  ];
+
+  segments.forEach(seg => {
+    if (!seg.count) return;
+    const div = document.createElement("div");
+    div.className = `stack-seg ${seg.cls}`;
+    div.style.flexBasis = `${(seg.count / counts.total) * 100}%`;
+    div.title = `${seg.key}: ${seg.count}`;
+    container.appendChild(div);
+  });
+}
+
+function renderStats() {
+  const grid = document.getElementById("statGrid");
+  const overallBar = document.getElementById("statsOverallBar");
+  const overallLegend = document.getElementById("statsOverallLegend");
+  const byDifficulty = document.getElementById("statsByDifficulty");
+  if (!grid || !overallBar || !overallLegend || !byDifficulty) return;
+
+  const counts = countResults(words);
+  const answered = counts.correct + counts.wrong;
+  const accuracy = answered ? Math.round((counts.correct / answered) * 100) : 0;
+
+  grid.innerHTML = `
+    <div class="stat-tile">
+      <div class="stat-label">Total words</div>
+      <div class="stat-value">${counts.total}</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-label">✅ Correct</div>
+      <div class="stat-value" style="color:var(--success)">${counts.correct}</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-label">❌ Wrong</div>
+      <div class="stat-value" style="color:var(--danger)">${counts.wrong}</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-label">Accuracy</div>
+      <div class="stat-value">${accuracy}%</div>
+    </div>
+  `;
+
+  renderStackBar(overallBar, counts);
+  overallLegend.innerHTML = `
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>✅ Correct — <strong>${counts.correct}</strong></div>
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>❌ Wrong — <strong>${counts.wrong}</strong></div>
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>➖ Not attempted — <strong>${counts.unattempted}</strong></div>
+  `;
+
+  byDifficulty.innerHTML = "";
+  ["one", "two", "three"].forEach(level => {
+    const levelWords = words.filter(w => w.difficulty === level);
+    if (!levelWords.length) return;
+
+    const levelCounts = countResults(levelWords);
+
+    const row = document.createElement("div");
+    row.className = "mini-bar-row";
+    row.innerHTML = `
+      <div class="mini-bar-row-header">
+        <span class="mini-bar-title">${difficultyLabel(level)}</span>
+        <span class="mini-bar-caption">${levelCounts.correct} ✅ · ${levelCounts.wrong} ❌ · ${levelCounts.unattempted} left</span>
+      </div>
+      <div class="mini-bar-track"></div>
+    `;
+
+    renderStackBar(row.querySelector(".mini-bar-track"), levelCounts);
+    byDifficulty.appendChild(row);
+  });
 }
 
 /* ---------------------------
