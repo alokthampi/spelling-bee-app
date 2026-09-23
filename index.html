@@ -110,6 +110,95 @@
       -webkit-appearance: none;
     }
 
+    .multi-select {
+      position: relative;
+    }
+
+    .multi-select summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: var(--tap);
+      padding: 11px 12px;
+      background: var(--bg-inset);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      list-style: none;
+      font-size: 16px;
+    }
+
+    .multi-select summary::-webkit-details-marker { display: none; }
+    .multi-select summary::after { content: "▾"; color: var(--text-secondary); }
+    .multi-select[open] summary { border-color: var(--accent); }
+
+    .multi-select-menu {
+      position: absolute;
+      z-index: 10;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      display: grid;
+      gap: 4px;
+      padding: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+    }
+
+    .multi-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .multi-select-option:hover { background: var(--bg-inset); }
+    .multi-select-option input { width: 17px; height: 17px; accent-color: var(--accent); }
+
+    .correction-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: var(--tap);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .correction-toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .correction-note {
+      width: 100%;
+      min-height: 76px;
+      resize: vertical;
+      background: var(--bg-inset);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .correction-note:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
     .difficulty-bar select {
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'><path d='M1 1L5 5L9 1' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
       background-repeat: no-repeat;
@@ -445,6 +534,18 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .stat-filter {
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .stat-filter:hover,
+    .stat-filter:focus-visible {
+      border-color: var(--accent);
+      background: var(--bg-inset);
+      outline: none;
+    }
+
     .stat-label {
       font-size: 11px;
       font-weight: 700;
@@ -605,20 +706,25 @@
   <div class="difficulty-bar">
     <div class="field">
       <label class="field-label" for="scopeFilter">Scope</label>
-      <select id="scopeFilter">
-        <option value="regional" selected>Regional</option>
-        <option value="school">School</option>
-      </select>
+      <details class="multi-select" id="scopeFilter">
+        <summary>Regional</summary>
+        <div class="multi-select-menu">
+          <label class="multi-select-option"><input type="checkbox" value="regional" checked />Regional</label>
+          <label class="multi-select-option"><input type="checkbox" value="school" />School</label>
+        </div>
+      </details>
     </div>
 
     <div class="field">
       <label class="field-label" for="difficultyFilter">Difficulty</label>
-      <select id="difficultyFilter">
-        <option value="all">All Bees</option>
-        <option value="one">One Bee 🐝</option>
-        <option value="two">Two Bee 🐝🐝</option>
-        <option value="three">Three Bee 🐝🐝🐝</option>
-      </select>
+      <details class="multi-select" id="difficultyFilter">
+        <summary>All Bees</summary>
+        <div class="multi-select-menu">
+          <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
+          <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
+          <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+        </div>
+      </details>
     </div>
 
     <div class="field">
@@ -627,6 +733,7 @@
         <option value="all">All Results</option>
         <option value="correct">Correct</option>
         <option value="wrong">Wrong</option>
+        <option value="correction">Marked for correction</option>
       </select>
     </div>
 
@@ -698,6 +805,18 @@
 
       <div class="label">Part of Speech</div>
       <div id="pos">—</div>
+
+      <label class="correction-toggle" for="correctionCheckbox">
+        <input id="correctionCheckbox" type="checkbox" />
+        <span>Mark for correction</span>
+      </label>
+      <textarea
+        id="correctionNote"
+        class="correction-note"
+        placeholder="Describe the issue"
+        aria-label="Correction issue description"
+        disabled
+      ></textarea>
     </div>
   </div>
 
