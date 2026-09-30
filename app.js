@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("resultFilter").addEventListener("change", applyFilter);
   document.getElementById("correctionCheckbox").addEventListener("change", toggleCorrection);
   document.getElementById("correctionNote").addEventListener("change", saveCorrectionNote);
-  document.getElementById("coveredToggleBtn").addEventListener("click", toggleCovered);
+  document.getElementById("clearCoveredBtn").addEventListener("click", clearCovered);
 
   document.getElementById("searchInput").addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
@@ -494,33 +494,23 @@ function setCovered(item, covered) {
   saveWord(item, { covered });
 }
 
-function toggleCovered() {
-  if (!currentItem) return;
-  setCovered(currentItem, !currentItem.covered);
+// Undo an accidental tap: the word goes back to not covered
+function clearCovered() {
+  if (!currentItem || !currentItem.covered) return;
+  setCovered(currentItem, false);
   renderWordCardStatus();
   renderWordList();
   updateProgress();
 }
 
 function renderWordCardStatus() {
-  const chip = document.getElementById("coveredChip");
-  const btn = document.getElementById("coveredToggleBtn");
+  const clearBtn = document.getElementById("clearCoveredBtn");
   const history = document.getElementById("practiceHistory");
+  clearBtn.hidden = !currentItem?.covered;
   if (!currentItem) {
-    chip.hidden = true;
-    btn.hidden = true;
     history.textContent = "—";
     return;
   }
-
-  chip.hidden = false;
-  btn.hidden = false;
-  chip.className = `status-chip ${currentItem.covered ? "covered" : "not-covered"}`;
-  chip.textContent = currentItem.covered ? "✓ Covered" : "○ Not covered";
-  btn.textContent = currentItem.covered ? "↩️ Undo" : "✓ Mark covered";
-  btn.title = currentItem.covered
-    ? "Tapped by mistake? Mark this word as not covered"
-    : "Mark this word as covered";
 
   const p = currentItem.practice;
   history.innerHTML = "";

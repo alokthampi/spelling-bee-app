@@ -447,19 +447,7 @@
 
     .word-status { display: flex; align-items: center; gap: 8px; }
 
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .status-chip.covered { background: var(--covered-soft); color: var(--covered); }
-    .status-chip.not-covered { background: var(--bg-inset); color: var(--text-tertiary); }
-
-    .undo-btn { min-height: 36px; padding: 8px 12px; }
+    .clear-btn { min-height: 36px; padding: 8px 12px; }
 
     .practice-history { display: flex; flex-wrap: wrap; gap: 6px; font-size: 14px; color: var(--text-secondary); }
     .pill {
@@ -1139,8 +1127,7 @@
       <div class="word-header">
         <h2 id="word">Select a word</h2>
         <div class="word-status">
-          <span id="coveredChip" class="status-chip" hidden></span>
-          <button id="coveredToggleBtn" class="reset-btn undo-btn" hidden></button>
+          <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
         </div>
       </div>
 
