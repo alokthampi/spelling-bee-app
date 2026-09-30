@@ -876,20 +876,17 @@
     .letter-legend { grid-column: 1 / -1; margin: 0; }
 
     /* Letter buttons with a correct/wrong/pending grade bar */
-    /* Practice letters: the whole button is shaded green/red/grey in
-       proportion to right/wrong/not-attempted words (set inline by JS) */
-    .letter-btn.graded {
-      color: var(--text);
-      border-color: transparent;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    .letter-btn.graded { position: relative; overflow: hidden; }
+    .letter-grade {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      bottom: 3px;
+      height: 4px;
+      border-radius: 2px;
+      pointer-events: none;
     }
-    .letter-btn.graded.no-words { border-color: var(--border); }
-    .letter-btn.graded.active {
-      color: white;
-      border: 2px solid white;
-      box-shadow: 0 0 0 2px var(--accent);
-      font-weight: 800;
-    }
+    .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
 
     .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .mode-option {

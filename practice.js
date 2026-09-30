@@ -47,14 +47,12 @@ function wordsForModes(pool, modes) {
   return pool.filter(w => modes.includes(practiceStatus(w)));
 }
 
-// Whole-button shading: green / red / grey in proportion to the letter's words
 function gradeGradient(c) {
   const total = c.correct + c.wrong + c.pending;
-  if (!total) return "";
+  if (!total) return "transparent";
   const a = (c.correct / total) * 100;
   const b = a + (c.wrong / total) * 100;
-  return `linear-gradient(to right, rgba(52, 211, 153, 0.55) 0 ${a}%, ` +
-    `rgba(248, 113, 113, 0.6) ${a}% ${b}%, var(--bg-inset) ${b}% 100%)`;
+  return `linear-gradient(to right, var(--success) 0 ${a}%, var(--danger) ${a}% ${b}%, var(--border-strong) ${b}% 100%)`;
 }
 
 function renderPracticeLetters() {
@@ -80,7 +78,12 @@ function renderPracticeLetters() {
     btn.title = total
       ? `${text}: ${c.correct} right · ${c.wrong} wrong · ${c.pending} not attempted`
       : `${text}: no words`;
-    if (total) btn.style.background = gradeGradient(c);
+    if (total) {
+      const grade = document.createElement("span");
+      grade.className = "letter-grade";
+      grade.style.background = gradeGradient(c);
+      btn.appendChild(grade);
+    }
     btn.onclick = onclick;
     container.appendChild(btn);
     return btn;
