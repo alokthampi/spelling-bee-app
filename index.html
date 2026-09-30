@@ -7,7 +7,7 @@
   <title>Spelling Bee Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -59,13 +59,42 @@
       margin: auto;
     }
 
-    h1 {
-      font-size: clamp(19px, 3vw, 24px);
-      font-weight: 800;
-      margin: 4px 0 16px;
-      letter-spacing: -0.01em;
-      color: var(--text);
+    /* App title: a quiet wordmark - gold hexagon monogram, spaced gold eyebrow,
+       ivory Cormorant Garamond with "Practice" in italics */
+    .app-title {
+      --gold: #d4af6a;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 6px 0 20px;
+      font-weight: 400;
     }
+    .title-mark { flex-shrink: 0; width: 46px; height: 52px; }
+    .title-mark .hex { fill: none; stroke: var(--gold); stroke-width: 1.5; }
+    .title-mark .hex-inner { fill: none; stroke: var(--gold); stroke-width: 0.75; opacity: 0.45; }
+    .title-mark .bee { fill: none; stroke: var(--gold); stroke-width: 1.2; stroke-linecap: round; }
+    .title-mark .wing { fill: rgba(212, 175, 106, 0.14); }
+    .title-mark .body { fill: #0d0f13; }
+    .title-mark .head { fill: var(--gold); }
+    .title-mark .stripe { stroke-width: 1.7; }
+    .title-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .title-owner {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .title-main {
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 6vw, 40px);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: 0.01em;
+      color: #f3ede0;
+    }
+    .title-main em { font-style: italic; font-weight: 500; color: #cfc6b4; }
 
     /* ---------- Filter bar ---------- */
     .difficulty-bar {
@@ -442,13 +471,6 @@
       letter-spacing: 0.05em;
     }
 
-    .shuffle-btn {
-      position: static;
-      padding: 6px 10px;
-      font-size: 13px;
-      min-height: 36px;
-    }
-
     .word-item {
       padding: 12px;
       margin-bottom: 3px;
@@ -510,28 +532,65 @@
       box-shadow: var(--shadow-sm);
     }
 
+    /* The selected word is the focus of the card: a highlighted banner */
     .word-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px 12px;
+      gap: 12px;
       margin: 0 0 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      padding: 18px 16px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.26), rgba(99, 102, 241, 0.07));
+      border: 1px solid rgba(124, 127, 242, 0.45);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
     }
 
     #word {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: clamp(30px, 7.5vw, 42px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      color: #ffffff;
       margin: 0;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .word-header .word-status { flex-shrink: 0; }
+    #word.word-enter { animation: word-enter 0.28s ease-out; }
+    @keyframes word-enter {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Nothing selected yet: quiet placeholder, no banner */
+    .word-header.empty {
+      padding: 0 0 12px;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .word-header.empty #word { font-size: 22px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      #word.word-enter { animation: none; }
     }
 
     .word-status { display: flex; align-items: center; gap: 8px; }
 
     .clear-btn { min-height: 36px; padding: 8px 12px; }
 
-    .practice-history { display: flex; flex-wrap: wrap; gap: 6px; font-size: 14px; color: var(--text-secondary); }
+    .practice-history { font-size: 14px; color: var(--text-secondary); }
+    .history-strip { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }
+    .history-count { color: var(--text); font-weight: 600; margin-right: 6px; }
+    .history-latest { font-size: 11px; color: var(--text-tertiary); }
+    .history-mark { font-size: 15px; font-weight: 800; line-height: 1.3; }
+    .history-mark.correct { color: var(--success); }
+    .history-mark.wrong { color: var(--danger); }
+    .history-mark.latest { border-bottom: 2px solid currentColor; margin-right: 4px; }
+    .history-note { font-size: 12px; color: var(--text-tertiary); margin-left: 4px; }
     .pill {
       padding: 5px 10px;
       border-radius: 999px;
@@ -848,7 +907,37 @@
 
     .practice-score { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
 
+    .practice-tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .tally-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 8px 4px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+    }
+    .tally-value { font-size: 20px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+    .tally-label { font-size: 11px; font-weight: 700; color: var(--text-tertiary); white-space: nowrap; }
+    .tally-correct .tally-value { color: var(--success); }
+    .tally-wrong .tally-value { color: var(--danger); }
+    .practice-tally-start { grid-template-columns: 1fr 1fr; }
+
     .practice-screen .audio-buttons { margin-bottom: 0; }
+
+    .practice-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-inset);
+      border-left: 3px solid var(--accent);
+      font-size: 14px;
+      color: var(--text);
+    }
+    .practice-info .info-label { color: var(--text-tertiary); font-weight: 700; margin-right: 4px; }
 
     .link-btn {
       background: none;
@@ -1027,8 +1116,8 @@
       border: 1px solid var(--border);
       overflow: hidden;
     }
-    .timer-fill { height: 100%; width: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s linear, background 0.3s ease; }
-    .timer-text { min-width: 3.2em; text-align: right; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+    .timer-fill { height: 100%; width: 100%; background: var(--success); border-radius: 999px; transition: width 0.25s linear, background 0.3s ease; }
+    .timer-text { min-width: 3.2em; text-align: right; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; color: var(--success); }
     .timer.warn .timer-fill { background: var(--warning); }
     .timer.warn .timer-text { color: var(--warning); }
     .timer.danger .timer-fill { background: var(--danger); }
@@ -1149,10 +1238,7 @@
       .layout { flex-direction: row; gap: 16px; }
       .word-list { flex: 1; max-height: 60vh; }
       .card { flex: 2; }
-      .shuffle-btn { position: absolute; top: 10px; right: 10px; }
-      .word-list-header { padding-right: 90px; }
       .practice-layout .card { order: 0; align-self: flex-start; }
-      .practice-layout .word-list-header { padding-right: 0; }
     }
 
     /* iPad Pro 12.9" upright is 1024px wide: stack the list above the card like other
@@ -1162,21 +1248,37 @@
       .word-list { flex: none; max-height: 42vh; }
       .card { flex: none; }
       .practice-layout .card { order: -1; align-self: stretch; }
-      .shuffle-btn { position: static; }
-      .word-list-header { padding-right: 0; }
     }
 
     /* Laptop / desktop */
     @media (min-width: 1024px) {
       body { padding: 24px; }
-      h1 { margin-bottom: 20px; }
+      .app-title { margin-bottom: 24px; }
     }
   </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>🐝 Nikku's Spelling Bee Practice</h1>
+  <h1 class="app-title">
+    <svg class="title-mark" viewBox="0 0 46 52" aria-hidden="true">
+      <polygon class="hex" points="23,1.5 44.5,13.75 44.5,38.25 23,50.5 1.5,38.25 1.5,13.75" />
+      <polygon class="hex-inner" points="23,6 40.5,16 40.5,36 23,46 5.5,36 5.5,16" />
+      <g class="bee" transform="translate(23 26) scale(0.86) translate(-23 -26)">
+        <ellipse class="wing" cx="16" cy="21.5" rx="4.6" ry="6.8" transform="rotate(-38 16 21.5)" />
+        <ellipse class="wing" cx="30" cy="21.5" rx="4.6" ry="6.8" transform="rotate(38 30 21.5)" />
+        <path class="antenna" d="M21.7 15.6 Q20.4 12 18 11.2 M24.3 15.6 Q25.6 12 28 11.2" />
+        <circle class="head" cx="23" cy="17.6" r="2.9" />
+        <ellipse class="body" cx="23" cy="29" rx="6.2" ry="8.6" />
+        <path class="stripe" d="M17.2 26.4 Q23 28.4 28.8 26.4 M17 31.4 Q23 33.4 29 31.4" />
+        <path class="antenna" d="M23 37.6 L23 40.2" />
+      </g>
+    </svg>
+    <span class="title-text">
+      <span class="title-owner">Nikku's</span>
+      <span class="title-main">Spelling Bee <em>Practice</em></span>
+    </span>
+  </h1>
 
   <div id="syncBanner" class="sync-banner" role="status" hidden>
     <span id="syncBannerText"></span>
@@ -1264,14 +1366,6 @@
           <span class="word-list-title">Word List</span>
           <span class="collapse-summary" id="wordListCount"></span>
         </button>
-        <button
-          id="shuffleBtn"
-          class="reset-btn shuffle-btn"
-          style="display:none;"
-          onclick="shuffleFilteredWords()"
-        >
-          🔀 Shuffle
-        </button>
       </div>
       <div class="collapse-body">
         <div class="list-legend">
@@ -1285,7 +1379,7 @@
     </div>
 
     <div class="card">
-      <div class="word-header">
+      <div class="word-header empty">
         <h2 id="word">Select a word</h2>
         <div class="word-status">
           <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
@@ -1403,6 +1497,10 @@
         <div id="practiceStart" class="practice-screen">
           <h2 class="practice-title">Spelling test</h2>
           <p class="practice-sub" id="practiceSetText"></p>
+          <div class="practice-tally practice-tally-start" aria-label="Word counts">
+            <div class="tally-item"><span class="tally-value" id="startTallyTotal">0</span><span class="tally-label">Total words</span></div>
+            <div class="tally-item"><span class="tally-value" id="startTallyTest">0</span><span class="tally-label">To test</span></div>
+          </div>
           <div class="mode-picker" role="group" aria-label="Which words to test">
             <label class="mode-option mode-wrong">
               <input type="checkbox" name="practiceMode" value="wrong" checked />
@@ -1441,6 +1539,12 @@
             <span id="practiceCounter" class="practice-counter"></span>
             <button class="link-btn" id="practiceEndBtn">End test</button>
           </div>
+          <div class="practice-tally" aria-label="Test progress">
+            <div class="tally-item"><span class="tally-value" id="tallyTotal">0</span><span class="tally-label">Total</span></div>
+            <div class="tally-item tally-correct"><span class="tally-value" id="tallyCorrect">0</span><span class="tally-label">✅ Right</span></div>
+            <div class="tally-item tally-wrong"><span class="tally-value" id="tallyWrong">0</span><span class="tally-label">❌ Wrong</span></div>
+            <div class="tally-item"><span class="tally-value" id="tallyLeft">0</span><span class="tally-label">⏳ Left</span></div>
+          </div>
           <div class="timer" id="practiceTimer" role="timer" aria-live="off">
             <div class="timer-track"><div class="timer-fill" id="practiceTimerFill"></div></div>
             <span class="timer-text" id="practiceTimerText">1:30</span>
@@ -1454,6 +1558,11 @@
             <button id="practiceDefBtn">▶️ Definition</button>
             <button id="practiceSentBtn">▶️ Sentence</button>
           </div>
+          <div class="audio-buttons">
+            <button id="practiceOriginBtn">🌍 Origin</button>
+            <button id="practicePosBtn">🏷️ Part of speech</button>
+          </div>
+          <div id="practiceInfo" class="practice-info" hidden aria-live="polite"></div>
 
           <form id="practiceForm" class="practice-form" autocomplete="off">
             <input
@@ -1550,14 +1659,17 @@
       btn.textContent = letter;
       btn.className = "letter-btn";
 
+      // Letters combine; adding one jumps the word list to that letter's words
       btn.onclick = () => {
         btn.classList.toggle("active");
         if (window.selectedLetters.has(letter)) {
           window.selectedLetters.delete(letter);
+          applyFilters();
         } else {
           window.selectedLetters.add(letter);
+          applyFilters();
+          showLetterInWordList(letter);
         }
-        applyFilters();
       };
 
       container.appendChild(btn);
@@ -1587,7 +1699,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093005"></script>
-<script src="practice.js?v=2026093005"></script>
+<script src="app.js?v=2026093019"></script>
+<script src="practice.js?v=2026093019"></script>
 </body>
 </html>

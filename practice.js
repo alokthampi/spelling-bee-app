@@ -171,6 +171,8 @@ function showPracticeStart() {
     text = `${count} word${count === 1 ? "" : "s"} to test · ${practiceSetLabel()}`;
   }
   practiceEl("practiceSetText").textContent = text;
+  practiceEl("startTallyTotal").textContent = pool.length;
+  practiceEl("startTallyTest").textContent = count;
   practiceEl("practiceStartBtn").disabled = !count;
 
   renderPracticeLetters();
@@ -318,6 +320,9 @@ function showQuestion(index, autoplay) {
   practiceEl("practiceMWBtn").disabled = !entry.item.audio_url;
   practiceEl("practiceDefBtn").disabled = !entry.item.definition;
   practiceEl("practiceSentBtn").disabled = !entry.item.sentence;
+  practiceEl("practiceOriginBtn").disabled = !entry.item.origin;
+  practiceEl("practicePosBtn").disabled = !entry.item.part_of_speech;
+  clearPracticeInfo();
 
   if (isAnswered(entry)) {
     // Reviewing a word that was already answered
@@ -412,6 +417,8 @@ function recordPracticeResult(entry) {
   p[entry.status]++;
   p.last = entry.status;
   p.lastAt = new Date().toISOString();
+  // Every attempt in order, oldest first: "c" = correct, "w" = wrong
+  p.history = (p.history || "") + (entry.status === "correct" ? "c" : "w");
   saveWord(item, { practice: { ...p } });
 
   renderWordList();
@@ -488,6 +495,35 @@ function finishPractice() {
 /* ---------------------------
    Audio (spoken only, never shown)
 --------------------------- */
+/* Origin / part of speech: read aloud like a bee pronouncer, and shown as text
+   (neither gives away the spelling) */
+const practiceInfoShown = {};
+
+function clearPracticeInfo() {
+  Object.keys(practiceInfoShown).forEach(key => delete practiceInfoShown[key]);
+  const box = practiceEl("practiceInfo");
+  box.innerHTML = "";
+  box.hidden = true;
+}
+
+function showPracticeInfo(key, label, value) {
+  speakAmerican(value);
+  practiceInfoShown[key] = [label, value];
+  const box = practiceEl("practiceInfo");
+  box.innerHTML = "";
+  ["origin", "pos"].forEach(k => {
+    if (!practiceInfoShown[k]) return;
+    const [l, v] = practiceInfoShown[k];
+    const row = document.createElement("span");
+    const labelEl = document.createElement("span");
+    labelEl.className = "info-label";
+    labelEl.textContent = l;
+    row.append(labelEl, v);
+    box.appendChild(row);
+  });
+  box.hidden = false;
+}
+
 function playPracticeWord() {
   const item = currentEntry()?.item;
   if (!item) return;
@@ -510,7 +546,11 @@ function testCounts() {
 function updatePracticeCounter() {
   const { total, correct, wrong } = testCounts();
   practiceEl("practiceCounter").textContent = `Word ${practice.index + 1} of ${total}`;
-  practiceEl("practiceScore").textContent = total ? `✅ ${correct} · ❌ ${wrong}` : "";
+  practiceEl("practiceScore").textContent = total ? `✅ ${correct} · ❌ ${wrong} · ${total} words` : "";
+  practiceEl("tallyTotal").textContent = total;
+  practiceEl("tallyCorrect").textContent = correct;
+  practiceEl("tallyWrong").textContent = wrong;
+  practiceEl("tallyLeft").textContent = total - correct - wrong;
 }
 
 function renderPracticeList() {
@@ -518,7 +558,8 @@ function renderPracticeList() {
   list.innerHTML = "";
 
   if (!practice) {
-    practiceEl("practiceScore").textContent = "";
+    const count = wordsForModes(practicePool(), selectedModes()).length;
+    practiceEl("practiceScore").textContent = `${count} word${count === 1 ? "" : "s"}`;
     const note = document.createElement("div");
     note.className = "practice-empty";
     note.textContent = "Your words will appear here as you spell them.";
@@ -526,8 +567,8 @@ function renderPracticeList() {
     return;
   }
 
-  const { correct, wrong } = testCounts();
-  practiceEl("practiceScore").textContent = `✅ ${correct} · ❌ ${wrong}`;
+  const { total, correct, wrong } = testCounts();
+  practiceEl("practiceScore").textContent = `✅ ${correct} · ❌ ${wrong} · ${total} words`;
 
   let currentRow = null;
   practice.entries.forEach((entry, i) => {
@@ -624,6 +665,14 @@ document.addEventListener("DOMContentLoaded", () => {
   practiceEl("practiceSentBtn").addEventListener("click", () => {
     const item = currentEntry()?.item;
     if (item?.sentence) speakAmerican(item.sentence);
+  });
+  practiceEl("practiceOriginBtn").addEventListener("click", () => {
+    const item = currentEntry()?.item;
+    if (item?.origin) showPracticeInfo("origin", "Origin", item.origin);
+  });
+  practiceEl("practicePosBtn").addEventListener("click", () => {
+    const item = currentEntry()?.item;
+    if (item?.part_of_speech) showPracticeInfo("pos", "Part of speech", item.part_of_speech);
   });
 
   renderPracticeList();
