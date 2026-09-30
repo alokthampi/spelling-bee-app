@@ -45,21 +45,35 @@ function withTimeout(promise, ms) {
   ]);
 }
 
-async function loadProgress(scope) {
+// The whole progress doc, fetched once and kept in sync by saves, so switching
+// scope doesn't go back to Firestore (which can be slow on mobile Safari)
+let progressData = null;
+
+async function fetchProgressDoc() {
+  if (progressData) return progressData;
   if (!window.db) return {};
   try {
     const { doc, getDoc } = await import(
       "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
     );
     const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 8000);
-    return snap.exists() ? snap.data()?.[scope] || {} : {};
+    progressData = snap.exists() ? snap.data() || {} : {};
+    return progressData;
   } catch (err) {
     console.warn("Could not load saved progress:", err);
     return {};
   }
 }
 
+async function loadProgress(scope) {
+  const data = await fetchProgressDoc();
+  return data[scope] || {};
+}
+
 async function saveProgress(scope, word, progress) {
+  if (progressData) {
+    progressData[scope] = { ...progressData[scope], [word]: progress };
+  }
   if (!window.db) return;
   try {
     const { doc, setDoc } = await import(
@@ -87,6 +101,7 @@ async function deleteProgress(scope, word) {
 }
 
 async function resetCloudProgress() {
+  if (progressData) progressData = {};
   if (!window.db) return;
   const { doc, setDoc } = await import(
     "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
@@ -97,8 +112,11 @@ async function resetCloudProgress() {
 /* ---------------------------
    Load words
 --------------------------- */
-async function loadWords(scopes = ["regional"]) {
+let loadWordsRequest = 0;
+
+async function loadWords(scopes = ["school"]) {
   if (!Array.isArray(scopes)) scopes = [scopes];
+  const request = ++loadWordsRequest;
 
   stopAllAudio();
   currentIndex = -1;
@@ -114,10 +132,11 @@ async function loadWords(scopes = ["regional"]) {
   }
 
   const datasets = await Promise.all(scopes.map(async scope => {
-    const file = scope === "school" ? "words_2026/words_school.json" : "words_school_2027.json";
+    // Regional has no word list yet
+    const file = scope === "school" ? "words_school_2027.json" : null;
     const [savedProgress, data] = await Promise.all([
       loadProgress(scope),
-      fetch(file).then(r => {
+      !file ? [] : fetch(file).then(r => {
         if (!r.ok) throw new Error(`${file}: HTTP ${r.status}`);
         return r.json();
       }).catch(err => {
@@ -142,6 +161,9 @@ async function loadWords(scopes = ["regional"]) {
     }));
   }));
 
+  // A newer scope selection started while this one was loading
+  if (request !== loadWordsRequest) return;
+
   words = datasets.flat();
 
   words.forEach(w => {
@@ -157,17 +179,12 @@ async function loadWords(scopes = ["regional"]) {
 document.addEventListener("DOMContentLoaded", () => {
   loadAmericanVoice();
 
-  document.getElementById("scopeFilter").addEventListener("change", e => {
-    const scopes = selectedValues("scopeFilter");
-    loadWords(scopes.length ? scopes : ["regional"]);
-  });
-
   document.querySelectorAll(".multi-select input[type=checkbox]").forEach(input => {
     input.addEventListener("change", event => {
       updateMultiSelectSummary(event.target.closest(".multi-select"));
       if (event.target.closest("#scopeFilter")) {
         const scopes = selectedValues("scopeFilter");
-        loadWords(scopes.length ? scopes : ["regional"]);
+        loadWords(scopes.length ? scopes : ["school"]);
       } else {
         applyFilter();
       }
@@ -188,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
-  loadWords(["regional"]);
+  loadWords(["school"]);
 });
 
 /* ---------------------------
