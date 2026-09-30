@@ -180,17 +180,114 @@ def extract_example_sentences(entry: dict) -> List[str]:
 # ============================================================
 # Origin extraction
 # ============================================================
-def extract_and_simplify_origin(et_list) -> str:
-    if not et_list:
-        return ""
+# Scripps-style language of origin: the root language first, then the
+# languages the word passed through on its way into English, for example
+# "Middle English, from Anglo-French X, from Latin Y" -> "Latin, French".
+ORIGIN_LANGUAGES = {
+    "Anglo-French": "French", "Old French": "French", "Middle French": "French",
+    "French": "French", "Old North French": "French", "Gallo-Romance": "French",
+    "Walloon": "French", "Old Occitan": "Occitan",
+    "Latin": "Latin", "Late Latin": "Latin", "Medieval Latin": "Latin",
+    "New Latin": "Latin", "Vulgar Latin": "Latin",
+    "Greek": "Greek", "Late Greek": "Greek", "Middle Greek": "Greek",
+    "Old High German": "German", "Middle High German": "German", "German": "German",
+    "Middle Low German": "German", "Low German": "German",
+    "Middle Dutch": "Dutch", "Dutch": "Dutch",
+    "Old English": "Old English", "Middle English": None, "English": None,
+    "Old Norse": "Old Norse", "Old Icelandic": "Old Norse", "Scandinavian": "Old Norse",
+    "Danish": "Danish", "Norwegian": "Norwegian", "Swedish": "Swedish",
+    "Italian": "Italian", "Old Italian": "Italian", "Tuscan": "Italian",
+    "Neapolitan": "Italian", "Spanish": "Spanish", "American Spanish": "Spanish",
+    "Portuguese": "Portuguese",
+    "Germanic": "Germanic", "Continental Germanic": "Germanic", "West Germanic": "Germanic",
+    "Celtic": "Celtic", "Old Irish": "Irish", "Irish": "Irish", "Welsh": "Welsh",
+    "Indo-European": None, "International Scientific Vocabulary": None,
+    "Sanskrit": "Sanskrit", "Hindi": "Hindi", "Pali": "Pali", "Persian": "Persian",
+    "Malay": "Malay", "Chinese": "Chinese", "Japanese": "Japanese", "Russian": "Russian",
+    "Armenian": "Armenian", "Amharic": "Amharic", "Krio": "Krio", "Yoruba": "Yoruba",
+    "Kongo": "Kongo", "Arabic": "Arabic", "Turkish": "Turkish", "Hebrew": "Hebrew",
+    "Nahuatl": "Nahuatl", "Indo-Aryan": "Indo-Aryan", "Afrikaans": "Afrikaans",
+    "Tagalog": "Tagalog", "Hawaiian": "Hawaiian",
+}
+ORIGIN_LANGUAGE_RE = re.compile(
+    r"\b(" + "|".join(sorted(map(re.escape, ORIGIN_LANGUAGES), key=len, reverse=True)) + r")\b"
+)
+# Where the word's own history ends and comparisons with related words begin
+ORIGIN_STOP_RE = re.compile(
+    r"\bakin to\b|\bcompare\b|\bmore at\b|;|\bwhence\b|\bIndo-European\b|\bpre-Germanic\b"
+    r"|\balso in\b|\bwith Latin\b|\breplacing\b|\bdialectal\b"
+)
+ORIGIN_HEDGE_RE = re.compile(r"\b(?:perhaps|probably)\b")
 
-    texts = []
-    for block in et_list:
-        if isinstance(block, list) and block[0] == "text":
-            text = re.sub(r"\{.*?\}", "", block[1])
-            texts.append(text)
 
-    return " ".join(texts).strip()
+def etymology_text(entry: dict) -> str:
+    return " ".join(
+        block[1] for block in entry.get("et") or []
+        if isinstance(block, list) and len(block) > 1 and block[0] == "text"
+    )
+
+
+def scripps_origin(et: str) -> str:
+    """Languages named in an MW etymology, root first; "" when none are named."""
+    chain = re.sub(r"\{it\}.*?\{/it\}", "", et)
+    chain = re.sub(r"\{[^}]*\}", "", chain)
+    chain = re.sub(r"\"[^\"]*\"|\([^)]*\)", "", chain)
+    chain = ORIGIN_STOP_RE.split(chain)[0]
+    hedge = ORIGIN_HEDGE_RE.search(chain)
+
+    found = []
+    for match in ORIGIN_LANGUAGE_RE.finditer(chain):
+        # A guess after a definite source ("Italian ... perhaps from Old French") is left out
+        if hedge and found and match.start() > hedge.start():
+            break
+        name = ORIGIN_LANGUAGES[match.group(1)]
+        if name and name not in found:
+            found.append(name)
+
+    # Old English words are listed as Old English, not by their deeper Germanic roots
+    if "Old English" in found and "Germanic" in found:
+        found.remove("Germanic")
+    return ", ".join(reversed(found))
+
+
+def etymology_links(et: str) -> List[str]:
+    """Entries an etymology points to ("see distant", "from charm"), skipping affixes."""
+    chain = re.split(r"\bakin to\b|—\s*more at|;", et)[0]
+    targets = []
+    for match in re.finditer(r"\{(?:et_link|dxt|mat)\|([^|}]+)\|?([^|}]*)", chain):
+        target = (match.group(2) or match.group(1)).strip()
+        if not (target.startswith("-") or target.endswith("-")):
+            targets.append(target)
+    return targets
+
+
+def fetch_entry(entry_id: str) -> Optional[dict]:
+    headword = entry_id.split(":")[0]
+    try:
+        response = requests.get(f"{MW_BASE_URL}/{headword}?key={MW_API_KEY}", timeout=10)
+        data = response.json() if response.status_code == 200 else []
+    except Exception:
+        return None
+    entries = [e for e in data if isinstance(e, dict)]
+    return next((e for e in entries if e.get("meta", {}).get("id") == entry_id),
+                entries[0] if entries else None)
+
+
+def resolve_origin(entry: dict, seen: Optional[List[str]] = None) -> str:
+    """Scripps-style origin, following MW's cross-references when an entry
+    only points at another word (up to four steps)."""
+    seen = (seen or []) + [entry.get("meta", {}).get("id", "")]
+    et = etymology_text(entry)
+    origin = scripps_origin(et)
+    if origin or len(seen) > 4:
+        return origin
+    for target in etymology_links(et):
+        linked = fetch_entry(target)
+        if linked and linked.get("meta", {}).get("id") not in seen:
+            origin = resolve_origin(linked, seen)
+            if origin:
+                return origin
+    return ""
 
 
 def fetch_tatoeba_sentence(word: str) -> Optional[Dict[str, str]]:
@@ -285,9 +382,12 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
         if defs:
             result["definition"] = defs[0]
 
-        et = meaning_entry.get("et")
-        if et:
-            result["origin"] = extract_and_simplify_origin(et)
+        # Blank origins (compounds, place names, words MW doesn't trace) are
+        # filled in by hand in the output file
+        for entry in [meaning_entry] + [e for e in exact_entries if e is not meaning_entry]:
+            result["origin"] = resolve_origin(entry)
+            if result["origin"]:
+                break
 
     # --------------------------------------------------------
     # Sentence priority logic
@@ -401,8 +501,8 @@ def main() -> None:
     # Keep the established word fields and add transparent sentence provenance.
     results = [
         {key: item[key] for key in (
-            "word", "difficulty", "part_of_speech", "definition", "sentence",
-            "sentence_source", "sentence_attribution", "audio_url"
+            "word", "difficulty", "origin", "part_of_speech", "definition", "sentence",
+            "sentence_source", "audio_url"
         )}
         for item in results
     ]
