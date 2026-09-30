@@ -94,7 +94,7 @@ async function loadWords(scopes = ["regional"]) {
   }
 
   const datasets = await Promise.all(scopes.map(async scope => {
-    const file = scope === "school" ? "words_school.json" : "words_regional.json";
+    const file = scope === "school" ? "words_2026/words_school.json" : "words_school_2027.json";
     const [savedProgress, response] = await Promise.all([
       loadProgress(scope),
       fetch(file)
