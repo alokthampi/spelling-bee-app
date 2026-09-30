@@ -241,7 +241,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  document.getElementById("resultFilter").addEventListener("change", applyFilter);
+  document.querySelectorAll('#resultFilter input[type="radio"]').forEach(input => {
+    input.addEventListener("change", () => {
+      updateResultFilterSummary();
+      document.getElementById("resultFilter").open = false;
+      applyFilter();
+    });
+  });
+  document.getElementById("prevWordBtn").addEventListener("click", () => stepWord(-1));
+  document.getElementById("nextWordBtn").addEventListener("click", () => stepWord(1));
+  document.querySelectorAll(".collapse-toggle").forEach(toggle => {
+    toggle.addEventListener("click", () => {
+      const section = toggle.closest(".collapsible");
+      const collapsed = section.classList.toggle("collapsed");
+      toggle.setAttribute("aria-expanded", String(!collapsed));
+    });
+  });
   document.getElementById("correctionCheckbox").addEventListener("change", toggleCorrection);
   document.getElementById("correctionNote").addEventListener("change", saveCorrectionNote);
   document.getElementById("clearCoveredBtn").addEventListener("click", clearCovered);
@@ -303,13 +318,13 @@ function switchTab(tab) {
 }
 
 function showFilteredResults(filter) {
-  document.getElementById("resultFilter").value = filter;
+  setResultFilter(filter);
   switchTab("learning");
   applyFilter();
 }
 
 function showWordInLearning(word) {
-  document.getElementById("resultFilter").value = "all";
+  setResultFilter("all");
   document.getElementById("searchInput").value = word;
   searchQuery = word.toLowerCase();
   switchTab("learning");
@@ -352,6 +367,34 @@ function updateMultiSelectSummary(container) {
     return;
   }
   summary.textContent = selected.map(input => input.parentElement.textContent.trim()).join(", ");
+}
+
+/* Results dropdown (radio buttons inside a <details>) */
+function getResultFilter() {
+  return document.querySelector('#resultFilter input[type="radio"]:checked')?.value || "all";
+}
+
+function setResultFilter(value) {
+  document.querySelectorAll('#resultFilter input[type="radio"]').forEach(input => {
+    input.checked = input.value === value;
+  });
+  updateResultFilterSummary();
+}
+
+function updateResultFilterSummary() {
+  const container = document.getElementById("resultFilter");
+  const checked = container.querySelector("input:checked");
+  container.querySelector("summary").textContent = checked
+    ? checked.parentElement.textContent.trim()
+    : "All words";
+}
+
+/* Collapsed-toggle text for a letter row, e.g. "All" or "A, C" */
+function updateLetterSummary(containerId, letters) {
+  const summary = document.getElementById(containerId)
+    ?.closest(".collapsible")
+    ?.querySelector(".collapse-summary");
+  if (summary) summary.textContent = letters.size ? [...letters].sort().join(", ") : "All";
 }
 
 /* ---------------------------
@@ -398,7 +441,7 @@ function matchesResultFilter(w, filter) {
 
 function applyFilter() {
   const levels = selectedValues("difficultyFilter");
-  const resultFilter = document.getElementById("resultFilter").value;
+  const resultFilter = getResultFilter();
   const shuffleBtn = document.getElementById("shuffleBtn");
 
   filteredWords = learningScopeWords().filter(w => {
@@ -424,6 +467,7 @@ function applyFilter() {
       resultFilter === "practice-wrong" ? "inline-block" : "none";
   }
 
+  updateLetterSummary("letterFilter", window.selectedLetters || new Set());
   renderWordList();
   updateProgress();
 }
@@ -467,6 +511,42 @@ function renderWordList() {
 
     list.appendChild(div);
   });
+
+  document.getElementById("wordListCount").textContent = `${filteredWords.length} words`;
+  updateWordNav();
+}
+
+/* ---------------------------
+   Previous / next word
+--------------------------- */
+function updateWordNav() {
+  const total = filteredWords.length;
+  const hasCurrent = currentIndex >= 0 && !suppressActiveHighlight;
+  document.getElementById("prevWordBtn").disabled = !hasCurrent || currentIndex === 0;
+  document.getElementById("nextWordBtn").disabled =
+    !total || (hasCurrent && currentIndex >= total - 1);
+  document.getElementById("wordPosition").textContent =
+    hasCurrent ? `${currentIndex + 1} of ${total}` : total ? `— of ${total}` : "";
+}
+
+// Nothing selected (or it was filtered out / shuffled): Next starts at the top
+function stepWord(delta) {
+  const hasCurrent = currentIndex >= 0 && !suppressActiveHighlight;
+  const index = hasCurrent ? currentIndex + delta : 0;
+  if (index < 0 || index >= filteredWords.length) return;
+  selectWord(index);
+  scrollActiveWordIntoView();
+}
+
+// Scroll the list panel only, never the whole page
+function scrollActiveWordIntoView() {
+  const panel = document.querySelector("#learningTab .word-list");
+  const row = document.querySelector("#wordList .word-item.active");
+  if (!panel || !row || panel.scrollHeight <= panel.clientHeight) return;
+  const rowTop = row.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+  if (rowTop < panel.scrollTop + 40 || rowTop > panel.scrollTop + panel.clientHeight - 60) {
+    panel.scrollTop = Math.max(0, rowTop - panel.clientHeight / 2);
+  }
 }
 
 /* ---------------------------
@@ -589,6 +669,11 @@ function toggleCorrection(event) {
   if (!currentItem) return;
 
   currentItem.markedForCorrection = event.target.checked;
+  // Unmarking clears the comment too
+  if (!currentItem.markedForCorrection) {
+    currentItem.correctionNote = "";
+    document.getElementById("correctionNote").value = "";
+  }
   updateCorrectionNoteState(currentItem);
   saveWord(currentItem, {
     markedForCorrection: currentItem.markedForCorrection,
@@ -601,7 +686,7 @@ function toggleCorrection(event) {
 function updateCorrectionNoteState(item) {
   const note = document.getElementById("correctionNote");
   if (!note) return;
-  note.disabled = !item?.markedForCorrection;
+  note.hidden = !item?.markedForCorrection;
 }
 
 function saveCorrectionNote(event) {
@@ -736,6 +821,7 @@ function renderStatsLetters() {
   const container = document.getElementById("statsLetterFilter");
   if (!container) return;
   container.innerHTML = "";
+  updateLetterSummary("statsLetterFilter", statsLetters);
 
   const counts = {};
   statsScopeAndLevelWords().forEach(w => {
@@ -959,6 +1045,7 @@ function renderStats() {
 async function confirmReset() {
   if (!confirm("⚠️ This will reset ALL progress — covered words, practice history and test results.\n\nContinue?")) return;
   if (!confirm("❗ Are you REALLY sure?")) return;
+  if (!confirm("🛑 Last chance: all progress will be permanently deleted. This cannot be undone.\n\nDelete everything?")) return;
   await resetSelection();
 }
 
@@ -969,7 +1056,7 @@ async function resetSelection() {
   searchQuery = "";
   document.getElementById("correctionCheckbox").checked = false;
   document.getElementById("correctionNote").value = "";
-  document.getElementById("correctionNote").disabled = true;
+  document.getElementById("correctionNote").hidden = true;
 
   words.forEach(w => {
     w.covered = false;
@@ -980,7 +1067,7 @@ async function resetSelection() {
 
   document.querySelectorAll("#difficultyFilter input").forEach(input => (input.checked = true));
   updateMultiSelectSummary(document.getElementById("difficultyFilter"));
-  document.getElementById("resultFilter").value = "all";
+  setResultFilter("all");
   document.getElementById("searchInput").value = "";
 
   if (window.selectedLetters) {

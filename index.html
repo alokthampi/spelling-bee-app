@@ -283,8 +283,89 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      grid-column: 1 / -1;
       padding-top: 2px;
+    }
+
+    /* ---------- Collapsible sections (collapse only on phones) ---------- */
+    .letters-collapsible { grid-column: 1 / -1; min-width: 0; }
+
+    .collapse-toggle {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      min-height: var(--tap);
+      padding: 10px 12px;
+      background: var(--bg-inset);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .collapse-toggle::after {
+      content: "▾";
+      margin-left: auto;
+      color: var(--text-secondary);
+      transition: transform 0.15s ease;
+    }
+    .collapsible.collapsed .collapse-toggle::after { transform: rotate(-90deg); }
+    .collapse-summary { color: var(--text-secondary); font-weight: 500; font-size: 13px; }
+
+    /* The word-list toggle doubles as the list title: looks like a heading */
+    .collapse-toggle.list-toggle {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      background: none;
+      border: none;
+      pointer-events: none;
+      cursor: default;
+    }
+    .collapse-toggle.list-toggle::after { display: none; }
+
+    /* ---------- Previous / next word ---------- */
+    .word-nav {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .word-nav .reset-btn { width: 100%; }
+    .word-nav .reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .word-nav .reset-btn:disabled:hover { background: var(--bg-inset); border-color: var(--border-strong); }
+    .word-position {
+      min-width: 5.5em;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- Single-choice dropdown with group labels (Results) ---------- */
+    .single-select .multi-select-menu {
+      min-width: 100%;
+      width: max-content;
+      max-width: calc(100vw - 32px);
+      right: auto;
+      gap: 2px;
+    }
+    .single-select .multi-select-option input { accent-color: var(--accent); }
+    .select-group-label {
+      margin: 8px 6px 2px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
     }
 
     .letter-btn {
@@ -351,7 +432,8 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .word-list-header h3 {
+    .word-list-header h3,
+    .word-list-title {
       margin: 0;
       font-size: 13px;
       font-weight: 700;
@@ -861,7 +943,7 @@
     .practice-empty { color: var(--text-tertiary); font-size: 14px; padding: 8px 4px; }
 
     .practice-filters { grid-template-columns: 1fr 1fr !important; }
-    .letter-legend { grid-column: 1 / -1; margin: 0; }
+    .letter-legend { margin: 8px 0 0; }
 
     /* Letter buttons with a correct/wrong/pending grade bar */
     .letter-btn.graded { position: relative; overflow: hidden; }
@@ -1005,6 +1087,24 @@
     .sync-banner.loading #syncRetryBtn { visibility: hidden; }
 
     /* ---------- Responsive breakpoints ---------- */
+    /* Phones: letters and word lists collapse behind a toggle */
+    @media (max-width: 699px) {
+      .collapse-toggle { display: flex; }
+      .collapsible.collapsed > .collapse-body,
+      .collapsible.collapsed > .word-list-header + .collapse-body { display: none; }
+      .letters-collapsible .collapse-body { padding-top: 8px; }
+
+      .collapse-toggle.list-toggle { pointer-events: auto; cursor: pointer; }
+      .collapse-toggle.list-toggle::after { display: block; }
+      .word-list.collapsed .word-list-header { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    }
+
+    /* Phones and iPads: bigger group labels and roomier options in the Results dropdown */
+    @media (max-width: 1366px) and (pointer: coarse), (max-width: 1024px) {
+      .select-group-label { font-size: 17px; }
+      .single-select .multi-select-option { min-height: 42px; font-size: 15px; }
+    }
+
     /* Small phones */
     @media (max-width: 420px) {
       .mode-option { padding: 8px; }
@@ -1091,19 +1191,21 @@
 
     <div class="field">
       <label class="field-label" for="resultFilter">Results</label>
-      <select id="resultFilter">
-        <option value="all">All words</option>
-        <optgroup label="Learning">
-          <option value="covered">Covered</option>
-          <option value="not-covered">Not covered</option>
-          <option value="correction">Marked for correction</option>
-        </optgroup>
-        <optgroup label="Practice">
-          <option value="practice-wrong">Spelled wrong</option>
-          <option value="practice-correct">Spelled right</option>
-          <option value="practice-pending">Not practiced</option>
-        </optgroup>
-      </select>
+      <!-- Custom dropdown: phones ignore styling on a native <select>'s group labels -->
+      <details class="multi-select single-select" id="resultFilter">
+        <summary>All words</summary>
+        <div class="multi-select-menu">
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="all" checked />All words</label>
+          <div class="select-group-label">Learning</div>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="covered" />Covered</label>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="not-covered" />Not covered</label>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="correction" />Marked for correction</label>
+          <div class="select-group-label">Practice</div>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-wrong" />Spelled wrong</label>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-correct" />Spelled right</label>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-pending" />Not practiced</label>
+        </div>
+      </details>
     </div>
 
     <div class="field">
@@ -1111,7 +1213,15 @@
       <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
     </div>
 
-    <div class="letter-filter" id="letterFilter"></div>
+    <div class="collapsible letters-collapsible collapsed">
+      <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
+        <span>Letters</span>
+        <span class="collapse-summary"></span>
+      </button>
+      <div class="collapse-body">
+        <div class="letter-filter" id="letterFilter"></div>
+      </div>
+    </div>
   </div>
 
   <div class="progress-panel">
@@ -1123,9 +1233,12 @@
   </div>
 
   <div class="layout">
-    <div class="word-list">
+    <div class="word-list collapsible">
       <div class="word-list-header">
-        <h3>Word List</h3>
+        <button type="button" class="collapse-toggle list-toggle" aria-expanded="true">
+          <span class="word-list-title">Word List</span>
+          <span class="collapse-summary" id="wordListCount"></span>
+        </button>
         <button
           id="shuffleBtn"
           class="reset-btn shuffle-btn"
@@ -1135,13 +1248,15 @@
           🔀 Shuffle
         </button>
       </div>
-      <div class="list-legend">
-        <span><i class="dot dot-covered"></i>Covered</span>
-        <span><i class="dot dot-correct"></i>Spelled right</span>
-        <span><i class="dot dot-wrong"></i>Spelled wrong</span>
-      </div>
+      <div class="collapse-body">
+        <div class="list-legend">
+          <span><i class="dot dot-covered"></i>Covered</span>
+          <span><i class="dot dot-correct"></i>Spelled right</span>
+          <span><i class="dot dot-wrong"></i>Spelled wrong</span>
+        </div>
 
-      <div id="wordList"></div>
+        <div id="wordList"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -1150,6 +1265,12 @@
         <div class="word-status">
           <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
         </div>
+      </div>
+
+      <div class="word-nav">
+        <button type="button" id="prevWordBtn" class="reset-btn" disabled>← Previous</button>
+        <span id="wordPosition" class="word-position"></span>
+        <button type="button" id="nextWordBtn" class="reset-btn" disabled>Next →</button>
       </div>
 
       <div class="audio-buttons">
@@ -1191,16 +1312,11 @@
         class="correction-note"
         placeholder="Describe the issue"
         aria-label="Correction issue description"
-        disabled
+        hidden
       ></textarea>
     </div>
   </div>
 
-  <div style="margin-top:20px;text-align:center;">
-    <button class="reset-btn" style="width:100%;max-width:400px;" onclick="confirmReset()">
-      ♻️ Start Over
-    </button>
-  </div>
   </div>
 
   <div id="practiceTab" class="tab-panel">
@@ -1228,21 +1344,33 @@
         </details>
       </div>
 
-      <div class="letter-filter" id="practiceLetterFilter" aria-label="Filter by first letter"></div>
-      <div class="list-legend letter-legend">
-        <span><i class="dot dot-correct"></i>Spelled right</span>
-        <span><i class="dot dot-wrong"></i>Spelled wrong</span>
-        <span><i class="dot dot-pending"></i>Not attempted</span>
+      <div class="collapsible letters-collapsible collapsed">
+        <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
+          <span>Letters</span>
+          <span class="collapse-summary"></span>
+        </button>
+        <div class="collapse-body">
+          <div class="letter-filter" id="practiceLetterFilter" aria-label="Filter by first letter"></div>
+          <div class="list-legend letter-legend">
+            <span><i class="dot dot-correct"></i>Spelled right</span>
+            <span><i class="dot dot-wrong"></i>Spelled wrong</span>
+            <span><i class="dot dot-pending"></i>Not attempted</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="layout practice-layout">
-      <div class="word-list" id="practiceListPanel">
+      <div class="word-list collapsible" id="practiceListPanel">
         <div class="word-list-header">
-          <h3>Your Words</h3>
+          <button type="button" class="collapse-toggle list-toggle" aria-expanded="true">
+            <span class="word-list-title">Your Words</span>
+          </button>
           <span id="practiceScore" class="practice-score"></span>
         </div>
-        <div id="practiceList"></div>
+        <div class="collapse-body">
+          <div id="practiceList"></div>
+        </div>
       </div>
 
       <div class="card practice-card">
@@ -1365,10 +1493,24 @@
         </details>
       </div>
 
-      <div class="letter-filter" id="statsLetterFilter" aria-label="Filter by first letter"></div>
+      <div class="collapsible letters-collapsible collapsed">
+        <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
+          <span>Letters</span>
+          <span class="collapse-summary"></span>
+        </button>
+        <div class="collapse-body">
+          <div class="letter-filter" id="statsLetterFilter" aria-label="Filter by first letter"></div>
+        </div>
+      </div>
     </div>
 
     <div id="statsContent"></div>
+
+    <div style="margin-top:20px;text-align:center;">
+      <button class="reset-btn" style="width:100%;max-width:400px;" onclick="confirmReset()">
+        ♻️ Start Over
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1420,7 +1562,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093001"></script>
-<script src="practice.js?v=2026093001"></script>
+<script src="app.js?v=2026093003"></script>
+<script src="practice.js?v=2026093003"></script>
 </body>
 </html>

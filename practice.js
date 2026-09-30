@@ -58,6 +58,7 @@ function gradeGradient(c) {
 function renderPracticeLetters() {
   const container = practiceEl("practiceLetterFilter");
   container.innerHTML = "";
+  updateLetterSummary("practiceLetterFilter", practiceLetters);
 
   const counts = {};
   const all = { correct: 0, wrong: 0, pending: 0 };
