@@ -1101,8 +1101,8 @@
     .sync-banner.loading #syncRetryBtn { visibility: hidden; }
 
     /* ---------- Responsive breakpoints ---------- */
-    /* Phones: letters and word lists collapse behind a toggle */
-    @media (max-width: 699px) {
+    /* Phones and iPads held upright: letters and word lists collapse behind a toggle */
+    @media (max-width: 699px), (orientation: portrait) and (max-width: 1024px) and (pointer: coarse) {
       .collapse-toggle { display: flex; }
       .collapsible.collapsed > .collapse-body,
       .collapsible.collapsed > .word-list-header + .collapse-body { display: none; }
@@ -1153,6 +1153,17 @@
       .word-list-header { padding-right: 90px; }
       .practice-layout .card { order: 0; align-self: flex-start; }
       .practice-layout .word-list-header { padding-right: 0; }
+    }
+
+    /* iPad Pro 12.9" upright is 1024px wide: stack the list above the card like other
+       iPads, so a collapsed word list doesn't leave an empty side column */
+    @media (orientation: portrait) and (min-width: 900px) and (max-width: 1024px) and (pointer: coarse) {
+      .layout { flex-direction: column; gap: 12px; }
+      .word-list { flex: none; max-height: 42vh; }
+      .card { flex: none; }
+      .practice-layout .card { order: -1; align-self: stretch; }
+      .shuffle-btn { position: static; }
+      .word-list-header { padding-right: 0; }
     }
 
     /* Laptop / desktop */
@@ -1576,7 +1587,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093004"></script>
-<script src="practice.js?v=2026093004"></script>
+<script src="app.js?v=2026093005"></script>
+<script src="practice.js?v=2026093005"></script>
 </body>
 </html>
