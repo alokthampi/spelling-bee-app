@@ -3,7 +3,6 @@ let filteredWords = [];
 let currentIndex = -1;
 let currentItem = null;               // canonical selected word
 let searchQuery = "";
-let suppressActiveHighlight = false;  // controls active-row highlight only
 
 const USER_ID = "nikku";
 const SESSIONS_KEY = "_practiceSessions"; // practice test summaries, same doc
@@ -119,13 +118,15 @@ async function resetCloudProgress() {
 // Every scope is loaded once up front; the Learning and Practice tabs each
 // filter by scope in memory, and share the same word objects.
 // Regional has no word list yet.
+// Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "words_school_2027.json",
+  school: "words_school_2027.json?v=2026093002",
   regional: null
 };
 
 function emptyPractice() {
-  return { attempts: 0, correct: 0, wrong: 0, last: null, lastAt: null };
+  // history: every attempt oldest first, "c" = correct, "w" = wrong
+  return { attempts: 0, correct: 0, wrong: 0, last: null, lastAt: null, history: "" };
 }
 
 // Copy one word's saved Firestore progress onto the in-memory word
@@ -407,16 +408,6 @@ function shuffleArray(arr) {
   }
 }
 
-function shuffleFilteredWords() {
-  if (!filteredWords.length) return;
-
-  shuffleArray(filteredWords);
-
-  currentIndex = -1;
-  suppressActiveHighlight = true;
-
-  renderWordList();
-}
 
 /* ---------------------------
    Filtering
@@ -442,7 +433,6 @@ function matchesResultFilter(w, filter) {
 function applyFilter() {
   const levels = selectedValues("difficultyFilter");
   const resultFilter = getResultFilter();
-  const shuffleBtn = document.getElementById("shuffleBtn");
 
   filteredWords = learningScopeWords().filter(w => {
     const firstLetter = w.word?.charAt(0)?.toUpperCase();
@@ -461,11 +451,6 @@ function applyFilter() {
 
   // Keep the selected word highlighted if it's still in the list
   currentIndex = currentItem ? filteredWords.indexOf(currentItem) : -1;
-
-  if (shuffleBtn) {
-    shuffleBtn.style.display =
-      resultFilter === "practice-wrong" ? "inline-block" : "none";
-  }
 
   updateLetterSummary("letterFilter", window.selectedLetters || new Set());
   renderWordList();
@@ -500,7 +485,7 @@ function renderWordList() {
       div.appendChild(badge);
     }
 
-    if (index === currentIndex && !suppressActiveHighlight) {
+    if (index === currentIndex) {
       div.classList.add("active");
     }
     // Practice results win over "covered"; a wrong latest attempt shows red
@@ -521,7 +506,7 @@ function renderWordList() {
 --------------------------- */
 function updateWordNav() {
   const total = filteredWords.length;
-  const hasCurrent = currentIndex >= 0 && !suppressActiveHighlight;
+  const hasCurrent = currentIndex >= 0;
   document.getElementById("prevWordBtn").disabled = !hasCurrent || currentIndex === 0;
   document.getElementById("nextWordBtn").disabled =
     !total || (hasCurrent && currentIndex >= total - 1);
@@ -529,13 +514,34 @@ function updateWordNav() {
     hasCurrent ? `${currentIndex + 1} of ${total}` : total ? `— of ${total}` : "";
 }
 
-// Nothing selected (or it was filtered out / shuffled): Next starts at the top
+// Nothing selected (or it was filtered out): Next starts at the top
 function stepWord(delta) {
-  const hasCurrent = currentIndex >= 0 && !suppressActiveHighlight;
+  const hasCurrent = currentIndex >= 0;
   const index = hasCurrent ? currentIndex + delta : 0;
   if (index < 0 || index >= filteredWords.length) return;
   selectWord(index);
   scrollActiveWordIntoView();
+}
+
+// After adding a letter: open the word list (if collapsed on a phone), show
+// that letter's first word in the card (without reading it out), and scroll the list to it
+function showLetterInWordList(letter) {
+  const panel = document.querySelector("#learningTab .word-list");
+  if (!panel) return;
+  if (panel.classList.contains("collapsed")) {
+    panel.classList.remove("collapsed");
+    panel.querySelector(".collapse-toggle")?.setAttribute("aria-expanded", "true");
+  }
+  const index = filteredWords.findIndex(w => w.word.charAt(0).toUpperCase() === letter);
+  if (index >= 0) selectWord(index, false);
+  const row = document.querySelectorAll("#wordList .word-item")[index];
+  if (index <= 0 || !row) {
+    panel.scrollTop = 0;
+    return;
+  }
+  const header = panel.querySelector(".word-list-header");
+  const rowTop = row.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+  panel.scrollTop = Math.max(0, rowTop - (header ? header.offsetHeight + 8 : 0));
 }
 
 // Scroll the list panel only, never the whole page
@@ -582,14 +588,14 @@ function speakAmerican(text) {
 /* ---------------------------
    Select word (marks it covered)
 --------------------------- */
-function selectWord(index) {
+// autoplay: false shows the word without reading it out (used when picking a letter)
+function selectWord(index, autoplay = true) {
   currentIndex = index;
   currentItem = filteredWords[index];
-  suppressActiveHighlight = false;
 
   if (!currentItem.covered) setCovered(currentItem, true);
 
-  document.getElementById("word").innerText = currentItem.word;
+  showCardWord(currentItem.word);
   document.getElementById("difficulty").innerText =
     difficultyLabel(currentItem.difficulty);
   document.getElementById("origin").innerText =
@@ -608,7 +614,8 @@ function selectWord(index) {
 
   updateMWButtonState(currentItem);
 
-  if (currentItem.audio_url) playMWAudio(currentItem.audio_url);
+  if (!autoplay) stopAllAudio();
+  else if (currentItem.audio_url) playMWAudio(currentItem.audio_url);
   else speakAmerican(currentItem.word);
 
   renderWordList();
@@ -622,7 +629,19 @@ function renderSentenceSource(item) {
   badge.hidden = !item?.sentence;
   badge.textContent = isMW ? "📖 Merriam-Webster" : "🤖 Generated";
   badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
-  badge.title = isMW ? item.sentence_attribution || "Merriam-Webster" : "Not from Merriam-Webster";
+  badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
+}
+
+// The big word at the top of the card; null shows the "Select a word" placeholder
+function showCardWord(word) {
+  const el = document.getElementById("word");
+  el.innerText = word || "Select a word";
+  el.closest(".word-header").classList.toggle("empty", !word);
+  el.classList.remove("word-enter");
+  if (word) {
+    void el.offsetWidth; // restart the fade-in for each new word
+    el.classList.add("word-enter");
+  }
 }
 
 /* ---------------------------
@@ -658,19 +677,48 @@ function renderWordCardStatus() {
     history.textContent = "Not practiced yet";
     return;
   }
-  const parts = [
-    ["pill", `${p.attempts} attempt${p.attempts === 1 ? "" : "s"}`],
-    ["pill pill-correct", `✅ ${p.correct} correct`],
-    ["pill pill-wrong", `❌ ${p.wrong} wrong`],
-    [`pill ${p.last === "correct" ? "pill-correct" : "pill-wrong"}`,
-      `Last: ${p.last === "correct" ? "correct" : "wrong"}`]
-  ];
-  parts.forEach(([cls, text]) => {
-    const span = document.createElement("span");
-    span.className = cls;
-    span.textContent = text;
-    history.appendChild(span);
+  history.appendChild(renderAttemptHistory(p));
+}
+
+// "3 attempts  latest ✗ ✗ ✓": every attempt, newest on the far left
+function renderAttemptHistory(p) {
+  const strip = document.createElement("div");
+  strip.className = "history-strip";
+
+  const count = document.createElement("span");
+  count.className = "history-count";
+  count.textContent = `${p.attempts} attempt${p.attempts === 1 ? "" : "s"}`;
+  strip.appendChild(count);
+
+  const latest = document.createElement("span");
+  latest.className = "history-latest";
+  latest.textContent = "latest";
+  strip.appendChild(latest);
+
+  // Attempts saved before history was kept only have their last result
+  const recorded = p.history || (p.last ? p.last.charAt(0) : "");
+  const attempts = [...recorded].reverse();
+  attempts.forEach((result, i) => {
+    const mark = document.createElement("span");
+    const correct = result === "c";
+    mark.className = `history-mark ${correct ? "correct" : "wrong"}${i === 0 ? " latest" : ""}`;
+    mark.textContent = correct ? "✓" : "✗";
+    const number = attempts.length - i; // attempt number, counting from the first
+    mark.title = `Attempt ${number}: ${correct ? "correct" : "wrong"}` +
+      (i === 0 && p.lastAt ? ` · ${formatSessionDate(p.lastAt)}` : "");
+    mark.setAttribute("aria-label", mark.title);
+    strip.appendChild(mark);
   });
+
+  const untracked = p.attempts - recorded.length;
+  if (untracked > 0) {
+    const note = document.createElement("span");
+    note.className = "history-note";
+    note.textContent = `+${untracked} earlier`;
+    note.title = "Attempts from before history was recorded";
+    strip.appendChild(note);
+  }
+  return strip;
 }
 
 /* ---------------------------
@@ -776,11 +824,12 @@ function learningCounts(list) {
 }
 
 function practiceCounts(list) {
-  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, attempts: 0, correctAttempts: 0 };
+  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, attempts: 0, correctAttempts: 0, wrongAttempts: 0 };
   list.forEach(w => {
     counts[practiceStatus(w)]++;
     counts.attempts += w.practice.attempts;
     counts.correctAttempts += w.practice.correct;
+    counts.wrongAttempts += w.practice.wrong;
   });
   return counts;
 }
@@ -1005,12 +1054,15 @@ function renderStats() {
         </div>
         <div class="stat-section">
           <h3>Overall</h3>
-          ${stackBarHtml(practiceSegments(pc), pc.total, false)}
+          ${stackBarHtml([
+            { count: pc.correctAttempts, cls: "seg-correct", label: "Correct attempts" },
+            { count: pc.wrongAttempts, cls: "seg-wrong", label: "Wrong attempts" }
+          ], pc.attempts, false)}
           <div class="stack-legend">
-            <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>Right (latest try) — <strong>${pc.correct}</strong></div>
-            <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>Wrong (latest try) — <strong>${pc.wrong}</strong></div>
-            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not attempted — <strong>${pc.pending}</strong></div>
             <div class="legend-item">Total attempts — <strong>${pc.attempts}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>Correct — <strong>${pc.correctAttempts}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>Wrong — <strong>${pc.wrongAttempts}</strong></div>
+            <div class="legend-item">${accuracy}% correct</div>
           </div>
         </div>
         <div class="stat-section">
@@ -1063,7 +1115,6 @@ async function confirmReset() {
 async function resetSelection() {
   currentIndex = -1;
   currentItem = null;
-  suppressActiveHighlight = false;
   searchQuery = "";
   document.getElementById("correctionCheckbox").checked = false;
   document.getElementById("correctionNote").value = "";
@@ -1089,7 +1140,7 @@ async function resetSelection() {
   }
 
   stopAllAudio();
-  document.getElementById("word").innerText = "Select a word";
+  showCardWord(null);
   renderSentenceSource(null);
   renderWordCardStatus();
   await resetCloudProgress();
