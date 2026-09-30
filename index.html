@@ -618,6 +618,20 @@
       color: var(--text);
     }
 
+    .source-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      vertical-align: 1px;
+    }
+    .source-badge.source-mw { background: var(--success-soft); color: var(--success); }
+    .source-badge.source-generated { background: rgba(251, 191, 36, 0.14); color: var(--warning); }
+
     #definition, #sentence {
       font-size: 14px;
       line-height: 1.55;
@@ -1294,7 +1308,7 @@
       <div class="label">Definition</div>
       <div id="definition">—</div>
 
-      <div class="label">Sentence</div>
+      <div class="label">Sentence <span id="sentenceSource" class="source-badge" hidden></span></div>
       <div id="sentence">—</div>
 
       <div class="label">Part of Speech</div>
@@ -1562,7 +1576,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093003"></script>
-<script src="practice.js?v=2026093003"></script>
+<script src="app.js?v=2026093004"></script>
+<script src="practice.js?v=2026093004"></script>
 </body>
 </html>

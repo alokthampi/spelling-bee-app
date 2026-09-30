@@ -600,6 +600,7 @@ function selectWord(index) {
     currentItem.sentence;
   document.getElementById("pos").innerText =
     currentItem.part_of_speech;
+  renderSentenceSource(currentItem);
   document.getElementById("correctionCheckbox").checked = currentItem.markedForCorrection;
   document.getElementById("correctionNote").value = currentItem.correctionNote;
   updateCorrectionNoteState(currentItem);
@@ -612,6 +613,16 @@ function selectWord(index) {
 
   renderWordList();
   updateProgress();
+}
+
+// Merriam-Webster sentences get their own badge; every other source shows as generated
+function renderSentenceSource(item) {
+  const badge = document.getElementById("sentenceSource");
+  const isMW = item?.sentence_source === "merriam_webster";
+  badge.hidden = !item?.sentence;
+  badge.textContent = isMW ? "📖 Merriam-Webster" : "🤖 Generated";
+  badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
+  badge.title = isMW ? item.sentence_attribution || "Merriam-Webster" : "Not from Merriam-Webster";
 }
 
 /* ---------------------------
@@ -1079,6 +1090,7 @@ async function resetSelection() {
 
   stopAllAudio();
   document.getElementById("word").innerText = "Select a word";
+  renderSentenceSource(null);
   renderWordCardStatus();
   await resetCloudProgress();
   applyFilter();
