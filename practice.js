@@ -1,8 +1,11 @@
 /* ---------------------------
    Practice tab: hear the word, type the spelling.
-   Uses globals from app.js (filteredWords, saveProgress, audio helpers...).
+   Uses globals from app.js (words, saveWord, savePracticeSession, audio helpers...).
 --------------------------- */
-let practice = null;               // { entries, index } for the running test
+const TIME_LIMIT_MS = 90 * 1000;
+const AUTO_NEXT_SECONDS = 4;        // after time runs out, move on by itself
+
+let practice = null;                // running/finished test: { entries, index, label, mode, saved }
 const practiceLetters = new Set();  // first letters picked on the Practice tab
 
 function practiceEl(id) {
@@ -32,39 +35,69 @@ function practicePool() {
   );
 }
 
+function selectedMode() {
+  return document.querySelector('input[name="practiceMode"]:checked')?.value || "all";
+}
+
+function wordsForMode(pool, mode) {
+  if (mode === "wrong") return pool.filter(w => practiceStatus(w) === "wrong");
+  if (mode === "pending") return pool.filter(w => practiceStatus(w) === "pending");
+  return pool;
+}
+
+function gradeGradient(c) {
+  const total = c.correct + c.wrong + c.pending;
+  if (!total) return "transparent";
+  const a = (c.correct / total) * 100;
+  const b = a + (c.wrong / total) * 100;
+  return `linear-gradient(to right, var(--success) 0 ${a}%, var(--danger) ${a}% ${b}%, var(--border-strong) ${b}% 100%)`;
+}
+
 function renderPracticeLetters() {
   const container = practiceEl("practiceLetterFilter");
   container.innerHTML = "";
 
   const counts = {};
+  const all = { correct: 0, wrong: 0, pending: 0 };
   practiceScopeAndLevelWords().forEach(w => {
     const letter = w.word.charAt(0).toUpperCase();
-    counts[letter] = (counts[letter] || 0) + 1;
+    const c = counts[letter] || (counts[letter] = { correct: 0, wrong: 0, pending: 0 });
+    c[practiceStatus(w)]++;
+    all[practiceStatus(w)]++;
   });
 
-  const all = document.createElement("button");
-  all.className = "letter-btn all-btn";
-  all.textContent = "All";
-  all.classList.toggle("active", !practiceLetters.size);
-  all.onclick = () => {
+  const makeButton = (text, c, active, onclick) => {
+    const btn = document.createElement("button");
+    btn.className = "letter-btn graded";
+    btn.textContent = text;
+    btn.classList.toggle("active", active);
+    const total = c ? c.correct + c.wrong + c.pending : 0;
+    btn.classList.toggle("no-words", !total);
+    btn.title = total
+      ? `${text}: ${c.correct} right · ${c.wrong} wrong · ${c.pending} not attempted`
+      : `${text}: no words`;
+    if (total) {
+      const grade = document.createElement("span");
+      grade.className = "letter-grade";
+      grade.style.background = gradeGradient(c);
+      btn.appendChild(grade);
+    }
+    btn.onclick = onclick;
+    container.appendChild(btn);
+    return btn;
+  };
+
+  makeButton("All", all, !practiceLetters.size, () => {
     practiceLetters.clear();
     practiceFiltersChanged();
-  };
-  container.appendChild(all);
+  }).classList.add("all-btn");
 
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
-    const btn = document.createElement("button");
-    btn.className = "letter-btn";
-    btn.textContent = letter;
-    btn.title = `${counts[letter] || 0} words`;
-    btn.classList.toggle("active", practiceLetters.has(letter));
-    btn.classList.toggle("no-words", !counts[letter]);
-    btn.onclick = () => {
+    makeButton(letter, counts[letter], practiceLetters.has(letter), () => {
       if (practiceLetters.has(letter)) practiceLetters.delete(letter);
       else practiceLetters.add(letter);
       practiceFiltersChanged();
-    };
-    container.appendChild(btn);
+    });
   });
 }
 
@@ -77,41 +110,184 @@ function practiceFiltersChanged() {
 function openPractice() {
   if (practice && practice.index >= 0) {
     renderPracticeList();
+    const entry = currentEntry();
+    if (entry && !isAnswered(entry)) resumeTimer();
     return;
   }
   if (!practice) showPracticeStart();
+  else renderPracticeLetters(); // results screen: refresh letter colours
 }
 
-/* Called by app.js once the word lists have loaded */
+/* Called by switchTab() when leaving the Practice tab */
+function leavePractice() {
+  pauseTimer();
+  cancelAutoNext();
+}
+
+/* Called by app.js once the word lists have loaded (or after a reset) */
 function onWordsLoaded() {
   if (!practice) showPracticeStart();
 }
 
-function showPracticeStart() {
-  const count = practicePool().length;
+function practiceSetLabel(mode) {
   const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" + ");
-  const letters = practiceLetters.size
-    ? ` · Letters ${[...practiceLetters].sort().join(", ")}`
-    : "";
-  practiceEl("practiceSetText").textContent = count
-    ? `${count} word${count === 1 ? "" : "s"} · ${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}`
-    : "No words match these filters. Try a different Scope, Difficulty or letter.";
+  const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
+  const modeText = mode === "wrong" ? " · Wrong words" : mode === "pending" ? " · Not attempted" : "";
+  return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}${modeText}`;
+}
+
+function showPracticeStart() {
+  const pool = practicePool();
+  const counts = {
+    all: pool.length,
+    wrong: wordsForMode(pool, "wrong").length,
+    pending: wordsForMode(pool, "pending").length
+  };
+  practiceEl("modeCountAll").textContent = counts.all;
+  practiceEl("modeCountWrong").textContent = counts.wrong;
+  practiceEl("modeCountPending").textContent = counts.pending;
+
+  document.querySelectorAll(".mode-option").forEach(option => {
+    const input = option.querySelector("input");
+    option.classList.toggle("selected", input.checked);
+    option.classList.toggle("disabled", !counts[input.value]);
+  });
+
+  const mode = selectedMode();
+  const count = counts[mode];
+  let text;
+  if (!pool.length) {
+    text = "No words match these filters. Try a different Scope, Difficulty or letter.";
+  } else if (!count) {
+    text = mode === "wrong"
+      ? "No wrong words here — nice! Pick another option."
+      : "Every word here has been attempted. Pick another option.";
+  } else {
+    text = `${count} word${count === 1 ? "" : "s"} · ${practiceSetLabel("all")}`;
+  }
+  practiceEl("practiceSetText").textContent = text;
   practiceEl("practiceStartBtn").disabled = !count;
+
   renderPracticeLetters();
   showPracticeScreen("practiceStart");
   renderPracticeList();
 }
 
-function startPractice(items) {
+function startPractice(items, mode, label) {
   const list = items.slice();
   if (practiceEl("practiceShuffle").checked) shuffleArray(list);
   practice = {
-    entries: list.map(item => ({ item, status: null, typed: "" })),
-    index: 0
+    entries: list.map(item => ({ item, status: null, typed: "", timedOut: false })),
+    index: 0,
+    mode,
+    label,
+    saved: false
   };
   showQuestion(0, true);
+}
+
+/* ---------------------------
+   Timer (90 seconds per word)
+--------------------------- */
+let timerDeadline = 0;
+let timerRemaining = TIME_LIMIT_MS;
+let timerInterval = null;
+
+function startTimer() {
+  stopTimer();
+  timerRemaining = TIME_LIMIT_MS;
+  practiceEl("practiceTimer").hidden = false;
+  resumeTimer();
+}
+
+function resumeTimer() {
+  if (timerInterval || timerRemaining <= 0) return;
+  timerDeadline = Date.now() + timerRemaining;
+  practiceEl("practiceTimer").classList.remove("paused");
+  timerInterval = setInterval(tickTimer, 250);
+  tickTimer();
+}
+
+function pauseTimer() {
+  if (!timerInterval) return;
+  timerRemaining = Math.max(0, timerDeadline - Date.now());
+  clearInterval(timerInterval);
+  timerInterval = null;
+  practiceEl("practiceTimer").classList.add("paused");
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function tickTimer() {
+  const left = Math.max(0, timerDeadline - Date.now());
+  timerRemaining = left;
+  const seconds = Math.ceil(left / 1000);
+  practiceEl("practiceTimerText").textContent =
+    `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  practiceEl("practiceTimerFill").style.width = `${(left / TIME_LIMIT_MS) * 100}%`;
+  const timer = practiceEl("practiceTimer");
+  timer.classList.toggle("warn", seconds <= 30 && seconds > 10);
+  timer.classList.toggle("danger", seconds <= 10);
+  if (left <= 0) {
+    stopTimer();
+    timeUp();
+  }
+}
+
+function timeUp() {
+  const entry = currentEntry();
+  if (!entry || isAnswered(entry)) return;
+  entry.typed = practiceEl("practiceInput").value.trim();
+  entry.status = "wrong";
+  entry.timedOut = true;
+  recordPracticeResult(entry);
+  showAnswerState(entry);
+  renderPracticeList();
+  updatePracticeCounter();
+  startAutoNext();
+}
+
+// Pause while the app is in the background (phone locked, other app, other tab)
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    pauseTimer();
+  } else if (activeTab === "practice" && practice && practice.index >= 0) {
+    const entry = currentEntry();
+    if (entry && !isAnswered(entry) && !practiceEl("practiceQuestion").hidden) resumeTimer();
+  }
+});
+
+/* After time runs out, count down on the Next button and move on */
+let autoNextInterval = null;
+
+function startAutoNext() {
+  cancelAutoNext();
+  let left = AUTO_NEXT_SECONDS;
+  const btn = practiceEl("practiceNextBtn");
+  const label = btn.textContent.replace(/ \(\d+\)$/, "");
+  btn.textContent = `${label} (${left})`;
+  autoNextInterval = setInterval(() => {
+    left--;
+    if (left <= 0) {
+      cancelAutoNext();
+      nextPracticeWord();
+    } else {
+      btn.textContent = `${label} (${left})`;
+    }
+  }, 1000);
+}
+
+function cancelAutoNext() {
+  if (!autoNextInterval) return;
+  clearInterval(autoNextInterval);
+  autoNextInterval = null;
+  const btn = practiceEl("practiceNextBtn");
+  btn.textContent = btn.textContent.replace(/ \(\d+\)$/, "");
 }
 
 /* ---------------------------
@@ -121,7 +297,12 @@ function currentEntry() {
   return practice?.entries[practice.index] || null;
 }
 
+function isAnswered(entry) {
+  return entry.status === "correct" || entry.status === "wrong";
+}
+
 function showQuestion(index, autoplay) {
+  cancelAutoNext();
   practice.index = index;
   const entry = currentEntry();
   const input = practiceEl("practiceInput");
@@ -133,8 +314,10 @@ function showQuestion(index, autoplay) {
   practiceEl("practiceDefBtn").disabled = !entry.item.definition;
   practiceEl("practiceSentBtn").disabled = !entry.item.sentence;
 
-  if (entry.status === "correct" || entry.status === "wrong") {
+  if (isAnswered(entry)) {
     // Reviewing a word that was already answered
+    stopTimer();
+    practiceEl("practiceTimer").hidden = true;
     input.value = entry.typed;
     showAnswerState(entry);
   } else {
@@ -145,6 +328,7 @@ function showQuestion(index, autoplay) {
     practiceEl("practiceCheckBtn").hidden = false;
     practiceEl("practiceSkipBtn").hidden = false;
     practiceEl("practiceNextBtn").hidden = true;
+    startTimer();
   }
 
   renderPracticeList();
@@ -164,7 +348,7 @@ function normalizeSpelling(text) {
 
 function checkPracticeAnswer() {
   const entry = currentEntry();
-  if (!entry || entry.status === "correct" || entry.status === "wrong") {
+  if (!entry || isAnswered(entry)) {
     nextPracticeWord();
     return;
   }
@@ -176,6 +360,7 @@ function checkPracticeAnswer() {
     return;
   }
 
+  stopTimer();
   entry.typed = typed;
   entry.status = normalizeSpelling(typed) === normalizeSpelling(entry.item.word) ? "correct" : "wrong";
   recordPracticeResult(entry);
@@ -194,13 +379,17 @@ function showAnswerState(entry) {
   input.classList.toggle("is-wrong", !correct);
 
   feedback.className = `practice-feedback ${correct ? "correct" : "wrong"}`;
-  feedback.innerHTML = correct
-    ? `<div class="fb-title">✅ Correct!</div><div class="fb-word"></div>`
-    : `<div class="fb-title">❌ Not quite</div>
-       <div>Correct spelling: <span class="fb-word"></span></div>
-       <div>You typed: <span class="fb-typed"></span></div>`;
+  if (correct) {
+    feedback.innerHTML = `<div class="fb-title">✅ Correct!</div><div class="fb-word"></div>`;
+  } else {
+    feedback.innerHTML = `
+      <div class="fb-title">${entry.timedOut ? "⏰ Time's up" : "❌ Not quite"}</div>
+      <div>Correct spelling: <span class="fb-word"></span></div>
+      <div class="fb-typed-row">You typed: <span class="fb-typed"></span></div>`;
+    if (entry.typed) feedback.querySelector(".fb-typed").textContent = entry.typed;
+    else feedback.querySelector(".fb-typed-row").remove();
+  }
   feedback.querySelector(".fb-word").textContent = entry.item.word;
-  if (!correct) feedback.querySelector(".fb-typed").textContent = entry.typed;
   feedback.hidden = false;
 
   practiceEl("practiceCheckBtn").hidden = true;
@@ -210,30 +399,32 @@ function showAnswerState(entry) {
   next.textContent = nextUnansweredIndex() === -1 ? "See results →" : "Next word →";
 }
 
-/* Save the typed result as the word's result, so Learning and Stats show it */
+/* Save the attempt to the word's practice history (shown on Learning + Stats) */
 function recordPracticeResult(entry) {
   const item = entry.item;
-  item.result = entry.status;
-  selectedIndexes.add(progressKey(item._scope, item.word));
-  saveProgress(item._scope, item.word, {
-    result: item.result,
-    markedForCorrection: item.markedForCorrection,
-    correctionNote: item.correctionNote
-  });
+  const p = item.practice;
+  p.attempts++;
+  p[entry.status]++;
+  p.last = entry.status;
+  p.lastAt = new Date().toISOString();
+  saveWord(item, { practice: { ...p } });
+
   renderWordList();
   updateProgress();
+  if (currentItem === item) renderWordCardStatus();
 }
 
 function nextUnansweredIndex() {
   const { entries, index } = practice;
   for (let step = 1; step <= entries.length; step++) {
     const i = (index + step) % entries.length;
-    if (!entries[i].status || entries[i].status === "skipped") return i;
+    if (!isAnswered(entries[i])) return i;
   }
   return -1;
 }
 
 function nextPracticeWord() {
+  cancelAutoNext();
   const next = nextUnansweredIndex();
   if (next === -1) finishPractice();
   else showQuestion(next, true);
@@ -242,13 +433,16 @@ function nextPracticeWord() {
 function skipPracticeWord() {
   const entry = currentEntry();
   if (!entry) return;
+  stopTimer();
   entry.status = "skipped";
   nextPracticeWord();
 }
 
 function finishPractice() {
+  stopTimer();
+  cancelAutoNext();
   stopAllAudio();
-  const { correct, wrong, total } = practiceCounts();
+  const { correct, wrong, total } = testCounts();
   const answered = correct + wrong;
   const pct = answered ? Math.round((correct / answered) * 100) : 0;
 
@@ -256,16 +450,32 @@ function finishPractice() {
     !answered ? "Test ended" : pct === 100 ? "🏆 Perfect score!" : pct >= 80 ? "🎉 Great job!" : "👍 Keep practicing!";
   practiceEl("practiceDoneScore").textContent = `${correct} / ${answered}`;
   const unanswered = total - answered;
+  const timedOut = practice.entries.filter(e => e.timedOut).length;
   practiceEl("practiceDoneText").textContent =
     `${pct}% correct` +
     (wrong ? ` · ${wrong} to practice again` : "") +
+    (timedOut ? ` · ${timedOut} ran out of time` : "") +
     (unanswered ? ` · ${unanswered} not answered` : "");
 
   const retry = practiceEl("practiceRetryBtn");
   retry.hidden = !wrong;
   retry.textContent = `🔁 Practice ${wrong} missed word${wrong === 1 ? "" : "s"}`;
 
+  if (answered && !practice.saved) {
+    practice.saved = true;
+    savePracticeSession({
+      at: new Date().toISOString(),
+      label: practice.label,
+      mode: practice.mode,
+      total,
+      correct,
+      wrong,
+      timedOut
+    });
+  }
+
   practice.index = -1;
+  renderPracticeLetters();
   showPracticeScreen("practiceDone");
   renderPracticeList();
 }
@@ -283,7 +493,7 @@ function playPracticeWord() {
 /* ---------------------------
    Left-hand list and counters
 --------------------------- */
-function practiceCounts() {
+function testCounts() {
   const entries = practice?.entries || [];
   return {
     total: entries.length,
@@ -293,7 +503,7 @@ function practiceCounts() {
 }
 
 function updatePracticeCounter() {
-  const { total, correct, wrong } = practiceCounts();
+  const { total, correct, wrong } = testCounts();
   practiceEl("practiceCounter").textContent = `Word ${practice.index + 1} of ${total}`;
   practiceEl("practiceScore").textContent = total ? `✅ ${correct} · ❌ ${wrong}` : "";
 }
@@ -311,7 +521,7 @@ function renderPracticeList() {
     return;
   }
 
-  const { correct, wrong } = practiceCounts();
+  const { correct, wrong } = testCounts();
   practiceEl("practiceScore").textContent = `✅ ${correct} · ❌ ${wrong}`;
 
   let currentRow = null;
@@ -329,9 +539,9 @@ function renderPracticeList() {
     num.textContent = `${i + 1}.`;
     row.appendChild(num);
 
-    if (entry.status === "correct" || entry.status === "wrong") {
+    if (isAnswered(entry)) {
       const word = document.createElement("span");
-      word.textContent = entry.item.word;
+      word.textContent = entry.item.word + (entry.timedOut ? " ⏰" : "");
       row.appendChild(word);
     } else {
       const blank = document.createElement("span");
@@ -339,7 +549,10 @@ function renderPracticeList() {
       row.appendChild(blank);
     }
 
-    row.onclick = () => showQuestion(i, !entry.status || entry.status === "skipped");
+    row.onclick = () => {
+      if (practice.index === -1) return; // results screen: list is read-only
+      showQuestion(i, !isAnswered(entry));
+    };
     list.appendChild(row);
   });
 
@@ -355,16 +568,24 @@ function renderPracticeList() {
    Wiring
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  practiceEl("practiceStartBtn").addEventListener("click", () => startPractice(practicePool()));
+  practiceEl("practiceStartBtn").addEventListener("click", () => {
+    const mode = selectedMode();
+    startPractice(wordsForMode(practicePool(), mode), mode, practiceSetLabel(mode));
+  });
   document.querySelectorAll("#practiceFilters .multi-select input").forEach(input => {
     input.addEventListener("change", practiceFiltersChanged);
   });
+  document.querySelectorAll('input[name="practiceMode"]').forEach(input => {
+    input.addEventListener("change", showPracticeStart);
+  });
+
   practiceEl("practiceRestartBtn").addEventListener("click", () => {
     practice = null;
     showPracticeStart();
   });
   practiceEl("practiceRetryBtn").addEventListener("click", () => {
-    startPractice(practice.entries.filter(e => e.status === "wrong").map(e => e.item));
+    const missed = practice.entries.filter(e => e.status === "wrong").map(e => e.item);
+    startPractice(missed, "wrong", `${practice.label} · Retry`);
   });
   practiceEl("practiceEndBtn").addEventListener("click", finishPractice);
   practiceEl("practiceSkipBtn").addEventListener("click", skipPracticeWord);
