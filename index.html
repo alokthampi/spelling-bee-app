@@ -988,6 +988,22 @@
     .letter-btn.all-btn { width: auto; padding: 0 12px; }
     .letter-btn.no-words { opacity: 0.35; }
 
+    .sync-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      border-radius: var(--radius-md);
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid var(--warning);
+      color: #fde68a;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .sync-banner.loading #syncRetryBtn { visibility: hidden; }
+
     /* ---------- Responsive breakpoints ---------- */
     /* Small phones */
     @media (max-width: 420px) {
@@ -1036,6 +1052,11 @@
 <body>
 <div class="container">
   <h1>🐝 Nikku's Spelling Bee Practice</h1>
+
+  <div id="syncBanner" class="sync-banner" role="status" hidden>
+    <span id="syncBannerText"></span>
+    <button id="syncRetryBtn" class="reset-btn">Retry now</button>
+  </div>
 
   <div class="tabs">
     <button class="tab-btn active" data-tab="learning">Learning</button>
@@ -1382,7 +1403,7 @@
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { initializeFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
@@ -1393,10 +1414,13 @@
   };
 
   window.firebaseApp = initializeApp(firebaseConfig);
-  window.db = getFirestore(firebaseApp);
+  // Long polling instead of the default streaming connection, which can
+  // stall on iPhone/iPad Safari and leave the app without saved progress
+  window.db = initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
 </script>
 
-<script src="app.js"></script>
-<script src="practice.js"></script>
+<!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
+<script src="app.js?v=2026093001"></script>
+<script src="practice.js?v=2026093001"></script>
 </body>
 </html>

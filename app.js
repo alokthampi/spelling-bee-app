@@ -46,23 +46,19 @@ function withTimeout(promise, ms) {
 // scope doesn't go back to Firestore (which can be slow on mobile Safari)
 let progressData = null;
 
+// Resolves to the progress doc, or null if Firestore couldn't be reached
 async function fetchProgressDoc() {
   if (progressData) return progressData;
-  if (!window.db) return {};
+  if (!window.db) return null;
   try {
     const { doc, getDoc } = await import(FIRESTORE_URL);
-    const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 8000);
+    const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 12000);
     progressData = snap.exists() ? snap.data() || {} : {};
     return progressData;
   } catch (err) {
     console.warn("Could not load saved progress:", err);
-    return {};
+    return null;
   }
-}
-
-async function loadProgress(scope) {
-  const data = await fetchProgressDoc();
-  return data[scope] || {};
 }
 
 /* Merge `fields` into one word's saved progress (other fields are kept) */
@@ -85,6 +81,7 @@ async function saveProgress(scope, word, fields) {
 }
 
 function saveWord(item, fields) {
+  item._touched = true; // changed this session: late-arriving saved data must not overwrite it
   return saveProgress(item._scope, item.word, fields);
 }
 
@@ -131,44 +128,95 @@ function emptyPractice() {
   return { attempts: 0, correct: 0, wrong: 0, last: null, lastAt: null };
 }
 
+// Copy one word's saved Firestore progress onto the in-memory word
+function applySavedProgress(item, saved) {
+  const obj = typeof saved === "object" && saved ? saved : {};
+  // Older saves only had result "correct"/"wrong" from the Learning tab;
+  // any result there just means the word was covered.
+  item.covered = typeof obj.covered === "boolean"
+    ? obj.covered
+    : Boolean(typeof saved === "string" ? saved : obj.result);
+  item.markedForCorrection = obj.markedForCorrection === true;
+  item.correctionNote = obj.correctionNote || "";
+  item.practice = { ...emptyPractice(), ...(obj.practice || {}) };
+}
+
+function applyProgressToWords(data) {
+  words.forEach(item => {
+    if (!item._touched) applySavedProgress(item, data[item._scope]?.[item.word]);
+  });
+}
+
 async function loadWords() {
-  const datasets = await Promise.all(Object.keys(SCOPE_FILES).map(async scope => {
-    const file = SCOPE_FILES[scope];
-    const [savedProgress, data] = await Promise.all([
-      loadProgress(scope),
-      !file ? [] : fetch(file).then(r => {
+  const [progress, ...datasets] = await Promise.all([
+    fetchProgressDoc(),
+    ...Object.keys(SCOPE_FILES).map(async scope => {
+      const file = SCOPE_FILES[scope];
+      const data = !file ? [] : await fetch(file).then(r => {
         if (!r.ok) throw new Error(`${file}: HTTP ${r.status}`);
         return r.json();
       }).catch(err => {
         console.error("Could not load words:", err);
         return [];
-      })
-    ]);
-
-    return data.map((w, i) => {
-      const saved = savedProgress[w.word];
-      const obj = typeof saved === "object" && saved ? saved : {};
-      // Older saves only had result "correct"/"wrong" from the Learning tab;
-      // any result there just means the word was covered.
-      const covered = typeof obj.covered === "boolean"
-        ? obj.covered
-        : Boolean(typeof saved === "string" ? saved : obj.result);
-      return {
+      });
+      return data.map((w, i) => ({
         ...w,
         _scope: scope,
         _originalIndex: i,
-        covered,
-        markedForCorrection: obj.markedForCorrection === true,
-        correctionNote: obj.correctionNote || "",
-        practice: { ...emptyPractice(), ...(obj.practice || {}) }
-      };
-    });
-  }));
+        covered: false,
+        markedForCorrection: false,
+        correctionNote: "",
+        practice: emptyPractice()
+      }));
+    })
+  ]);
 
   words = datasets.flat();
+  if (progress) applyProgressToWords(progress);
+  else retryProgressLoad();
 
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
+}
+
+/* ---------------------------
+   Saved progress couldn't be loaded: say so, and keep retrying
+--------------------------- */
+let progressRetryTimer = null;
+let progressRetryDelay = 3000;
+
+function showSyncBanner(state) {
+  const banner = document.getElementById("syncBanner");
+  if (!banner) return;
+  banner.hidden = state === "ok";
+  banner.classList.toggle("loading", state === "loading");
+  document.getElementById("syncBannerText").textContent = state === "loading"
+    ? "Loading your saved progress…"
+    : "Couldn't load your saved progress — retrying. Your words still work, and new progress is saved.";
+}
+
+function retryProgressLoad() {
+  if (!window.db) return; // Firebase itself didn't load; nothing to retry
+  showSyncBanner("failed");
+  clearTimeout(progressRetryTimer);
+  progressRetryTimer = setTimeout(retryProgressNow, progressRetryDelay);
+  progressRetryDelay = Math.min(progressRetryDelay * 2, 30000);
+}
+
+async function retryProgressNow() {
+  clearTimeout(progressRetryTimer);
+  showSyncBanner("loading");
+  const progress = await fetchProgressDoc();
+  if (!progress) {
+    retryProgressLoad();
+    return;
+  }
+  showSyncBanner("ok");
+  applyProgressToWords(progress);
+  applyFilter();
+  if (currentItem) renderWordCardStatus();
+  if (typeof onWordsLoaded === "function") onWordsLoaded();
+  if (activeTab === "stats") renderStats();
 }
 
 /* ---------------------------
@@ -197,6 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("correctionCheckbox").addEventListener("change", toggleCorrection);
   document.getElementById("correctionNote").addEventListener("change", saveCorrectionNote);
   document.getElementById("clearCoveredBtn").addEventListener("click", clearCovered);
+  document.getElementById("syncRetryBtn").addEventListener("click", retryProgressNow);
 
   document.getElementById("searchInput").addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
