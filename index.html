@@ -26,6 +26,9 @@
       --success-soft: rgba(52, 211, 153, 0.14);
       --danger: #f87171;
       --danger-soft: rgba(248, 113, 113, 0.16);
+      --covered: #60a5fa;
+      --covered-soft: rgba(96, 165, 250, 0.12);
+      --warning: #fbbf24;
       --radius-lg: 14px;
       --radius-md: 10px;
       --radius-sm: 8px;
@@ -218,6 +221,7 @@
       color: var(--text);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-strong);
+      font-family: inherit;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -291,6 +295,7 @@
       border: 1px solid var(--border);
       background: var(--bg-inset);
       color: var(--text-secondary);
+      font-family: inherit;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -378,6 +383,24 @@
       background: var(--bg-inset);
     }
 
+    .word-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .wi-word { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .wi-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .word-item.covered {
+      background: var(--covered-soft);
+      border-left-color: var(--covered);
+    }
+
     .word-item.correct {
       background: var(--success-soft);
       border-left-color: var(--success);
@@ -405,13 +428,54 @@
       box-shadow: var(--shadow-sm);
     }
 
-    #word {
-      font-size: 22px;
-      font-weight: 700;
+    .word-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 12px;
       margin: 0 0 14px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
     }
+
+    #word {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .word-status { display: flex; align-items: center; gap: 8px; }
+
+    .clear-btn { min-height: 36px; padding: 8px 12px; }
+
+    .practice-history { display: flex; flex-wrap: wrap; gap: 6px; font-size: 14px; color: var(--text-secondary); }
+    .pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .pill-correct { background: var(--success-soft); border-color: transparent; color: var(--success); }
+    .pill-wrong { background: var(--danger-soft); border-color: transparent; color: var(--danger); }
+
+    .list-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin: -2px 0 8px;
+    }
+    .list-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; }
+    .dot-covered { background: var(--covered); }
+    .dot-correct { background: var(--success); }
+    .dot-wrong { background: var(--danger); }
+    .dot-pending { background: var(--border-strong); }
 
     .mark-buttons,
     .audio-buttons {
@@ -427,6 +491,7 @@
       min-width: 130px;
       min-height: var(--tap);
       padding: 12px;
+      font-family: inherit;
       font-size: 14px;
       font-weight: 600;
       border-radius: var(--radius-md);
@@ -656,8 +721,280 @@
       background: var(--bg-inset);
     }
 
+    /* ---------- Practice ---------- */
+    [hidden] { display: none !important; }
+
+    .practice-layout .card { order: -1; } /* typing area first on phones */
+
+    .practice-screen { display: flex; flex-direction: column; gap: 12px; }
+
+    .practice-title { margin: 0; font-size: 22px; font-weight: 800; }
+
+    .practice-sub { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
+
+    .practice-hint { margin: 0; color: var(--text-tertiary); font-size: 13px; line-height: 1.5; }
+
+    .practice-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .practice-counter {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .practice-score { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+
+    .practice-screen .audio-buttons { margin-bottom: 0; }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-decoration: underline;
+      touch-action: manipulation;
+    }
+
+    .primary-btn {
+      min-height: var(--tap);
+      padding: 12px 18px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      color: white;
+      background: var(--accent);
+      touch-action: manipulation;
+      transition: background 0.15s ease;
+    }
+
+    .primary-btn:hover { background: var(--accent-hover); }
+    .primary-btn:active { background: #4f52d6; }
+
+    .practice-form { display: flex; gap: 8px; }
+
+    .practice-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg-inset);
+      color: var(--text);
+      border: 2px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 22px; /* >= 16px so iOS doesn't zoom in */
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .practice-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .practice-input.is-correct { border-color: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+    .practice-input.is-wrong { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+
+    .practice-feedback {
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .practice-feedback.correct { background: var(--success-soft); color: #d7fbea; border-left: 4px solid var(--success); }
+    .practice-feedback.wrong { background: var(--danger-soft); color: #ffdcdc; border-left: 4px solid var(--danger); }
+    .practice-feedback .fb-title { font-weight: 800; font-size: 17px; }
+    .practice-feedback .fb-word { font-weight: 800; font-size: 20px; letter-spacing: 0.03em; }
+    .practice-feedback .fb-typed { text-decoration: line-through; opacity: 0.85; }
+
+    .practice-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .practice-actions > * { flex: 1; min-width: 140px; }
+
+    .practice-big-score { font-size: 44px; font-weight: 800; color: var(--text); }
+
+    .practice-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-bottom: 3px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .practice-item:hover { background: var(--bg-inset); }
+    .practice-item .pi-num { color: var(--text-tertiary); min-width: 2.2em; font-variant-numeric: tabular-nums; }
+    .practice-item .pi-blank {
+      flex: 1;
+      max-width: 120px;
+      height: 2px;
+      background: var(--border-strong);
+      border-radius: 2px;
+    }
+    .practice-item.current { background: var(--accent-soft); border-left-color: var(--accent); }
+    .practice-item.current .pi-blank { background: var(--accent); }
+    .practice-item.correct { background: var(--success-soft); border-left-color: var(--success); color: var(--success); }
+    .practice-item.wrong { background: var(--danger-soft); border-left-color: var(--danger); color: var(--danger); }
+    .practice-item.skipped .pi-blank { background: var(--text-tertiary); opacity: 0.5; }
+
+    .practice-empty { color: var(--text-tertiary); font-size: 14px; padding: 8px 4px; }
+
+    .practice-filters { grid-template-columns: 1fr 1fr !important; }
+    .letter-legend { grid-column: 1 / -1; margin: 0; }
+
+    /* Letter buttons with a correct/wrong/pending grade bar */
+    .letter-btn.graded { position: relative; overflow: hidden; }
+    .letter-grade {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      bottom: 3px;
+      height: 4px;
+      border-radius: 2px;
+      pointer-events: none;
+    }
+    .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
+
+    .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .mode-option {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: var(--bg-inset);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .mode-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .mode-option .mode-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .mode-option .mode-count { font-size: 22px; font-weight: 800; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .mode-option.selected { border-color: var(--accent); background: var(--accent-soft); }
+    .mode-option.mode-wrong .mode-count { color: var(--danger); }
+    .mode-option.mode-correct .mode-count { color: var(--success); }
+    .mode-option .mode-count { margin-top: auto; } /* line counts up when names wrap */
+    .mode-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 2px solid var(--border-strong);
+    }
+    .mode-option.selected .mode-check { background: var(--accent); border-color: var(--accent); }
+    .mode-option.selected .mode-check::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 0;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .mode-option .mode-name { padding-right: 20px; }
+    .mode-hint { margin-top: -4px; }
+    .mode-option.disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .timer { display: flex; align-items: center; gap: 10px; }
+    .timer-track {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .timer-fill { height: 100%; width: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s linear, background 0.3s ease; }
+    .timer-text { min-width: 3.2em; text-align: right; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+    .timer.warn .timer-fill { background: var(--warning); }
+    .timer.warn .timer-text { color: var(--warning); }
+    .timer.danger .timer-fill { background: var(--danger); }
+    .timer.danger .timer-text { color: var(--danger); }
+    .timer.paused .timer-text { color: var(--text-tertiary); }
+
+    /* ---------- Stats (built by renderStats) ---------- */
+    .stats-scope { font-size: 13px; color: var(--text-tertiary); margin-bottom: 4px; }
+    .stats-heading { font-size: 18px; font-weight: 800; margin: 18px 0 10px; }
+    .stack-seg.seg-covered { background: var(--covered); }
+    .stats-empty { color: var(--text-tertiary); font-size: 14px; }
+    .stats-columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 16px; align-items: start; }
+    .stats-col { min-width: 0; }
+    .stats-col .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-col-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      margin: 18px 0 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .stats-col-header.learning { border-bottom-color: var(--covered); }
+    .stats-col-header.practice { border-bottom-color: var(--accent); }
+    .stats-col-header .stats-heading { margin: 0; }
+
+    .missed-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .missed-word {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-inset);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .missed-word.wrong { border-color: var(--danger); }
+    .missed-word.correct { border-color: var(--success); }
+    .missed-count { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+
+    .session-list { display: flex; flex-direction: column; gap: 12px; }
+    .session-row { display: grid; grid-template-columns: minmax(0, 1fr) 40%; align-items: center; gap: 12px; }
+    .session-score { font-weight: 800; font-size: 16px; }
+    .session-pct { font-weight: 600; font-size: 13px; color: var(--text-secondary); margin-left: 4px; }
+    .session-meta { font-size: 12px; color: var(--text-tertiary); }
+    .letter-btn.all-btn { width: auto; padding: 0 12px; }
+    .letter-btn.no-words { opacity: 0.35; }
+
     /* ---------- Responsive breakpoints ---------- */
     /* Small phones */
+    @media (max-width: 420px) {
+      .mode-option { padding: 8px; }
+      .mode-option .mode-name { font-size: 12px; }
+    }
+
     @media (max-width: 380px) {
       .letter-btn { width: 30px; height: 32px; font-size: 12px; }
     }
@@ -671,6 +1008,7 @@
     /* Tablets portrait (iPad mini/Air/Pro portrait ~744-1024px) and up */
     @media (min-width: 700px) {
       .difficulty-bar { grid-template-columns: repeat(4, 1fr); }
+      .stats-columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
       .field:nth-child(4) { grid-column: auto; }
       .word-list { max-height: 42vh; }
       .stat-grid { grid-template-columns: repeat(4, 1fr); }
@@ -683,6 +1021,8 @@
       .card { flex: 2; }
       .shuffle-btn { position: absolute; top: 10px; right: 10px; }
       .word-list-header { padding-right: 90px; }
+      .practice-layout .card { order: 0; align-self: flex-start; }
+      .practice-layout .word-list-header { padding-right: 0; }
     }
 
     /* Laptop / desktop */
@@ -698,26 +1038,27 @@
   <h1>🐝 Nikku's Spelling Bee Practice</h1>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="practice">Practice</button>
+    <button class="tab-btn active" data-tab="learning">Learning</button>
+    <button class="tab-btn" data-tab="practice">Practice</button>
     <button class="tab-btn" data-tab="stats">Stats</button>
   </div>
 
-  <div id="practiceTab" class="tab-panel active">
+  <div id="learningTab" class="tab-panel active">
   <div class="difficulty-bar">
     <div class="field">
       <label class="field-label" for="scopeFilter">Scope</label>
-      <details class="multi-select" id="scopeFilter">
-        <summary>Regional</summary>
+      <details class="multi-select" id="scopeFilter" data-kind="scope">
+        <summary>School</summary>
         <div class="multi-select-menu">
-          <label class="multi-select-option"><input type="checkbox" value="regional" checked />Regional</label>
-          <label class="multi-select-option"><input type="checkbox" value="school" />School</label>
+          <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
+          <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
         </div>
       </details>
     </div>
 
     <div class="field">
       <label class="field-label" for="difficultyFilter">Difficulty</label>
-      <details class="multi-select" id="difficultyFilter">
+      <details class="multi-select" id="difficultyFilter" data-kind="difficulty">
         <summary>All Bees</summary>
         <div class="multi-select-menu">
           <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
@@ -730,10 +1071,17 @@
     <div class="field">
       <label class="field-label" for="resultFilter">Results</label>
       <select id="resultFilter">
-        <option value="all">All Results</option>
-        <option value="correct">Correct</option>
-        <option value="wrong">Wrong</option>
-        <option value="correction">Marked for correction</option>
+        <option value="all">All words</option>
+        <optgroup label="Learning">
+          <option value="covered">Covered</option>
+          <option value="not-covered">Not covered</option>
+          <option value="correction">Marked for correction</option>
+        </optgroup>
+        <optgroup label="Practice">
+          <option value="practice-wrong">Spelled wrong</option>
+          <option value="practice-correct">Spelled right</option>
+          <option value="practice-pending">Not practiced</option>
+        </optgroup>
       </select>
     </div>
 
@@ -766,17 +1114,21 @@
           🔀 Shuffle
         </button>
       </div>
+      <div class="list-legend">
+        <span><i class="dot dot-covered"></i>Covered</span>
+        <span><i class="dot dot-correct"></i>Spelled right</span>
+        <span><i class="dot dot-wrong"></i>Spelled wrong</span>
+      </div>
 
       <div id="wordList"></div>
     </div>
 
     <div class="card">
-      <h2 id="word">Select a word</h2>
-
-      <div class="mark-buttons">
-        <button class="correct" onclick="markAnswer('correct')">✅ Correct</button>
-        <button class="wrong" onclick="markAnswer('wrong')">❌ Wrong</button>
-        <button class="reset-btn desktop-only" onclick="clearResult()">↩️ Clear</button>
+      <div class="word-header">
+        <h2 id="word">Select a word</h2>
+        <div class="word-status">
+          <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
+        </div>
       </div>
 
       <div class="audio-buttons">
@@ -806,6 +1158,9 @@
       <div class="label">Part of Speech</div>
       <div id="pos">—</div>
 
+      <div class="label">Practice history</div>
+      <div id="practiceHistory" class="practice-history">—</div>
+
       <label class="correction-toggle" for="correctionCheckbox">
         <input id="correctionCheckbox" type="checkbox" />
         <span>Mark for correction</span>
@@ -827,19 +1182,172 @@
   </div>
   </div>
 
+  <div id="practiceTab" class="tab-panel">
+    <div class="difficulty-bar practice-filters" id="practiceFilters">
+      <div class="field">
+        <label class="field-label" for="practiceScopeFilter">Scope</label>
+        <details class="multi-select" id="practiceScopeFilter" data-kind="scope">
+          <summary>School</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
+            <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="practiceDifficultyFilter">Difficulty</label>
+        <details class="multi-select" id="practiceDifficultyFilter" data-kind="difficulty">
+          <summary>All Bees</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="letter-filter" id="practiceLetterFilter" aria-label="Filter by first letter"></div>
+      <div class="list-legend letter-legend">
+        <span><i class="dot dot-correct"></i>Spelled right</span>
+        <span><i class="dot dot-wrong"></i>Spelled wrong</span>
+        <span><i class="dot dot-pending"></i>Not attempted</span>
+      </div>
+    </div>
+
+    <div class="layout practice-layout">
+      <div class="word-list" id="practiceListPanel">
+        <div class="word-list-header">
+          <h3>Your Words</h3>
+          <span id="practiceScore" class="practice-score"></span>
+        </div>
+        <div id="practiceList"></div>
+      </div>
+
+      <div class="card practice-card">
+        <!-- Start -->
+        <div id="practiceStart" class="practice-screen">
+          <h2 class="practice-title">Spelling test</h2>
+          <p class="practice-sub" id="practiceSetText"></p>
+          <div class="mode-picker" role="group" aria-label="Which words to test">
+            <label class="mode-option mode-wrong">
+              <input type="checkbox" name="practiceMode" value="wrong" checked />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">❌ Wrong</span>
+              <span class="mode-count" id="modeCountWrong"></span>
+            </label>
+            <label class="mode-option mode-pending">
+              <input type="checkbox" name="practiceMode" value="pending" checked />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">⏳ Not attempted</span>
+              <span class="mode-count" id="modeCountPending"></span>
+            </label>
+            <label class="mode-option mode-correct">
+              <input type="checkbox" name="practiceMode" value="correct" />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">✅ Spelled right</span>
+              <span class="mode-count" id="modeCountCorrect"></span>
+            </label>
+          </div>
+          <p class="practice-hint mode-hint">Tap to include or leave out a group. Pick all three to test every word.</p>
+          <label class="correction-toggle" for="practiceShuffle">
+            <input id="practiceShuffle" type="checkbox" checked />
+            <span>Shuffle the words</span>
+          </label>
+          <button class="primary-btn" id="practiceStartBtn">▶️ Start practice</button>
+          <p class="practice-hint">
+            Pick the Scope, Difficulty and letters above, choose which words, then press Start.
+            Listen to each word and type the spelling — you have 90 seconds per word.
+          </p>
+        </div>
+
+        <!-- Question -->
+        <div id="practiceQuestion" class="practice-screen" hidden>
+          <div class="practice-top">
+            <span id="practiceCounter" class="practice-counter"></span>
+            <button class="link-btn" id="practiceEndBtn">End test</button>
+          </div>
+          <div class="timer" id="practiceTimer" role="timer" aria-live="off">
+            <div class="timer-track"><div class="timer-fill" id="practiceTimerFill"></div></div>
+            <span class="timer-text" id="practiceTimerText">1:30</span>
+          </div>
+
+          <div class="audio-buttons">
+            <button id="practiceMWBtn">🔊 Dictionary</button>
+            <button id="practiceUSBtn">🗣️ American</button>
+          </div>
+          <div class="audio-buttons">
+            <button id="practiceDefBtn">▶️ Definition</button>
+            <button id="practiceSentBtn">▶️ Sentence</button>
+          </div>
+
+          <form id="practiceForm" class="practice-form" autocomplete="off">
+            <input
+              id="practiceInput"
+              class="practice-input"
+              type="text"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="none"
+              spellcheck="false"
+              enterkeyhint="go"
+              placeholder="Type the spelling"
+              aria-label="Type the spelling"
+            />
+            <button type="submit" class="primary-btn" id="practiceCheckBtn">Check</button>
+          </form>
+
+          <div id="practiceFeedback" class="practice-feedback" hidden aria-live="polite"></div>
+
+          <div class="practice-actions">
+            <button class="reset-btn" id="practiceSkipBtn">Skip for now</button>
+            <button class="primary-btn" id="practiceNextBtn" hidden>Next word →</button>
+          </div>
+        </div>
+
+        <!-- Finished -->
+        <div id="practiceDone" class="practice-screen" hidden>
+          <h2 class="practice-title" id="practiceDoneTitle"></h2>
+          <div class="practice-big-score" id="practiceDoneScore"></div>
+          <p class="practice-sub" id="practiceDoneText"></p>
+          <div class="practice-actions">
+            <button class="primary-btn" id="practiceRetryBtn">🔁 Practice missed words</button>
+            <button class="reset-btn" id="practiceRestartBtn">New test</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="statsTab" class="tab-panel">
-    <div class="stat-grid" id="statGrid"></div>
+    <div class="difficulty-bar practice-filters" id="statsFilters">
+      <div class="field">
+        <label class="field-label" for="statsScopeFilter">Scope</label>
+        <details class="multi-select" id="statsScopeFilter" data-kind="scope">
+          <summary>School</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
+            <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          </div>
+        </details>
+      </div>
 
-    <div class="stat-section">
-      <h3>Overall progress</h3>
-      <div class="stack-bar" id="statsOverallBar"></div>
-      <div class="stack-legend" id="statsOverallLegend"></div>
+      <div class="field">
+        <label class="field-label" for="statsDifficultyFilter">Difficulty</label>
+        <details class="multi-select" id="statsDifficultyFilter" data-kind="difficulty">
+          <summary>All Bees</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="letter-filter" id="statsLetterFilter" aria-label="Filter by first letter"></div>
     </div>
 
-    <div class="stat-section">
-      <h3>By difficulty</h3>
-      <div id="statsByDifficulty" class="mini-bars"></div>
-    </div>
+    <div id="statsContent"></div>
   </div>
 </div>
 
@@ -889,5 +1397,6 @@
 </script>
 
 <script src="app.js"></script>
+<script src="practice.js"></script>
 </body>
 </html>

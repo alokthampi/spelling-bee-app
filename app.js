@@ -2,16 +2,11 @@ let words = [];
 let filteredWords = [];
 let currentIndex = -1;
 let currentItem = null;               // canonical selected word
-let selectedIndexes = new Set();
 let searchQuery = "";
-let audioPlayer = null;
-let suppressActiveHighlight = false;  // controls yellow highlight only
+let suppressActiveHighlight = false;  // controls active-row highlight only
 
 const USER_ID = "nikku";
-
-function progressKey(scope, word) {
-  return `${scope}:${word}`;
-}
+const SESSIONS_KEY = "_practiceSessions"; // practice test summaries, same doc
 
 /* ---------------------------
    Speech setup (FORCE AMERICAN)
@@ -37,6 +32,8 @@ if (synth) synth.onvoiceschanged = loadAmericanVoice;
 /* ---------------------------
    Firestore helpers
 --------------------------- */
+const FIRESTORE_URL = "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 // Never let a slow or failing Firestore connection block the word list
 function withTimeout(promise, ms) {
   return Promise.race([
@@ -45,29 +42,41 @@ function withTimeout(promise, ms) {
   ]);
 }
 
-async function loadProgress(scope) {
+// The whole progress doc, fetched once and kept in sync by saves, so switching
+// scope doesn't go back to Firestore (which can be slow on mobile Safari)
+let progressData = null;
+
+async function fetchProgressDoc() {
+  if (progressData) return progressData;
   if (!window.db) return {};
   try {
-    const { doc, getDoc } = await import(
-      "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-    );
+    const { doc, getDoc } = await import(FIRESTORE_URL);
     const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 8000);
-    return snap.exists() ? snap.data()?.[scope] || {} : {};
+    progressData = snap.exists() ? snap.data() || {} : {};
+    return progressData;
   } catch (err) {
     console.warn("Could not load saved progress:", err);
     return {};
   }
 }
 
-async function saveProgress(scope, word, progress) {
+async function loadProgress(scope) {
+  const data = await fetchProgressDoc();
+  return data[scope] || {};
+}
+
+/* Merge `fields` into one word's saved progress (other fields are kept) */
+async function saveProgress(scope, word, fields) {
+  if (progressData) {
+    const scoped = progressData[scope] || (progressData[scope] = {});
+    scoped[word] = { ...(typeof scoped[word] === "object" ? scoped[word] : {}), ...fields };
+  }
   if (!window.db) return;
   try {
-    const { doc, setDoc } = await import(
-      "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-    );
+    const { doc, setDoc } = await import(FIRESTORE_URL);
     await setDoc(
       doc(window.db, "progress", USER_ID),
-      { [scope]: { [word]: progress } },
+      { [scope]: { [word]: fields } },
       { merge: true }
     );
   } catch (err) {
@@ -75,49 +84,59 @@ async function saveProgress(scope, word, progress) {
   }
 }
 
-async function deleteProgress(scope, word) {
+function saveWord(item, fields) {
+  return saveProgress(item._scope, item.word, fields);
+}
+
+async function savePracticeSession(session) {
+  if (progressData) {
+    progressData[SESSIONS_KEY] = [...(progressData[SESSIONS_KEY] || []), session];
+  }
   if (!window.db) return;
-  const { doc, updateDoc, deleteField } = await import(
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-  );
-  await updateDoc(
-    doc(window.db, "progress", USER_ID),
-    { [`${scope}.${word}`]: deleteField() }
-  );
+  try {
+    const { doc, setDoc, arrayUnion } = await import(FIRESTORE_URL);
+    await setDoc(
+      doc(window.db, "progress", USER_ID),
+      { [SESSIONS_KEY]: arrayUnion(session) },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn("Could not save practice session:", err);
+  }
+}
+
+function practiceSessions() {
+  return (progressData && progressData[SESSIONS_KEY]) || [];
 }
 
 async function resetCloudProgress() {
+  if (progressData) progressData = {};
   if (!window.db) return;
-  const { doc, setDoc } = await import(
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-  );
+  const { doc, setDoc } = await import(FIRESTORE_URL);
   await setDoc(doc(window.db, "progress", USER_ID), {}, { merge: false });
 }
 
 /* ---------------------------
    Load words
 --------------------------- */
-async function loadWords(scopes = ["regional"]) {
-  if (!Array.isArray(scopes)) scopes = [scopes];
+// Every scope is loaded once up front; the Learning and Practice tabs each
+// filter by scope in memory, and share the same word objects.
+// Regional has no word list yet.
+const SCOPE_FILES = {
+  school: "words_school_2027.json",
+  regional: null
+};
 
-  stopAllAudio();
-  currentIndex = -1;
-  currentItem = null;
-  suppressActiveHighlight = false;
-  selectedIndexes.clear();
-  const correctionCheckbox = document.getElementById("correctionCheckbox");
-  if (correctionCheckbox) correctionCheckbox.checked = false;
-  const correctionNote = document.getElementById("correctionNote");
-  if (correctionNote) {
-    correctionNote.value = "";
-    correctionNote.disabled = true;
-  }
+function emptyPractice() {
+  return { attempts: 0, correct: 0, wrong: 0, last: null, lastAt: null };
+}
 
-  const datasets = await Promise.all(scopes.map(async scope => {
-    const file = scope === "school" ? "words_2026/words_school.json" : "words_school_2027.json";
+async function loadWords() {
+  const datasets = await Promise.all(Object.keys(SCOPE_FILES).map(async scope => {
+    const file = SCOPE_FILES[scope];
     const [savedProgress, data] = await Promise.all([
       loadProgress(scope),
-      fetch(file).then(r => {
+      !file ? [] : fetch(file).then(r => {
         if (!r.ok) throw new Error(`${file}: HTTP ${r.status}`);
         return r.json();
       }).catch(err => {
@@ -126,29 +145,38 @@ async function loadWords(scopes = ["regional"]) {
       })
     ]);
 
-    return data.map((w, i) => ({
-      ...w,
-      _scope: scope,
-      _originalIndex: i,
-      result: typeof savedProgress[w.word] === "string"
-        ? savedProgress[w.word]
-        : savedProgress[w.word]?.result || null,
-      markedForCorrection: typeof savedProgress[w.word] === "object"
-        ? savedProgress[w.word]?.markedForCorrection === true
-        : false,
-      correctionNote: typeof savedProgress[w.word] === "object"
-        ? savedProgress[w.word]?.correctionNote || ""
-        : ""
-    }));
+    return data.map((w, i) => {
+      const saved = savedProgress[w.word];
+      const obj = typeof saved === "object" && saved ? saved : {};
+      // Older saves only had result "correct"/"wrong" from the Learning tab;
+      // any result there just means the word was covered.
+      const covered = typeof obj.covered === "boolean"
+        ? obj.covered
+        : Boolean(typeof saved === "string" ? saved : obj.result);
+      return {
+        ...w,
+        _scope: scope,
+        _originalIndex: i,
+        covered,
+        markedForCorrection: obj.markedForCorrection === true,
+        correctionNote: obj.correctionNote || "",
+        practice: { ...emptyPractice(), ...(obj.practice || {}) }
+      };
+    });
   }));
 
   words = datasets.flat();
 
-  words.forEach(w => {
-    if (w.result) selectedIndexes.add(progressKey(w._scope, w.word));
-  });
-
   applyFilter();
+  if (typeof onWordsLoaded === "function") onWordsLoaded();
+}
+
+/* ---------------------------
+   Word status helpers (shared with practice.js)
+--------------------------- */
+// "correct" / "wrong" = result of the latest practice attempt; "pending" = never practiced
+function practiceStatus(item) {
+  return item.practice.last || "pending";
 }
 
 /* ---------------------------
@@ -157,27 +185,18 @@ async function loadWords(scopes = ["regional"]) {
 document.addEventListener("DOMContentLoaded", () => {
   loadAmericanVoice();
 
-  document.getElementById("scopeFilter").addEventListener("change", e => {
-    const scopes = selectedValues("scopeFilter");
-    loadWords(scopes.length ? scopes : ["regional"]);
-  });
-
   document.querySelectorAll(".multi-select input[type=checkbox]").forEach(input => {
     input.addEventListener("change", event => {
       updateMultiSelectSummary(event.target.closest(".multi-select"));
-      if (event.target.closest("#scopeFilter")) {
-        const scopes = selectedValues("scopeFilter");
-        loadWords(scopes.length ? scopes : ["regional"]);
-      } else {
-        applyFilter();
-      }
+      if (event.target.closest("#learningTab")) applyFilter();
+      else if (event.target.closest("#statsTab")) renderStats();
     });
   });
 
-  document.getElementById("difficultyFilter").addEventListener("change", applyFilter);
   document.getElementById("resultFilter").addEventListener("change", applyFilter);
   document.getElementById("correctionCheckbox").addEventListener("change", toggleCorrection);
   document.getElementById("correctionNote").addEventListener("change", saveCorrectionNote);
+  document.getElementById("clearCoveredBtn").addEventListener("click", clearCovered);
 
   document.getElementById("searchInput").addEventListener("input", e => {
     searchQuery = e.target.value.toLowerCase().trim();
@@ -188,12 +207,36 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
-  loadWords(["regional"]);
+  // Close open dropdowns when tapping anywhere outside them. pointerdown
+  // (not click) because iOS Safari doesn't send clicks from plain elements.
+  document.addEventListener("pointerdown", event => {
+    document.querySelectorAll(".multi-select[open]").forEach(menu => {
+      if (!menu.contains(event.target)) menu.open = false;
+    });
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".multi-select[open]").forEach(menu => (menu.open = false));
+    }
+  });
+  // Only one dropdown open at a time
+  document.querySelectorAll(".multi-select").forEach(menu => {
+    menu.addEventListener("toggle", () => {
+      if (!menu.open) return;
+      document.querySelectorAll(".multi-select[open]").forEach(other => {
+        if (other !== menu) other.open = false;
+      });
+    });
+  });
+
+  loadWords();
 });
 
 /* ---------------------------
    Tabs
 --------------------------- */
+let activeTab = "learning";
+
 function switchTab(tab) {
   document.querySelectorAll(".tab-btn").forEach(btn =>
     btn.classList.toggle("active", btn.dataset.tab === tab)
@@ -202,13 +245,28 @@ function switchTab(tab) {
     panel.classList.toggle("active", panel.id === `${tab}Tab`)
   );
 
+  const leaving = activeTab;
+  activeTab = tab;
+  stopAllAudio();
+  if (leaving === "practice" && tab !== "practice" && typeof leavePractice === "function") leavePractice();
   if (tab === "stats") renderStats();
+  if (tab === "practice" && typeof openPractice === "function") openPractice();
 }
 
 function showFilteredResults(filter) {
   document.getElementById("resultFilter").value = filter;
-  switchTab("practice");
+  switchTab("learning");
   applyFilter();
+}
+
+function showWordInLearning(word) {
+  document.getElementById("resultFilter").value = "all";
+  document.getElementById("searchInput").value = word;
+  searchQuery = word.toLowerCase();
+  switchTab("learning");
+  applyFilter();
+  const index = filteredWords.findIndex(w => w.word === word);
+  if (index >= 0) selectWord(index);
 }
 
 /* ---------------------------
@@ -226,8 +284,8 @@ function selectedValues(id) {
     .map(input => input.value);
 }
 
-function difficultySummary() {
-  const levels = selectedValues("difficultyFilter");
+function difficultySummary(id = "difficultyFilter") {
+  const levels = selectedValues(id);
   if (levels.length === 3) return "All Bees";
   return levels.map(difficultyLabel).join(", ") || "No difficulty";
 }
@@ -235,11 +293,12 @@ function difficultySummary() {
 function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
+  const kind = container.dataset.kind; // "scope" or "difficulty"
   if (!selected.length) {
-    summary.textContent = container.id === "scopeFilter" ? "Select scope" : "No difficulty";
+    summary.textContent = kind === "scope" ? "Select scope" : "No difficulty";
     return;
   }
-  if (container.id === "difficultyFilter" && selected.length === 3) {
+  if (kind === "difficulty" && selected.length === 3) {
     summary.textContent = "All Bees";
     return;
   }
@@ -247,7 +306,7 @@ function updateMultiSelectSummary(container) {
 }
 
 /* ---------------------------
-   Shuffle helpers (RESTORED)
+   Shuffle helpers
 --------------------------- */
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -270,12 +329,30 @@ function shuffleFilteredWords() {
 /* ---------------------------
    Filtering
 --------------------------- */
+// Words in the scopes picked on the Learning tab
+function learningScopeWords() {
+  const scopes = selectedValues("scopeFilter");
+  return words.filter(w => scopes.includes(w._scope));
+}
+
+function matchesResultFilter(w, filter) {
+  switch (filter) {
+    case "covered": return w.covered;
+    case "not-covered": return !w.covered;
+    case "practice-wrong": return practiceStatus(w) === "wrong";
+    case "practice-correct": return practiceStatus(w) === "correct";
+    case "practice-pending": return practiceStatus(w) === "pending";
+    case "correction": return w.markedForCorrection;
+    default: return true;
+  }
+}
+
 function applyFilter() {
   const levels = selectedValues("difficultyFilter");
   const resultFilter = document.getElementById("resultFilter").value;
   const shuffleBtn = document.getElementById("shuffleBtn");
 
-  filteredWords = words.filter(w => {
+  filteredWords = learningScopeWords().filter(w => {
     const firstLetter = w.word?.charAt(0)?.toUpperCase();
     const letterMatch =
       !window.selectedLetters ||
@@ -284,16 +361,18 @@ function applyFilter() {
 
     return (
       levels.includes(w.difficulty) &&
-      (resultFilter === "all" ||
-        (resultFilter === "correction" ? w.markedForCorrection : w.result === resultFilter)) &&
+      matchesResultFilter(w, resultFilter) &&
       w.word.toLowerCase().includes(searchQuery) &&
       letterMatch
     );
   });
 
+  // Keep the selected word highlighted if it's still in the list
+  currentIndex = currentItem ? filteredWords.indexOf(currentItem) : -1;
+
   if (shuffleBtn) {
     shuffleBtn.style.display =
-      resultFilter === "wrong" ? "inline-block" : "none";
+      resultFilter === "practice-wrong" ? "inline-block" : "none";
   }
 
   renderWordList();
@@ -312,14 +391,30 @@ function renderWordList() {
   filteredWords.forEach((item, index) => {
     const div = document.createElement("div");
     div.className = "word-item";
-    div.textContent = `${index + 1}. ${item.word}`;
     div.onclick = () => selectWord(index);
+
+    const label = document.createElement("span");
+    label.className = "wi-word";
+    label.textContent = `${index + 1}. ${item.word}`;
+    div.appendChild(label);
+
+    const p = item.practice;
+    if (p.attempts) {
+      const badge = document.createElement("span");
+      badge.className = "wi-badge";
+      badge.textContent = `✓${p.correct} ✗${p.wrong}`;
+      badge.title = `Practice: ${p.attempts} attempts, ${p.correct} correct, ${p.wrong} wrong`;
+      div.appendChild(badge);
+    }
 
     if (index === currentIndex && !suppressActiveHighlight) {
       div.classList.add("active");
     }
-    if (item.result === "correct") div.classList.add("correct");
-    if (item.result === "wrong") div.classList.add("wrong");
+    // Practice results win over "covered"; a wrong latest attempt shows red
+    const status = practiceStatus(item);
+    if (status === "wrong") div.classList.add("wrong");
+    else if (status === "correct") div.classList.add("correct");
+    else if (item.covered) div.classList.add("covered");
 
     list.appendChild(div);
   });
@@ -328,26 +423,27 @@ function renderWordList() {
 /* ---------------------------
    Audio helpers
 --------------------------- */
+// One reusable element: iOS only lets an element play without a tap after
+// it has played once from a tap, so a fresh Audio() per word would be blocked
+// when the Practice timer moves on by itself.
+const audioPlayer = new Audio();
+audioPlayer.playsInline = true;
+
 function stopAllAudio() {
   if (synth) synth.cancel();
-  if (audioPlayer) {
-    audioPlayer.pause();
-    audioPlayer.currentTime = 0;
-    audioPlayer = null;
-  }
+  audioPlayer.pause();
 }
 
 function playMWAudio(url) {
   stopAllAudio();
-  audioPlayer = new Audio(url);
-  audioPlayer.playsInline = true;
+  audioPlayer.src = url;
   audioPlayer.play().catch(() => {});
 }
 
 function speakAmerican(text) {
   stopAllAudio();
   if (!synth) return;
-  const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
+  const u = new SpeechSynthesisUtterance(`​ ${text}`);
   u.lang = "en-US";
   u.rate = 0.85;
   if (americanVoice) u.voice = americanVoice;
@@ -355,25 +451,14 @@ function speakAmerican(text) {
 }
 
 /* ---------------------------
-   Select word (auto-correct preserved)
+   Select word (marks it covered)
 --------------------------- */
-async function selectWord(index) {
+function selectWord(index) {
   currentIndex = index;
   currentItem = filteredWords[index];
   suppressActiveHighlight = false;
 
-  const scope = currentItem._scope;
-
-  if (!currentItem.result) {
-    currentItem.result = "correct";
-    selectedIndexes.add(progressKey(currentItem._scope, currentItem.word));
-    // Don't wait on the network before showing the word and playing audio
-    saveProgress(scope, currentItem.word, {
-      result: "correct",
-      markedForCorrection: currentItem.markedForCorrection,
-      correctionNote: currentItem.correctionNote
-    });
-  }
+  if (!currentItem.covered) setCovered(currentItem, true);
 
   document.getElementById("word").innerText = currentItem.word;
   document.getElementById("difficulty").innerText =
@@ -389,6 +474,7 @@ async function selectWord(index) {
   document.getElementById("correctionCheckbox").checked = currentItem.markedForCorrection;
   document.getElementById("correctionNote").value = currentItem.correctionNote;
   updateCorrectionNoteState(currentItem);
+  renderWordCardStatus();
 
   updateMWButtonState(currentItem);
 
@@ -400,36 +486,62 @@ async function selectWord(index) {
 }
 
 /* ---------------------------
-   Correct / Wrong
+   Covered (Learning) + undo
 --------------------------- */
-async function markAnswer(result) {
-  if (!currentItem) return;
+function setCovered(item, covered) {
+  item.covered = covered;
+  // Don't wait on the network before showing the word and playing audio
+  saveWord(item, { covered });
+}
 
-  const scope = currentItem._scope;
-
-  currentItem.result = result;
-  selectedIndexes.add(progressKey(currentItem._scope, currentItem.word));
-  await saveProgress(scope, currentItem.word, {
-    result,
-    markedForCorrection: currentItem.markedForCorrection,
-    correctionNote: currentItem.correctionNote
-  });
-
+// Undo an accidental tap: the word goes back to not covered
+function clearCovered() {
+  if (!currentItem || !currentItem.covered) return;
+  setCovered(currentItem, false);
+  renderWordCardStatus();
   renderWordList();
   updateProgress();
+}
+
+function renderWordCardStatus() {
+  const clearBtn = document.getElementById("clearCoveredBtn");
+  const history = document.getElementById("practiceHistory");
+  clearBtn.hidden = !currentItem?.covered;
+  if (!currentItem) {
+    history.textContent = "—";
+    return;
+  }
+
+  const p = currentItem.practice;
+  history.innerHTML = "";
+  if (!p.attempts) {
+    history.textContent = "Not practiced yet";
+    return;
+  }
+  const parts = [
+    ["pill", `${p.attempts} attempt${p.attempts === 1 ? "" : "s"}`],
+    ["pill pill-correct", `✅ ${p.correct} correct`],
+    ["pill pill-wrong", `❌ ${p.wrong} wrong`],
+    [`pill ${p.last === "correct" ? "pill-correct" : "pill-wrong"}`,
+      `Last: ${p.last === "correct" ? "correct" : "wrong"}`]
+  ];
+  parts.forEach(([cls, text]) => {
+    const span = document.createElement("span");
+    span.className = cls;
+    span.textContent = text;
+    history.appendChild(span);
+  });
 }
 
 /* ---------------------------
    Correction flag
 --------------------------- */
-async function toggleCorrection(event) {
+function toggleCorrection(event) {
   if (!currentItem) return;
 
-  const scope = currentItem._scope;
   currentItem.markedForCorrection = event.target.checked;
   updateCorrectionNoteState(currentItem);
-  await saveProgress(scope, currentItem.word, {
-    result: currentItem.result,
+  saveWord(currentItem, {
     markedForCorrection: currentItem.markedForCorrection,
     correctionNote: currentItem.correctionNote
   });
@@ -443,38 +555,11 @@ function updateCorrectionNoteState(item) {
   note.disabled = !item?.markedForCorrection;
 }
 
-async function saveCorrectionNote(event) {
+function saveCorrectionNote(event) {
   if (!currentItem || !currentItem.markedForCorrection) return;
 
-  const scope = currentItem._scope;
   currentItem.correctionNote = event.target.value;
-  await saveProgress(scope, currentItem.word, {
-    result: currentItem.result,
-    markedForCorrection: currentItem.markedForCorrection,
-    correctionNote: currentItem.correctionNote
-  });
-}
-
-/* ---------------------------
-   Clear result
---------------------------- */
-async function clearResult() {
-  if (!currentItem) return;
-
-  const scope = currentItem._scope;
-
-  currentItem.result = null;
-  selectedIndexes.delete(progressKey(currentItem._scope, currentItem.word));
-  await saveProgress(scope, currentItem.word, {
-    result: null,
-    markedForCorrection: currentItem.markedForCorrection,
-    correctionNote: currentItem.correctionNote
-  });
-
-  suppressActiveHighlight = true;
-
-  renderWordList();
-  updateProgress();
+  saveWord(currentItem, { correctionNote: currentItem.correctionNote });
 }
 
 /* ---------------------------
@@ -509,137 +594,313 @@ function readSentence() {
 --------------------------- */
 function updateProgress() {
   const total = filteredWords.length;
-  const completed = filteredWords.filter(w =>
-    selectedIndexes.has(progressKey(w._scope, w.word))
-  ).length;
+  const covered = filteredWords.filter(w => w.covered).length;
 
   document.getElementById("categoryCount").innerText =
     `${difficultySummary()} — ${total} words`;
 
   document.getElementById("progressText").innerText =
-    `${completed} / ${total} completed`;
+    `${covered} / ${total} covered`;
 
   const fill = document.getElementById("progressBarFill");
   if (fill) {
-    const pct = total ? Math.round((completed / total) * 100) : 0;
+    const pct = total ? Math.round((covered / total) * 100) : 0;
     fill.style.width = `${pct}%`;
   }
 
-  renderStats();
+  if (activeTab === "stats") renderStats();
 }
 
 /* ---------------------------
    Stats tab
 --------------------------- */
-function countResults(list) {
-  let correct = 0;
-  let wrong = 0;
-  let correction = 0;
-  list.forEach(w => {
-    if (w.result === "correct") correct++;
-    else if (w.result === "wrong") wrong++;
-    if (w.markedForCorrection) correction++;
-  });
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+function learningCounts(list) {
+  const covered = list.filter(w => w.covered).length;
   return {
-    correct,
-    wrong,
-    correction,
     total: list.length,
-    unattempted: list.length - correct - wrong
+    covered,
+    notCovered: list.length - covered,
+    correction: list.filter(w => w.markedForCorrection).length
   };
 }
 
-function renderStackBar(container, counts) {
+function practiceCounts(list) {
+  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, attempts: 0, correctAttempts: 0 };
+  list.forEach(w => {
+    counts[practiceStatus(w)]++;
+    counts.attempts += w.practice.attempts;
+    counts.correctAttempts += w.practice.correct;
+  });
+  return counts;
+}
+
+// segments: [{ count, cls, label }]
+function stackBarHtml(segments, total, small) {
+  if (!total) return `<div class="${small ? "mini-bar-track" : "stack-bar"}"></div>`;
+  const segs = segments
+    .filter(s => s.count)
+    .map(s => `<div class="stack-seg ${s.cls}" style="flex-basis:${(s.count / total) * 100}%" title="${s.label}: ${s.count}"></div>`)
+    .join("");
+  return `<div class="${small ? "mini-bar-track" : "stack-bar"}">${segs}</div>`;
+}
+
+function statTile(label, value, color, filter) {
+  const attrs = filter
+    ? ` stat-filter" data-filter="${filter}" role="button" tabindex="0" title="Show these words in Learning`
+    : "";
+  return `
+    <div class="stat-tile${attrs}">
+      <div class="stat-label">${label}</div>
+      <div class="stat-value"${color ? ` style="color:${color}"` : ""}>${value}</div>
+    </div>`;
+}
+
+function formatSessionDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return "";
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) +
+    " · " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+}
+
+/* Stats tab filters (independent of Learning and Practice) */
+const statsLetters = new Set();
+
+function statsScopeAndLevelWords() {
+  const scopes = selectedValues("statsScopeFilter");
+  const levels = selectedValues("statsDifficultyFilter");
+  return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
+}
+
+function statsWords() {
+  return statsScopeAndLevelWords().filter(w =>
+    !statsLetters.size || statsLetters.has(w.word.charAt(0).toUpperCase())
+  );
+}
+
+function renderStatsLetters() {
+  const container = document.getElementById("statsLetterFilter");
+  if (!container) return;
   container.innerHTML = "";
-  if (!counts.total) return;
 
-  const segments = [
-    { key: "correct", cls: "seg-correct", count: counts.correct },
-    { key: "wrong", cls: "seg-wrong", count: counts.wrong },
-    { key: "unattempted", cls: "seg-empty", count: counts.unattempted }
-  ];
+  const counts = {};
+  statsScopeAndLevelWords().forEach(w => {
+    const letter = w.word.charAt(0).toUpperCase();
+    counts[letter] = (counts[letter] || 0) + 1;
+  });
 
-  segments.forEach(seg => {
-    if (!seg.count) return;
-    const div = document.createElement("div");
-    div.className = `stack-seg ${seg.cls}`;
-    div.style.flexBasis = `${(seg.count / counts.total) * 100}%`;
-    div.title = `${seg.key}: ${seg.count}`;
-    container.appendChild(div);
+  const add = (text, active, count, onclick) => {
+    const btn = document.createElement("button");
+    btn.className = "letter-btn";
+    btn.textContent = text;
+    btn.classList.toggle("active", active);
+    btn.classList.toggle("no-words", !count);
+    btn.title = `${count || 0} words`;
+    btn.onclick = onclick;
+    container.appendChild(btn);
+    return btn;
+  };
+
+  add("All", !statsLetters.size, statsScopeAndLevelWords().length, () => {
+    statsLetters.clear();
+    renderStats();
+  }).classList.add("all-btn");
+
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
+    add(letter, statsLetters.has(letter), counts[letter], () => {
+      if (statsLetters.has(letter)) statsLetters.delete(letter);
+      else statsLetters.add(letter);
+      renderStats();
+    });
   });
 }
 
+/* Tapping a stat opens Learning with the same Scope/Difficulty/letters */
+function copyStatsFiltersToLearning() {
+  [["statsScopeFilter", "scopeFilter"], ["statsDifficultyFilter", "difficultyFilter"]].forEach(([from, to]) => {
+    const picked = selectedValues(from);
+    document.querySelectorAll(`#${to} input[type="checkbox"]`).forEach(input => {
+      input.checked = picked.includes(input.value);
+    });
+    updateMultiSelectSummary(document.getElementById(to));
+  });
+  if (window.selectedLetters) {
+    window.selectedLetters.clear();
+    statsLetters.forEach(letter => window.selectedLetters.add(letter));
+    document.querySelectorAll("#letterFilter .letter-btn").forEach(btn => {
+      btn.classList.toggle("active", statsLetters.has(btn.textContent));
+    });
+  }
+  searchQuery = "";
+  document.getElementById("searchInput").value = "";
+}
+
 function renderStats() {
-  const grid = document.getElementById("statGrid");
-  const overallBar = document.getElementById("statsOverallBar");
-  const overallLegend = document.getElementById("statsOverallLegend");
-  const byDifficulty = document.getElementById("statsByDifficulty");
-  if (!grid || !overallBar || !overallLegend || !byDifficulty) return;
+  const container = document.getElementById("statsContent");
+  if (!container) return;
 
-  const counts = countResults(words);
-  const answered = counts.correct + counts.wrong;
-  const accuracy = answered ? Math.round((counts.correct / answered) * 100) : 0;
+  renderStatsLetters();
+  const scopeWords = statsWords();
+  const levels = ["one", "two", "three"];
+  const scopeLabel = selectedValues("statsScopeFilter")
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + ") || "No scope";
+  const lettersLabel = statsLetters.size ? ` · Letters ${[...statsLetters].sort().join(", ")}` : "";
 
-  grid.innerHTML = `
-    <div class="stat-tile">
-      <div class="stat-label">Total words</div>
-      <div class="stat-value">${counts.total}</div>
-    </div>
-    <div class="stat-tile stat-filter" data-filter="correct" role="button" tabindex="0" title="Show correct words in Practice">
-      <div class="stat-label">✅ Correct</div>
-      <div class="stat-value" style="color:var(--success)">${counts.correct}</div>
-    </div>
-    <div class="stat-tile stat-filter" data-filter="wrong" role="button" tabindex="0" title="Show wrong words in Practice">
-      <div class="stat-label">❌ Wrong</div>
-      <div class="stat-value" style="color:var(--danger)">${counts.wrong}</div>
-    </div>
-    <div class="stat-tile stat-filter" data-filter="correction" role="button" tabindex="0" title="Show marked words in Practice">
-      <div class="stat-label">⚑ Marked for correction</div>
-      <div class="stat-value" style="color:var(--accent-hover)">${counts.correction}</div>
-    </div>
-    <div class="stat-tile">
-      <div class="stat-label">Accuracy</div>
-      <div class="stat-value">${accuracy}%</div>
+  // ---- Learning ----
+  const lc = learningCounts(scopeWords);
+  const learningSegments = c => [
+    { count: c.covered, cls: "seg-covered", label: "Covered" },
+    { count: c.notCovered, cls: "seg-empty", label: "Not covered" }
+  ];
+  const learningRows = levels.map(level => {
+    const c = learningCounts(scopeWords.filter(w => w.difficulty === level));
+    if (!c.total) return "";
+    return `
+      <div class="mini-bar-row">
+        <div class="mini-bar-row-header">
+          <span class="mini-bar-title">${difficultyLabel(level)}</span>
+          <span class="mini-bar-caption">${c.covered} of ${c.total} covered</span>
+        </div>
+        ${stackBarHtml(learningSegments(c), c.total, true)}
+      </div>`;
+  }).join("");
+
+  // ---- Practice ----
+  const pc = practiceCounts(scopeWords);
+  const accuracy = pc.attempts ? Math.round((pc.correctAttempts / pc.attempts) * 100) : 0;
+  const practiceSegments = c => [
+    { count: c.correct, cls: "seg-correct", label: "Correct" },
+    { count: c.wrong, cls: "seg-wrong", label: "Wrong" },
+    { count: c.pending, cls: "seg-empty", label: "Not attempted" }
+  ];
+  const practiceRows = levels.map(level => {
+    const c = practiceCounts(scopeWords.filter(w => w.difficulty === level));
+    if (!c.total) return "";
+    return `
+      <div class="mini-bar-row">
+        <div class="mini-bar-row-header">
+          <span class="mini-bar-title">${difficultyLabel(level)}</span>
+          <span class="mini-bar-caption">${c.correct} ✅ · ${c.wrong} ❌ · ${c.pending} left</span>
+        </div>
+        ${stackBarHtml(practiceSegments(c), c.total, true)}
+      </div>`;
+  }).join("");
+
+  const missed = scopeWords
+    .filter(w => w.practice.wrong > 0)
+    .sort((a, b) => b.practice.wrong - a.practice.wrong || (a.practice.last === "wrong" ? -1 : 1))
+    .slice(0, 10);
+  const missedHtml = missed.length
+    ? missed.map(w => `
+        <button class="missed-word ${practiceStatus(w)}" data-word="${escapeHtml(w.word)}">
+          <span>${escapeHtml(w.word)}</span>
+          <span class="missed-count">✗${w.practice.wrong} ✓${w.practice.correct}</span>
+        </button>`).join("")
+    : `<div class="stats-empty">No misspelled words yet.</div>`;
+
+  const sessions = practiceSessions().slice(-8).reverse();
+  const sessionsHtml = sessions.length
+    ? sessions.map(s => {
+        const answered = (s.correct || 0) + (s.wrong || 0);
+        const pct = answered ? Math.round((s.correct / answered) * 100) : 0;
+        return `
+          <div class="session-row">
+            <div>
+              <div class="session-score">${s.correct} / ${answered} <span class="session-pct">${pct}%</span></div>
+              <div class="session-meta">${escapeHtml(formatSessionDate(s.at))} · ${escapeHtml(s.label || "")}</div>
+            </div>
+            ${stackBarHtml([
+              { count: s.correct, cls: "seg-correct", label: "Correct" },
+              { count: s.wrong, cls: "seg-wrong", label: "Wrong" }
+            ], answered, true)}
+          </div>`;
+      }).join("")
+    : `<div class="stats-empty">Finish a Practice test to see it here.</div>`;
+
+  container.innerHTML = `
+    <div class="stats-scope">${lc.total} words · ${escapeHtml(scopeLabel)} · ${escapeHtml(difficultySummary("statsDifficultyFilter"))}${escapeHtml(lettersLabel)}</div>
+
+    <div class="stats-columns">
+      <section class="stats-col" aria-label="Learning">
+        <div class="stats-col-header learning"><h2 class="stats-heading">📖 Learning</h2></div>
+        <div class="stat-grid">
+          ${statTile("Total words", lc.total)}
+          ${statTile("✓ Covered", lc.covered, "var(--covered)", "covered")}
+          ${statTile("○ Not covered", lc.notCovered, null, "not-covered")}
+          ${statTile("⚑ Marked for correction", lc.correction, "var(--accent-hover)", "correction")}
+        </div>
+        <div class="stat-section">
+          <h3>Overall</h3>
+          ${stackBarHtml(learningSegments(lc), lc.total, false)}
+          <div class="stack-legend">
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--covered)"></span>Covered — <strong>${lc.covered}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not covered — <strong>${lc.notCovered}</strong></div>
+            <div class="legend-item">${lc.total ? Math.round((lc.covered / lc.total) * 100) : 0}% covered</div>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>By difficulty</h3>
+          <div class="mini-bars">${learningRows || `<div class="stats-empty">No words.</div>`}</div>
+        </div>
+      </section>
+
+      <section class="stats-col" aria-label="Practice">
+        <div class="stats-col-header practice"><h2 class="stats-heading">✍️ Practice</h2></div>
+        <div class="stat-grid">
+          ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
+          ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
+          ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
+          ${statTile("🎯 Accuracy", `${accuracy}%`)}
+        </div>
+        <div class="stat-section">
+          <h3>Overall</h3>
+          ${stackBarHtml(practiceSegments(pc), pc.total, false)}
+          <div class="stack-legend">
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>Right (latest try) — <strong>${pc.correct}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>Wrong (latest try) — <strong>${pc.wrong}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not attempted — <strong>${pc.pending}</strong></div>
+            <div class="legend-item">Total attempts — <strong>${pc.attempts}</strong></div>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>By difficulty</h3>
+          <div class="mini-bars">${practiceRows || `<div class="stats-empty">No words.</div>`}</div>
+        </div>
+        <div class="stat-section">
+          <h3>Most missed words</h3>
+          <div class="missed-list">${missedHtml}</div>
+        </div>
+        <div class="stat-section">
+          <h3>Recent tests</h3>
+          <div class="session-list">${sessionsHtml}</div>
+        </div>
+      </section>
     </div>
   `;
 
-  grid.querySelectorAll(".stat-filter").forEach(tile => {
-    tile.addEventListener("click", () => showFilteredResults(tile.dataset.filter));
+  container.querySelectorAll(".stat-filter").forEach(tile => {
+    const open = () => {
+      copyStatsFiltersToLearning();
+      showFilteredResults(tile.dataset.filter);
+    };
+    tile.addEventListener("click", open);
     tile.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        showFilteredResults(tile.dataset.filter);
+        open();
       }
     });
   });
-
-  renderStackBar(overallBar, counts);
-  overallLegend.innerHTML = `
-    <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>✅ Correct — <strong>${counts.correct}</strong></div>
-    <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>❌ Wrong — <strong>${counts.wrong}</strong></div>
-    <div class="legend-item"><span class="legend-swatch" style="background:var(--accent-hover)"></span>⚑ Correction — <strong>${counts.correction}</strong></div>
-    <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>➖ Not attempted — <strong>${counts.unattempted}</strong></div>
-  `;
-
-  byDifficulty.innerHTML = "";
-  ["one", "two", "three"].forEach(level => {
-    const levelWords = words.filter(w => w.difficulty === level);
-    if (!levelWords.length) return;
-
-    const levelCounts = countResults(levelWords);
-
-    const row = document.createElement("div");
-    row.className = "mini-bar-row";
-    row.innerHTML = `
-      <div class="mini-bar-row-header">
-        <span class="mini-bar-title">${difficultyLabel(level)}</span>
-        <span class="mini-bar-caption">${levelCounts.correct} ✅ · ${levelCounts.wrong} ❌ · ${levelCounts.correction} ⚑ · ${levelCounts.unattempted} left</span>
-      </div>
-      <div class="mini-bar-track"></div>
-    `;
-
-    renderStackBar(row.querySelector(".mini-bar-track"), levelCounts);
-    byDifficulty.appendChild(row);
+  container.querySelectorAll(".missed-word").forEach(btn => {
+    btn.addEventListener("click", () => {
+      copyStatsFiltersToLearning();
+      showWordInLearning(btn.dataset.word);
+    });
   });
 }
 
@@ -647,7 +908,7 @@ function renderStats() {
    Reset
 --------------------------- */
 async function confirmReset() {
-  if (!confirm("⚠️ This will reset ALL progress.\n\nContinue?")) return;
+  if (!confirm("⚠️ This will reset ALL progress — covered words, practice history and test results.\n\nContinue?")) return;
   if (!confirm("❗ Are you REALLY sure?")) return;
   await resetSelection();
 }
@@ -656,15 +917,16 @@ async function resetSelection() {
   currentIndex = -1;
   currentItem = null;
   suppressActiveHighlight = false;
-  selectedIndexes.clear();
   searchQuery = "";
   document.getElementById("correctionCheckbox").checked = false;
   document.getElementById("correctionNote").value = "";
   document.getElementById("correctionNote").disabled = true;
 
   words.forEach(w => {
-    w.result = null;
+    w.covered = false;
     w.markedForCorrection = false;
+    w.correctionNote = "";
+    w.practice = emptyPractice();
   });
 
   document.querySelectorAll("#difficultyFilter input").forEach(input => (input.checked = true));
@@ -675,17 +937,20 @@ async function resetSelection() {
   if (window.selectedLetters) {
     window.selectedLetters.clear();
     document
-      .querySelectorAll(".letter-btn.active")
+      .querySelectorAll("#letterFilter .letter-btn.active")
       .forEach(b => b.classList.remove("active"));
   }
 
   stopAllAudio();
+  document.getElementById("word").innerText = "Select a word";
+  renderWordCardStatus();
   await resetCloudProgress();
   applyFilter();
+  if (typeof onWordsLoaded === "function") onWordsLoaded();
 }
 
 /* ---------------------------
-   MW button state 
+   MW button state
 --------------------------- */
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
