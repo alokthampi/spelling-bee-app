@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("change", event => {
       updateMultiSelectSummary(event.target.closest(".multi-select"));
       if (event.target.closest("#learningTab")) applyFilter();
+      else if (event.target.closest("#statsTab")) renderStats();
     });
   });
 
@@ -328,7 +329,7 @@ function shuffleFilteredWords() {
 /* ---------------------------
    Filtering
 --------------------------- */
-// Words in the scopes picked on the Learning tab (also used by Stats)
+// Words in the scopes picked on the Learning tab
 function learningScopeWords() {
   const scopes = selectedValues("scopeFilter");
   return words.filter(w => scopes.includes(w._scope));
@@ -677,14 +678,88 @@ function formatSessionDate(iso) {
     " · " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
 
+/* Stats tab filters (independent of Learning and Practice) */
+const statsLetters = new Set();
+
+function statsScopeAndLevelWords() {
+  const scopes = selectedValues("statsScopeFilter");
+  const levels = selectedValues("statsDifficultyFilter");
+  return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
+}
+
+function statsWords() {
+  return statsScopeAndLevelWords().filter(w =>
+    !statsLetters.size || statsLetters.has(w.word.charAt(0).toUpperCase())
+  );
+}
+
+function renderStatsLetters() {
+  const container = document.getElementById("statsLetterFilter");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const counts = {};
+  statsScopeAndLevelWords().forEach(w => {
+    const letter = w.word.charAt(0).toUpperCase();
+    counts[letter] = (counts[letter] || 0) + 1;
+  });
+
+  const add = (text, active, count, onclick) => {
+    const btn = document.createElement("button");
+    btn.className = "letter-btn";
+    btn.textContent = text;
+    btn.classList.toggle("active", active);
+    btn.classList.toggle("no-words", !count);
+    btn.title = `${count || 0} words`;
+    btn.onclick = onclick;
+    container.appendChild(btn);
+    return btn;
+  };
+
+  add("All", !statsLetters.size, statsScopeAndLevelWords().length, () => {
+    statsLetters.clear();
+    renderStats();
+  }).classList.add("all-btn");
+
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
+    add(letter, statsLetters.has(letter), counts[letter], () => {
+      if (statsLetters.has(letter)) statsLetters.delete(letter);
+      else statsLetters.add(letter);
+      renderStats();
+    });
+  });
+}
+
+/* Tapping a stat opens Learning with the same Scope/Difficulty/letters */
+function copyStatsFiltersToLearning() {
+  [["statsScopeFilter", "scopeFilter"], ["statsDifficultyFilter", "difficultyFilter"]].forEach(([from, to]) => {
+    const picked = selectedValues(from);
+    document.querySelectorAll(`#${to} input[type="checkbox"]`).forEach(input => {
+      input.checked = picked.includes(input.value);
+    });
+    updateMultiSelectSummary(document.getElementById(to));
+  });
+  if (window.selectedLetters) {
+    window.selectedLetters.clear();
+    statsLetters.forEach(letter => window.selectedLetters.add(letter));
+    document.querySelectorAll("#letterFilter .letter-btn").forEach(btn => {
+      btn.classList.toggle("active", statsLetters.has(btn.textContent));
+    });
+  }
+  searchQuery = "";
+  document.getElementById("searchInput").value = "";
+}
+
 function renderStats() {
   const container = document.getElementById("statsContent");
   if (!container) return;
 
-  const scopeWords = learningScopeWords();
+  renderStatsLetters();
+  const scopeWords = statsWords();
   const levels = ["one", "two", "three"];
-  const scopeLabel = selectedValues("scopeFilter")
+  const scopeLabel = selectedValues("statsScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + ") || "No scope";
+  const lettersLabel = statsLetters.size ? ` · Letters ${[...statsLetters].sort().join(", ")}` : "";
 
   // ---- Learning ----
   const lc = learningCounts(scopeWords);
@@ -758,64 +833,84 @@ function renderStats() {
     : `<div class="stats-empty">Finish a Practice test to see it here.</div>`;
 
   container.innerHTML = `
-    <div class="stats-scope">Showing ${escapeHtml(scopeLabel)} words (change Scope on the Learning tab)</div>
+    <div class="stats-scope">${lc.total} words · ${escapeHtml(scopeLabel)} · ${escapeHtml(difficultySummary("statsDifficultyFilter"))}${escapeHtml(lettersLabel)}</div>
 
-    <h2 class="stats-heading">📖 Learning</h2>
-    <div class="stat-grid">
-      ${statTile("Total words", lc.total)}
-      ${statTile("✓ Covered", lc.covered, "var(--covered)", "covered")}
-      ${statTile("○ Not covered", lc.notCovered, null, "not-covered")}
-      ${statTile("⚑ Marked for correction", lc.correction, "var(--accent-hover)", "correction")}
-    </div>
-    <div class="stat-section">
-      <h3>Covered by difficulty</h3>
-      <div class="mini-bars">${learningRows}</div>
-    </div>
+    <div class="stats-columns">
+      <section class="stats-col" aria-label="Learning">
+        <div class="stats-col-header learning"><h2 class="stats-heading">📖 Learning</h2></div>
+        <div class="stat-grid">
+          ${statTile("Total words", lc.total)}
+          ${statTile("✓ Covered", lc.covered, "var(--covered)", "covered")}
+          ${statTile("○ Not covered", lc.notCovered, null, "not-covered")}
+          ${statTile("⚑ Marked for correction", lc.correction, "var(--accent-hover)", "correction")}
+        </div>
+        <div class="stat-section">
+          <h3>Overall</h3>
+          ${stackBarHtml(learningSegments(lc), lc.total, false)}
+          <div class="stack-legend">
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--covered)"></span>Covered — <strong>${lc.covered}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not covered — <strong>${lc.notCovered}</strong></div>
+            <div class="legend-item">${lc.total ? Math.round((lc.covered / lc.total) * 100) : 0}% covered</div>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>By difficulty</h3>
+          <div class="mini-bars">${learningRows || `<div class="stats-empty">No words.</div>`}</div>
+        </div>
+      </section>
 
-    <h2 class="stats-heading">✍️ Practice</h2>
-    <div class="stat-grid">
-      ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
-      ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
-      ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
-      ${statTile("🎯 Accuracy", `${accuracy}%`)}
-    </div>
-    <div class="stat-section">
-      <h3>Overall</h3>
-      ${stackBarHtml(practiceSegments(pc), pc.total, false)}
-      <div class="stack-legend">
-        <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>Right (latest try) — <strong>${pc.correct}</strong></div>
-        <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>Wrong (latest try) — <strong>${pc.wrong}</strong></div>
-        <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not attempted — <strong>${pc.pending}</strong></div>
-        <div class="legend-item">Total attempts — <strong>${pc.attempts}</strong></div>
-      </div>
-    </div>
-    <div class="stat-section">
-      <h3>By difficulty</h3>
-      <div class="mini-bars">${practiceRows}</div>
-    </div>
-    <div class="stats-two-col">
-      <div class="stat-section">
-        <h3>Most missed words</h3>
-        <div class="missed-list">${missedHtml}</div>
-      </div>
-      <div class="stat-section">
-        <h3>Recent tests</h3>
-        <div class="session-list">${sessionsHtml}</div>
-      </div>
+      <section class="stats-col" aria-label="Practice">
+        <div class="stats-col-header practice"><h2 class="stats-heading">✍️ Practice</h2></div>
+        <div class="stat-grid">
+          ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
+          ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
+          ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
+          ${statTile("🎯 Accuracy", `${accuracy}%`)}
+        </div>
+        <div class="stat-section">
+          <h3>Overall</h3>
+          ${stackBarHtml(practiceSegments(pc), pc.total, false)}
+          <div class="stack-legend">
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--success)"></span>Right (latest try) — <strong>${pc.correct}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--danger)"></span>Wrong (latest try) — <strong>${pc.wrong}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not attempted — <strong>${pc.pending}</strong></div>
+            <div class="legend-item">Total attempts — <strong>${pc.attempts}</strong></div>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>By difficulty</h3>
+          <div class="mini-bars">${practiceRows || `<div class="stats-empty">No words.</div>`}</div>
+        </div>
+        <div class="stat-section">
+          <h3>Most missed words</h3>
+          <div class="missed-list">${missedHtml}</div>
+        </div>
+        <div class="stat-section">
+          <h3>Recent tests</h3>
+          <div class="session-list">${sessionsHtml}</div>
+        </div>
+      </section>
     </div>
   `;
 
   container.querySelectorAll(".stat-filter").forEach(tile => {
-    tile.addEventListener("click", () => showFilteredResults(tile.dataset.filter));
+    const open = () => {
+      copyStatsFiltersToLearning();
+      showFilteredResults(tile.dataset.filter);
+    };
+    tile.addEventListener("click", open);
     tile.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        showFilteredResults(tile.dataset.filter);
+        open();
       }
     });
   });
   container.querySelectorAll(".missed-word").forEach(btn => {
-    btn.addEventListener("click", () => showWordInLearning(btn.dataset.word));
+    btn.addEventListener("click", () => {
+      copyStatsFiltersToLearning();
+      showWordInLearning(btn.dataset.word);
+    });
   });
 }
 

@@ -931,7 +931,20 @@
     .stats-heading { font-size: 18px; font-weight: 800; margin: 18px 0 10px; }
     .stack-seg.seg-covered { background: var(--covered); }
     .stats-empty { color: var(--text-tertiary); font-size: 14px; }
-    .stats-two-col { display: grid; grid-template-columns: 1fr; gap: 0 12px; }
+    .stats-columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 16px; align-items: start; }
+    .stats-col { min-width: 0; }
+    .stats-col .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-col-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      margin: 18px 0 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .stats-col-header.learning { border-bottom-color: var(--covered); }
+    .stats-col-header.practice { border-bottom-color: var(--accent); }
+    .stats-col-header .stats-heading { margin: 0; }
 
     .missed-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .missed-word {
@@ -982,6 +995,7 @@
     /* Tablets portrait (iPad mini/Air/Pro portrait ~744-1024px) and up */
     @media (min-width: 700px) {
       .difficulty-bar { grid-template-columns: repeat(4, 1fr); }
+      .stats-columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
       .field:nth-child(4) { grid-column: auto; }
       .word-list { max-height: 42vh; }
       .stat-grid { grid-template-columns: repeat(4, 1fr); }
@@ -996,7 +1010,6 @@
       .word-list-header { padding-right: 90px; }
       .practice-layout .card { order: 0; align-self: flex-start; }
       .practice-layout .word-list-header { padding-right: 0; }
-      .stats-two-col { grid-template-columns: 1fr 1fr; }
     }
 
     /* Laptop / desktop */
@@ -1291,6 +1304,33 @@
   </div>
 
   <div id="statsTab" class="tab-panel">
+    <div class="difficulty-bar practice-filters" id="statsFilters">
+      <div class="field">
+        <label class="field-label" for="statsScopeFilter">Scope</label>
+        <details class="multi-select" id="statsScopeFilter" data-kind="scope">
+          <summary>School</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
+            <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="statsDifficultyFilter">Difficulty</label>
+        <details class="multi-select" id="statsDifficultyFilter" data-kind="difficulty">
+          <summary>All Bees</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="letter-filter" id="statsLetterFilter" aria-label="Filter by first letter"></div>
+    </div>
+
     <div id="statsContent"></div>
   </div>
 </div>
