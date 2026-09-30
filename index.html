@@ -876,17 +876,20 @@
     .letter-legend { grid-column: 1 / -1; margin: 0; }
 
     /* Letter buttons with a correct/wrong/pending grade bar */
-    .letter-btn.graded { position: relative; overflow: hidden; }
-    .letter-grade {
-      position: absolute;
-      left: 3px;
-      right: 3px;
-      bottom: 3px;
-      height: 4px;
-      border-radius: 2px;
-      pointer-events: none;
+    /* Practice letters: the whole button is shaded green/red/grey in
+       proportion to right/wrong/not-attempted words (set inline by JS) */
+    .letter-btn.graded {
+      color: var(--text);
+      border-color: transparent;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     }
-    .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
+    .letter-btn.graded.no-words { border-color: var(--border); }
+    .letter-btn.graded.active {
+      color: white;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--accent);
+      font-weight: 800;
+    }
 
     .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .mode-option {
@@ -907,6 +910,31 @@
     .mode-option .mode-count { font-size: 22px; font-weight: 800; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
     .mode-option.selected { border-color: var(--accent); background: var(--accent-soft); }
     .mode-option.mode-wrong .mode-count { color: var(--danger); }
+    .mode-option.mode-correct .mode-count { color: var(--success); }
+    .mode-option .mode-count { margin-top: auto; } /* line counts up when names wrap */
+    .mode-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 2px solid var(--border-strong);
+    }
+    .mode-option.selected .mode-check { background: var(--accent); border-color: var(--accent); }
+    .mode-option.selected .mode-check::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 0;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .mode-option .mode-name { padding-right: 20px; }
+    .mode-hint { margin-top: -4px; }
     .mode-option.disabled { opacity: 0.45; cursor: not-allowed; }
 
     .timer { display: flex; align-items: center; gap: 10px; }
@@ -1217,23 +1245,27 @@
         <div id="practiceStart" class="practice-screen">
           <h2 class="practice-title">Spelling test</h2>
           <p class="practice-sub" id="practiceSetText"></p>
-          <div class="mode-picker" role="radiogroup" aria-label="Which words to test">
-            <label class="mode-option">
-              <input type="radio" name="practiceMode" value="all" checked />
-              <span class="mode-name">All words</span>
-              <span class="mode-count" id="modeCountAll"></span>
-            </label>
+          <div class="mode-picker" role="group" aria-label="Which words to test">
             <label class="mode-option mode-wrong">
-              <input type="radio" name="practiceMode" value="wrong" />
-              <span class="mode-name">Wrong words</span>
+              <input type="checkbox" name="practiceMode" value="wrong" checked />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">❌ Wrong</span>
               <span class="mode-count" id="modeCountWrong"></span>
             </label>
             <label class="mode-option mode-pending">
-              <input type="radio" name="practiceMode" value="pending" />
-              <span class="mode-name">Not attempted</span>
+              <input type="checkbox" name="practiceMode" value="pending" checked />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">⏳ Not attempted</span>
               <span class="mode-count" id="modeCountPending"></span>
             </label>
+            <label class="mode-option mode-correct">
+              <input type="checkbox" name="practiceMode" value="correct" />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">✅ Spelled right</span>
+              <span class="mode-count" id="modeCountCorrect"></span>
+            </label>
           </div>
+          <p class="practice-hint mode-hint">Tap to include or leave out a group. Pick all three to test every word.</p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>

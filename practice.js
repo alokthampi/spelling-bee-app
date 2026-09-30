@@ -35,22 +35,26 @@ function practicePool() {
   );
 }
 
-function selectedMode() {
-  return document.querySelector('input[name="practiceMode"]:checked')?.value || "all";
+const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right" };
+
+// Which practice groups to test: any mix of "wrong", "pending", "correct"
+function selectedModes() {
+  return Array.from(document.querySelectorAll('input[name="practiceMode"]:checked'))
+    .map(input => input.value);
 }
 
-function wordsForMode(pool, mode) {
-  if (mode === "wrong") return pool.filter(w => practiceStatus(w) === "wrong");
-  if (mode === "pending") return pool.filter(w => practiceStatus(w) === "pending");
-  return pool;
+function wordsForModes(pool, modes) {
+  return pool.filter(w => modes.includes(practiceStatus(w)));
 }
 
+// Whole-button shading: green / red / grey in proportion to the letter's words
 function gradeGradient(c) {
   const total = c.correct + c.wrong + c.pending;
-  if (!total) return "transparent";
+  if (!total) return "";
   const a = (c.correct / total) * 100;
   const b = a + (c.wrong / total) * 100;
-  return `linear-gradient(to right, var(--success) 0 ${a}%, var(--danger) ${a}% ${b}%, var(--border-strong) ${b}% 100%)`;
+  return `linear-gradient(to right, rgba(52, 211, 153, 0.55) 0 ${a}%, ` +
+    `rgba(248, 113, 113, 0.6) ${a}% ${b}%, var(--bg-inset) ${b}% 100%)`;
 }
 
 function renderPracticeLetters() {
@@ -76,12 +80,7 @@ function renderPracticeLetters() {
     btn.title = total
       ? `${text}: ${c.correct} right · ${c.wrong} wrong · ${c.pending} not attempted`
       : `${text}: no words`;
-    if (total) {
-      const grade = document.createElement("span");
-      grade.className = "letter-grade";
-      grade.style.background = gradeGradient(c);
-      btn.appendChild(grade);
-    }
+    if (total) btn.style.background = gradeGradient(c);
     btn.onclick = onclick;
     container.appendChild(btn);
     return btn;
@@ -129,25 +128,25 @@ function onWordsLoaded() {
   if (!practice) showPracticeStart();
 }
 
-function practiceSetLabel(mode) {
+function practiceSetLabel(modes) {
   const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" + ");
   const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
-  const modeText = mode === "wrong" ? " · Wrong words" : mode === "pending" ? " · Not attempted" : "";
+  const modeText = modes && modes.length < 3 ? ` · ${modes.map(m => MODE_NAMES[m]).join(" + ")}` : "";
   return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}${modeText}`;
 }
 
 function showPracticeStart() {
   const pool = practicePool();
   const counts = {
-    all: pool.length,
-    wrong: wordsForMode(pool, "wrong").length,
-    pending: wordsForMode(pool, "pending").length
+    wrong: wordsForModes(pool, ["wrong"]).length,
+    pending: wordsForModes(pool, ["pending"]).length,
+    correct: wordsForModes(pool, ["correct"]).length
   };
-  practiceEl("modeCountAll").textContent = counts.all;
   practiceEl("modeCountWrong").textContent = counts.wrong;
   practiceEl("modeCountPending").textContent = counts.pending;
+  practiceEl("modeCountCorrect").textContent = counts.correct;
 
   document.querySelectorAll(".mode-option").forEach(option => {
     const input = option.querySelector("input");
@@ -155,17 +154,17 @@ function showPracticeStart() {
     option.classList.toggle("disabled", !counts[input.value]);
   });
 
-  const mode = selectedMode();
-  const count = counts[mode];
+  const modes = selectedModes();
+  const count = wordsForModes(pool, modes).length;
   let text;
   if (!pool.length) {
     text = "No words match these filters. Try a different Scope, Difficulty or letter.";
+  } else if (!modes.length) {
+    text = "Pick at least one group of words below.";
   } else if (!count) {
-    text = mode === "wrong"
-      ? "No wrong words here — nice! Pick another option."
-      : "Every word here has been attempted. Pick another option.";
+    text = "No words in the groups you picked. Try adding another group.";
   } else {
-    text = `${count} word${count === 1 ? "" : "s"} · ${practiceSetLabel("all")}`;
+    text = `${count} word${count === 1 ? "" : "s"} to test · ${practiceSetLabel()}`;
   }
   practiceEl("practiceSetText").textContent = text;
   practiceEl("practiceStartBtn").disabled = !count;
@@ -571,8 +570,8 @@ function renderPracticeList() {
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   practiceEl("practiceStartBtn").addEventListener("click", () => {
-    const mode = selectedMode();
-    startPractice(wordsForMode(practicePool(), mode), mode, practiceSetLabel(mode));
+    const modes = selectedModes();
+    startPractice(wordsForModes(practicePool(), modes), modes.join("+"), practiceSetLabel(modes));
   });
   document.querySelectorAll("#practiceFilters .multi-select input").forEach(input => {
     input.addEventListener("change", practiceFiltersChanged);
