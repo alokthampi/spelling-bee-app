@@ -17,9 +17,12 @@ function progressKey(scope, word) {
    Speech setup (FORCE AMERICAN)
 --------------------------- */
 let americanVoice = null;
+// Not every browser exposes speech synthesis (some in-app/mobile webviews don't)
+const synth = window.speechSynthesis || null;
 
 function loadAmericanVoice() {
-  const voices = speechSynthesis.getVoices();
+  if (!synth) return;
+  const voices = synth.getVoices();
   if (!voices.length) return;
 
   americanVoice =
@@ -29,30 +32,47 @@ function loadAmericanVoice() {
     null;
 }
 
-speechSynthesis.onvoiceschanged = loadAmericanVoice;
+if (synth) synth.onvoiceschanged = loadAmericanVoice;
 
 /* ---------------------------
    Firestore helpers
 --------------------------- */
+// Never let a slow or failing Firestore connection block the word list
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))
+  ]);
+}
+
 async function loadProgress(scope) {
   if (!window.db) return {};
-  const { doc, getDoc } = await import(
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-  );
-  const snap = await getDoc(doc(window.db, "progress", USER_ID));
-  return snap.exists() ? snap.data()?.[scope] || {} : {};
+  try {
+    const { doc, getDoc } = await import(
+      "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+    );
+    const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 8000);
+    return snap.exists() ? snap.data()?.[scope] || {} : {};
+  } catch (err) {
+    console.warn("Could not load saved progress:", err);
+    return {};
+  }
 }
 
 async function saveProgress(scope, word, progress) {
   if (!window.db) return;
-  const { doc, setDoc } = await import(
-    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
-  );
-  await setDoc(
-    doc(window.db, "progress", USER_ID),
-    { [scope]: { [word]: progress } },
-    { merge: true }
-  );
+  try {
+    const { doc, setDoc } = await import(
+      "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+    );
+    await setDoc(
+      doc(window.db, "progress", USER_ID),
+      { [scope]: { [word]: progress } },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn("Could not save progress:", err);
+  }
 }
 
 async function deleteProgress(scope, word) {
@@ -95,11 +115,16 @@ async function loadWords(scopes = ["regional"]) {
 
   const datasets = await Promise.all(scopes.map(async scope => {
     const file = scope === "school" ? "words_2026/words_school.json" : "words_school_2027.json";
-    const [savedProgress, response] = await Promise.all([
+    const [savedProgress, data] = await Promise.all([
       loadProgress(scope),
-      fetch(file)
+      fetch(file).then(r => {
+        if (!r.ok) throw new Error(`${file}: HTTP ${r.status}`);
+        return r.json();
+      }).catch(err => {
+        console.error("Could not load words:", err);
+        return [];
+      })
     ]);
-    const data = await response.json();
 
     return data.map((w, i) => ({
       ...w,
@@ -304,7 +329,7 @@ function renderWordList() {
    Audio helpers
 --------------------------- */
 function stopAllAudio() {
-  speechSynthesis.cancel();
+  if (synth) synth.cancel();
   if (audioPlayer) {
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
@@ -321,11 +346,12 @@ function playMWAudio(url) {
 
 function speakAmerican(text) {
   stopAllAudio();
+  if (!synth) return;
   const u = new SpeechSynthesisUtterance(`\u200B ${text}`);
   u.lang = "en-US";
   u.rate = 0.85;
   if (americanVoice) u.voice = americanVoice;
-  speechSynthesis.speak(u);
+  synth.speak(u);
 }
 
 /* ---------------------------
@@ -341,7 +367,8 @@ async function selectWord(index) {
   if (!currentItem.result) {
     currentItem.result = "correct";
     selectedIndexes.add(progressKey(currentItem._scope, currentItem.word));
-    await saveProgress(scope, currentItem.word, {
+    // Don't wait on the network before showing the word and playing audio
+    saveProgress(scope, currentItem.word, {
       result: "correct",
       markedForCorrection: currentItem.markedForCorrection,
       correctionNote: currentItem.correctionNote
