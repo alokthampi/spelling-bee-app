@@ -2,18 +2,8 @@
    Practice tab: hear the word, type the spelling.
    Uses globals from app.js (filteredWords, saveProgress, audio helpers...).
 --------------------------- */
-let practice = null;        // { entries, index, settings }
-let practiceSettings = "";  // Learning filters the current test was built from
-
-function practiceFilterSettings() {
-  return JSON.stringify([
-    selectedValues("scopeFilter"),
-    selectedValues("difficultyFilter"),
-    document.getElementById("resultFilter").value,
-    searchQuery,
-    [...(window.selectedLetters || [])].sort()
-  ]);
-}
+let practice = null;               // { entries, index } for the running test
+const practiceLetters = new Set();  // first letters picked on the Practice tab
 
 function practiceEl(id) {
   return document.getElementById(id);
@@ -23,29 +13,93 @@ function showPracticeScreen(name) {
   ["practiceStart", "practiceQuestion", "practiceDone"].forEach(id => {
     practiceEl(id).hidden = id !== name;
   });
+  // Filters can't change mid-test; they come back on the start/results screens
+  practiceEl("practiceFilters").hidden = name === "practiceQuestion";
+}
+
+/* ---------------------------
+   Practice filters (independent of the Learning tab)
+--------------------------- */
+function practiceScopeAndLevelWords() {
+  const scopes = selectedValues("practiceScopeFilter");
+  const levels = selectedValues("practiceDifficultyFilter");
+  return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
+}
+
+function practicePool() {
+  return practiceScopeAndLevelWords().filter(w =>
+    !practiceLetters.size || practiceLetters.has(w.word.charAt(0).toUpperCase())
+  );
+}
+
+function renderPracticeLetters() {
+  const container = practiceEl("practiceLetterFilter");
+  container.innerHTML = "";
+
+  const counts = {};
+  practiceScopeAndLevelWords().forEach(w => {
+    const letter = w.word.charAt(0).toUpperCase();
+    counts[letter] = (counts[letter] || 0) + 1;
+  });
+
+  const all = document.createElement("button");
+  all.className = "letter-btn all-btn";
+  all.textContent = "All";
+  all.classList.toggle("active", !practiceLetters.size);
+  all.onclick = () => {
+    practiceLetters.clear();
+    practiceFiltersChanged();
+  };
+  container.appendChild(all);
+
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
+    const btn = document.createElement("button");
+    btn.className = "letter-btn";
+    btn.textContent = letter;
+    btn.title = `${counts[letter] || 0} words`;
+    btn.classList.toggle("active", practiceLetters.has(letter));
+    btn.classList.toggle("no-words", !counts[letter]);
+    btn.onclick = () => {
+      if (practiceLetters.has(letter)) practiceLetters.delete(letter);
+      else practiceLetters.add(letter);
+      practiceFiltersChanged();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function practiceFiltersChanged() {
+  practice = null; // any finished test is replaced by a fresh start screen
+  showPracticeStart();
 }
 
 /* Called by switchTab() whenever the Practice tab is opened */
 function openPractice() {
-  const settings = practiceFilterSettings();
-  if (practice && settings === practiceSettings) {
+  if (practice && practice.index >= 0) {
     renderPracticeList();
     return;
   }
-  practice = null;
-  practiceSettings = settings;
-  showPracticeStart();
+  if (!practice) showPracticeStart();
+}
+
+/* Called by app.js once the word lists have loaded */
+function onWordsLoaded() {
+  if (!practice) showPracticeStart();
 }
 
 function showPracticeStart() {
-  const count = filteredWords.length;
-  const scopes = selectedValues("scopeFilter")
+  const count = practicePool().length;
+  const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" + ");
+  const letters = practiceLetters.size
+    ? ` · Letters ${[...practiceLetters].sort().join(", ")}`
+    : "";
   practiceEl("practiceSetText").textContent = count
-    ? `${count} word${count === 1 ? "" : "s"} · ${scopes || "School"} · ${difficultySummary()}`
-    : "No words match your filters. Change them on the Learning tab.";
+    ? `${count} word${count === 1 ? "" : "s"} · ${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}`
+    : "No words match these filters. Try a different Scope, Difficulty or letter.";
   practiceEl("practiceStartBtn").disabled = !count;
+  renderPracticeLetters();
   showPracticeScreen("practiceStart");
   renderPracticeList();
 }
@@ -57,7 +111,6 @@ function startPractice(items) {
     entries: list.map(item => ({ item, status: null, typed: "" })),
     index: 0
   };
-  practiceSettings = practiceFilterSettings();
   showQuestion(0, true);
 }
 
@@ -302,7 +355,10 @@ function renderPracticeList() {
    Wiring
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  practiceEl("practiceStartBtn").addEventListener("click", () => startPractice(filteredWords));
+  practiceEl("practiceStartBtn").addEventListener("click", () => startPractice(practicePool()));
+  document.querySelectorAll("#practiceFilters .multi-select input").forEach(input => {
+    input.addEventListener("change", practiceFiltersChanged);
+  });
   practiceEl("practiceRestartBtn").addEventListener("click", () => {
     practice = null;
     showPracticeStart();

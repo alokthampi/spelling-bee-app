@@ -218,6 +218,7 @@
       color: var(--text);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-strong);
+      font-family: inherit;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -291,6 +292,7 @@
       border: 1px solid var(--border);
       background: var(--bg-inset);
       color: var(--text-secondary);
+      font-family: inherit;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -796,6 +798,10 @@
 
     .practice-empty { color: var(--text-tertiary); font-size: 14px; padding: 8px 4px; }
 
+    .practice-filters { grid-template-columns: 1fr 1fr !important; }
+    .letter-btn.all-btn { width: auto; padding: 0 12px; }
+    .letter-btn.no-words { opacity: 0.35; }
+
     /* ---------- Responsive breakpoints ---------- */
     /* Small phones */
     @media (max-width: 380px) {
@@ -849,7 +855,7 @@
   <div class="difficulty-bar">
     <div class="field">
       <label class="field-label" for="scopeFilter">Scope</label>
-      <details class="multi-select" id="scopeFilter">
+      <details class="multi-select" id="scopeFilter" data-kind="scope">
         <summary>School</summary>
         <div class="multi-select-menu">
           <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
@@ -860,7 +866,7 @@
 
     <div class="field">
       <label class="field-label" for="difficultyFilter">Difficulty</label>
-      <details class="multi-select" id="difficultyFilter">
+      <details class="multi-select" id="difficultyFilter" data-kind="difficulty">
         <summary>All Bees</summary>
         <div class="multi-select-menu">
           <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
@@ -971,6 +977,33 @@
   </div>
 
   <div id="practiceTab" class="tab-panel">
+    <div class="difficulty-bar practice-filters" id="practiceFilters">
+      <div class="field">
+        <label class="field-label" for="practiceScopeFilter">Scope</label>
+        <details class="multi-select" id="practiceScopeFilter" data-kind="scope">
+          <summary>School</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
+            <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="practiceDifficultyFilter">Difficulty</label>
+        <details class="multi-select" id="practiceDifficultyFilter" data-kind="difficulty">
+          <summary>All Bees</summary>
+          <div class="multi-select-menu">
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          </div>
+        </details>
+      </div>
+
+      <div class="letter-filter" id="practiceLetterFilter" aria-label="Filter by first letter"></div>
+    </div>
+
     <div class="layout practice-layout">
       <div class="word-list" id="practiceListPanel">
         <div class="word-list-header">
@@ -991,8 +1024,8 @@
           </label>
           <button class="primary-btn" id="practiceStartBtn">▶️ Start practice</button>
           <p class="practice-hint">
-            Words come from the Scope, Difficulty, Results and letter filters on the Learning tab.
-            Listen to the word, then type how it's spelled.
+            Pick the Scope, Difficulty and letters above, then press Start.
+            Listen to the word and type how it's spelled.
           </p>
         </div>
 

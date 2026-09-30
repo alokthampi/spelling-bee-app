@@ -112,28 +112,17 @@ async function resetCloudProgress() {
 /* ---------------------------
    Load words
 --------------------------- */
-let loadWordsRequest = 0;
+// Every scope is loaded once up front; the Learning and Practice tabs each
+// filter by scope in memory, and share the same word objects/results.
+// Regional has no word list yet.
+const SCOPE_FILES = {
+  school: "words_school_2027.json",
+  regional: null
+};
 
-async function loadWords(scopes = ["school"]) {
-  if (!Array.isArray(scopes)) scopes = [scopes];
-  const request = ++loadWordsRequest;
-
-  stopAllAudio();
-  currentIndex = -1;
-  currentItem = null;
-  suppressActiveHighlight = false;
-  selectedIndexes.clear();
-  const correctionCheckbox = document.getElementById("correctionCheckbox");
-  if (correctionCheckbox) correctionCheckbox.checked = false;
-  const correctionNote = document.getElementById("correctionNote");
-  if (correctionNote) {
-    correctionNote.value = "";
-    correctionNote.disabled = true;
-  }
-
-  const datasets = await Promise.all(scopes.map(async scope => {
-    // Regional has no word list yet
-    const file = scope === "school" ? "words_school_2027.json" : null;
+async function loadWords() {
+  const datasets = await Promise.all(Object.keys(SCOPE_FILES).map(async scope => {
+    const file = SCOPE_FILES[scope];
     const [savedProgress, data] = await Promise.all([
       loadProgress(scope),
       !file ? [] : fetch(file).then(r => {
@@ -161,9 +150,6 @@ async function loadWords(scopes = ["school"]) {
     }));
   }));
 
-  // A newer scope selection started while this one was loading
-  if (request !== loadWordsRequest) return;
-
   words = datasets.flat();
 
   words.forEach(w => {
@@ -171,6 +157,7 @@ async function loadWords(scopes = ["school"]) {
   });
 
   applyFilter();
+  if (typeof onWordsLoaded === "function") onWordsLoaded();
 }
 
 /* ---------------------------
@@ -182,16 +169,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".multi-select input[type=checkbox]").forEach(input => {
     input.addEventListener("change", event => {
       updateMultiSelectSummary(event.target.closest(".multi-select"));
-      if (event.target.closest("#scopeFilter")) {
-        const scopes = selectedValues("scopeFilter");
-        loadWords(scopes.length ? scopes : ["school"]);
-      } else {
-        applyFilter();
-      }
+      if (event.target.closest("#learningTab")) applyFilter();
     });
   });
 
-  document.getElementById("difficultyFilter").addEventListener("change", applyFilter);
   document.getElementById("resultFilter").addEventListener("change", applyFilter);
   document.getElementById("correctionCheckbox").addEventListener("change", toggleCorrection);
   document.getElementById("correctionNote").addEventListener("change", saveCorrectionNote);
@@ -227,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  loadWords(["school"]);
+  loadWords();
 });
 
 /* ---------------------------
@@ -267,8 +248,8 @@ function selectedValues(id) {
     .map(input => input.value);
 }
 
-function difficultySummary() {
-  const levels = selectedValues("difficultyFilter");
+function difficultySummary(id = "difficultyFilter") {
+  const levels = selectedValues(id);
   if (levels.length === 3) return "All Bees";
   return levels.map(difficultyLabel).join(", ") || "No difficulty";
 }
@@ -276,11 +257,12 @@ function difficultySummary() {
 function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
+  const kind = container.dataset.kind; // "scope" or "difficulty"
   if (!selected.length) {
-    summary.textContent = container.id === "scopeFilter" ? "Select scope" : "No difficulty";
+    summary.textContent = kind === "scope" ? "Select scope" : "No difficulty";
     return;
   }
-  if (container.id === "difficultyFilter" && selected.length === 3) {
+  if (kind === "difficulty" && selected.length === 3) {
     summary.textContent = "All Bees";
     return;
   }
@@ -311,12 +293,18 @@ function shuffleFilteredWords() {
 /* ---------------------------
    Filtering
 --------------------------- */
+// Words in the scopes picked on the Learning tab (also used by Stats)
+function learningScopeWords() {
+  const scopes = selectedValues("scopeFilter");
+  return words.filter(w => scopes.includes(w._scope));
+}
+
 function applyFilter() {
   const levels = selectedValues("difficultyFilter");
   const resultFilter = document.getElementById("resultFilter").value;
   const shuffleBtn = document.getElementById("shuffleBtn");
 
-  filteredWords = words.filter(w => {
+  filteredWords = learningScopeWords().filter(w => {
     const firstLetter = w.word?.charAt(0)?.toUpperCase();
     const letterMatch =
       !window.selectedLetters ||
@@ -617,7 +605,8 @@ function renderStats() {
   const byDifficulty = document.getElementById("statsByDifficulty");
   if (!grid || !overallBar || !overallLegend || !byDifficulty) return;
 
-  const counts = countResults(words);
+  const scopeWords = learningScopeWords();
+  const counts = countResults(scopeWords);
   const answered = counts.correct + counts.wrong;
   const accuracy = answered ? Math.round((counts.correct / answered) * 100) : 0;
 
@@ -664,7 +653,7 @@ function renderStats() {
 
   byDifficulty.innerHTML = "";
   ["one", "two", "three"].forEach(level => {
-    const levelWords = words.filter(w => w.difficulty === level);
+    const levelWords = scopeWords.filter(w => w.difficulty === level);
     if (!levelWords.length) return;
 
     const levelCounts = countResults(levelWords);
