@@ -231,8 +231,10 @@ function tickTimer() {
     `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
   practiceEl("practiceTimerFill").style.width = `${(left / TIME_LIMIT_MS) * 100}%`;
   const timer = practiceEl("practiceTimer");
-  timer.classList.toggle("warn", seconds <= 30 && seconds > 10);
-  timer.classList.toggle("danger", seconds <= 10);
+  // Yellow once 30 seconds have passed, red once 60 have passed
+  const elapsed = (TIME_LIMIT_MS - left) / 1000;
+  timer.classList.toggle("warn", elapsed >= 30 && elapsed < 60);
+  timer.classList.toggle("danger", elapsed >= 60);
   if (left <= 0) {
     stopTimer();
     timeUp();
