@@ -205,6 +205,28 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
+  // Close open dropdowns when tapping anywhere outside them. pointerdown
+  // (not click) because iOS Safari doesn't send clicks from plain elements.
+  document.addEventListener("pointerdown", event => {
+    document.querySelectorAll(".multi-select[open]").forEach(menu => {
+      if (!menu.contains(event.target)) menu.open = false;
+    });
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      document.querySelectorAll(".multi-select[open]").forEach(menu => (menu.open = false));
+    }
+  });
+  // Only one dropdown open at a time
+  document.querySelectorAll(".multi-select").forEach(menu => {
+    menu.addEventListener("toggle", () => {
+      if (!menu.open) return;
+      document.querySelectorAll(".multi-select[open]").forEach(other => {
+        if (other !== menu) other.open = false;
+      });
+    });
+  });
+
   loadWords(["school"]);
 });
 
@@ -219,12 +241,14 @@ function switchTab(tab) {
     panel.classList.toggle("active", panel.id === `${tab}Tab`)
   );
 
+  stopAllAudio();
   if (tab === "stats") renderStats();
+  if (tab === "practice" && typeof openPractice === "function") openPractice();
 }
 
 function showFilteredResults(filter) {
   document.getElementById("resultFilter").value = filter;
-  switchTab("practice");
+  switchTab("learning");
   applyFilter();
 }
 
