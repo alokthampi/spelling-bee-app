@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 import time
 import re
 import argparse
@@ -10,7 +11,10 @@ from typing import List, Dict, Optional
 # ============================================================
 # Configuration
 # ============================================================
-MW_API_KEY = "56791146-8d8a-4567-a528-a7c547a1e3d7"
+# Stored in the MW_API_KEY GitHub secret; the "Generate word data" GitHub
+# Actions workflow passes it in. To run locally, set it first:
+#   PowerShell:  $env:MW_API_KEY = "your-key"
+MW_API_KEY = os.environ.get("MW_API_KEY", "")
 MW_BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json"
 MW_AUDIO_BASE = "https://media.merriam-webster.com/audio/prons/en/us/mp3"
 TATOEBA_SENTENCES_URL = "https://api.tatoeba.org/v1/sentences"
@@ -473,6 +477,10 @@ def main() -> None:
     parser.add_argument("--output", default=OUTPUT_WORD_FILE,
                         help="Destination JSON file.")
     args = parser.parse_args()
+
+    if not MW_API_KEY:
+        raise SystemExit("MW_API_KEY is not set. Run this from the 'Generate word data' "
+                         "GitHub Actions workflow, or set $env:MW_API_KEY first.")
 
     if args.input.lower().endswith(".csv"):
         try:

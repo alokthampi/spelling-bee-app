@@ -451,13 +451,19 @@
     }
     .word-list::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
+    /* Stays pinned at the top while the list scrolls under it
+       (negative margins cover the panel's padding so rows don't show above it) */
     .word-list-header {
+      position: sticky;
+      top: -12px;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
       gap: 8px;
-      padding-bottom: 8px;
+      margin: -12px -12px 8px;
+      padding: 12px 12px 8px;
+      background: var(--bg-elevated);
       border-bottom: 1px solid var(--border);
     }
 
@@ -1699,7 +1705,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093019"></script>
-<script src="practice.js?v=2026093019"></script>
+<script src="app.js?v=2026093021"></script>
+<script src="practice.js?v=2026093021"></script>
 </body>
 </html>
