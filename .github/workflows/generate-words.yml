@@ -1,0 +1,53 @@
+# Builds word data (definitions, sentences, audio, origin) from Merriam-Webster
+# for a word list in the repo. Start it from the Actions tab ("Run workflow").
+# The Merriam-Webster key comes from the MW_API_KEY repository secret.
+name: Generate word data
+
+on:
+  workflow_dispatch:
+    inputs:
+      input:
+        description: "Word list in the repo (.txt one word per line, or .csv with Word and Category columns)"
+        required: true
+        default: "school_word_list_2027.csv"
+      output:
+        description: "JSON file to write. Don't use words_school_2027.json: it has hand-filled origins that would be lost."
+        required: true
+        default: "words_new.json"
+
+permissions:
+  contents: write   # lets the job commit the generated file
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Generate word data
+        env:
+          MW_API_KEY: ${{ secrets.MW_API_KEY }}
+          INPUT_FILE: ${{ inputs.input }}
+          OUTPUT_FILE: ${{ inputs.output }}
+        run: python generate_word_data.py --input "$INPUT_FILE" --output "$OUTPUT_FILE"
+
+      - name: Commit generated file
+        env:
+          OUTPUT_FILE: ${{ inputs.output }}
+        run: |
+          git add -- "$OUTPUT_FILE"
+          if git diff --cached --quiet; then
+            echo "Nothing changed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Generate word data: $OUTPUT_FILE"
+          git push

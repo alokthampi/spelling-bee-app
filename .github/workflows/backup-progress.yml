@@ -1,0 +1,42 @@
+# Saves a snapshot of Nikku's progress from Firestore into backup_progress_2027/
+# every night, and on demand from the Actions tab ("Run workflow").
+# The Firebase admin key comes from the FIREBASE_SERVICE_ACCOUNT repository secret.
+name: Back up progress
+
+on:
+  schedule:
+    - cron: "0 7 * * *"   # every day at 07:00 UTC (about 3 AM US Eastern)
+  workflow_dispatch:
+
+permissions:
+  contents: write   # lets the job commit the snapshot
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Firebase Admin SDK
+        run: pip install firebase-admin
+
+      - name: Save snapshot
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: python GitBackup.py
+
+      - name: Commit snapshot
+        run: |
+          git add backup_progress_2027
+          if git diff --cached --quiet; then
+            echo "No new snapshot to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Nightly progress backup"
+          git push
