@@ -1,11 +1,16 @@
 # Saves a snapshot of Nikku's progress from Firestore into backup_progress_2027/
-# every night, and on demand from the Actions tab ("Run workflow").
-# The Firebase admin key comes from the FIREBASE_SERVICE_ACCOUNT repository secret.
+# every night at 11:30 PM US Eastern, and on demand from the Actions tab
+# ("Run workflow"). The Firebase admin key comes from the FIREBASE_SERVICE_ACCOUNT
+# repository secret.
 name: Back up progress
 
 on:
   schedule:
-    - cron: "0 7 * * *"   # every day at 07:00 UTC (about 3 AM US Eastern)
+    # GitHub schedules are in UTC, and 11:30 PM Eastern is a different UTC time
+    # in summer and winter, so both are scheduled and the first step lets only
+    # the one matching today's Eastern time go ahead.
+    - cron: "30 3 * * *"   # 11:30 PM EDT (summer, UTC-4)
+    - cron: "30 4 * * *"   # 11:30 PM EST (winter, UTC-5)
   workflow_dispatch:
 
 permissions:
@@ -15,21 +20,44 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
+      - name: Only go ahead at 11:30 PM US Eastern
+        id: when
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          offset=$(TZ=America/New_York date +%z)   # -0400 in summer (EDT), -0500 in winter (EST)
+          if [ -z "$SCHEDULE" ]; then
+            run=true   # started by hand from the Actions tab
+          elif [ "$SCHEDULE" = "30 3 * * *" ] && [ "$offset" = "-0400" ]; then
+            run=true
+          elif [ "$SCHEDULE" = "30 4 * * *" ] && [ "$offset" = "-0500" ]; then
+            run=true
+          else
+            run=false
+            echo "Not 11:30 PM Eastern right now (UTC offset $offset); the other schedule will run"
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v4
+        if: steps.when.outputs.run == 'true'
 
       - uses: actions/setup-python@v5
+        if: steps.when.outputs.run == 'true'
         with:
           python-version: "3.12"
 
       - name: Install Firebase Admin SDK
+        if: steps.when.outputs.run == 'true'
         run: pip install firebase-admin
 
       - name: Save snapshot
+        if: steps.when.outputs.run == 'true'
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: python GitBackup.py
 
       - name: Commit snapshot
+        if: steps.when.outputs.run == 'true'
         run: |
           git add backup_progress_2027
           if git diff --cached --quiet; then
