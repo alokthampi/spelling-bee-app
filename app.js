@@ -423,6 +423,8 @@ function matchesResultFilter(w, filter) {
     case "covered": return w.covered;
     case "not-covered": return !w.covered;
     case "practice-wrong": return practiceStatus(w) === "wrong";
+    // Wrong in any attempt, even if spelled right since
+    case "practice-ever-wrong": return w.practice.wrong > 0;
     case "practice-correct": return practiceStatus(w) === "correct";
     case "practice-pending": return practiceStatus(w) === "pending";
     case "correction": return w.markedForCorrection;
@@ -864,6 +866,40 @@ function formatSessionDate(iso) {
     " · " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
 
+// "Sep 30 · 4:07 PM – 4:19 PM · 12 min" (tests saved before start times were
+// recorded say so: "ended 4:19 PM · start time not recorded")
+function formatSessionTimes(session) {
+  const end = new Date(session.at);
+  if (isNaN(end)) return "";
+  const time = d => d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  const start = new Date(session.startedAt);
+  const parts = [end.toLocaleDateString(undefined, { month: "short", day: "numeric" })];
+  if (isNaN(start)) {
+    parts.push(`ended ${time(end)}`, "start time not recorded");
+  } else {
+    const minutes = Math.round((end - start) / 60000);
+    parts.push(`${time(start)} – ${time(end)}`, minutes < 1 ? "under 1 min" : `${minutes} min`);
+  }
+  return parts.join(" · ");
+}
+
+// "School · All Bees · Letters A, B". Older tests only saved a description
+// ("School · All Bees · A, B · Wrong + Not attempted"), so read it from that.
+function formatSessionFilters(session) {
+  let { scope, difficulty, letters } = session;
+  if (scope === undefined && session.label) {
+    const parts = session.label.split(" · ").filter(p => p !== "Retry");
+    [scope, difficulty] = parts;
+    const letterPart = parts.slice(2).find(p => /^[A-Z](, [A-Z])*$/.test(p));
+    letters = letterPart ? letterPart.split(", ") : [];
+  }
+  return [
+    scope || "",
+    difficulty || "",
+    letters && letters.length ? `Letters ${letters.join(", ")}` : "All letters"
+  ].filter(Boolean).join(" · ");
+}
+
 /* Stats tab filters (independent of Learning and Practice) */
 const statsLetters = new Set();
 
@@ -1009,7 +1045,8 @@ function renderStats() {
           <div class="session-row">
             <div>
               <div class="session-score">${s.correct} / ${answered} <span class="session-pct">${pct}%</span></div>
-              <div class="session-meta">${escapeHtml(formatSessionDate(s.at))} · ${escapeHtml(s.label || "")}</div>
+              <div class="session-meta">${escapeHtml(formatSessionTimes(s))}</div>
+              <div class="session-meta">${escapeHtml(formatSessionFilters(s))}</div>
             </div>
             ${stackBarHtml([
               { count: s.correct, cls: "seg-correct", label: "Correct" },

@@ -35,7 +35,7 @@ function practicePool() {
   );
 }
 
-const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right" };
+const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right", everWrong: "Ever spelled wrong" };
 
 // Which practice groups to test: any mix of "wrong", "pending", "correct"
 function selectedModes() {
@@ -43,8 +43,12 @@ function selectedModes() {
     .map(input => input.value);
 }
 
+// Groups combine: a word is in the test if it's in any picked group.
+// "everWrong" = spelled wrong in at least one attempt, even if right since.
 function wordsForModes(pool, modes) {
-  return pool.filter(w => modes.includes(practiceStatus(w)));
+  return pool.filter(w =>
+    modes.includes(practiceStatus(w)) || (modes.includes("everWrong") && w.practice.wrong > 0)
+  );
 }
 
 function gradeGradient(c) {
@@ -137,7 +141,8 @@ function practiceSetLabel(modes) {
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" + ");
   const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
-  const modeText = modes && modes.length < 3 ? ` · ${modes.map(m => MODE_NAMES[m]).join(" + ")}` : "";
+  const everyWord = modes && ["wrong", "pending", "correct"].every(m => modes.includes(m));
+  const modeText = modes && !everyWord ? ` · ${modes.map(m => MODE_NAMES[m]).join(" + ")}` : "";
   return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}${modeText}`;
 }
 
@@ -146,11 +151,13 @@ function showPracticeStart() {
   const counts = {
     wrong: wordsForModes(pool, ["wrong"]).length,
     pending: wordsForModes(pool, ["pending"]).length,
-    correct: wordsForModes(pool, ["correct"]).length
+    correct: wordsForModes(pool, ["correct"]).length,
+    everWrong: wordsForModes(pool, ["everWrong"]).length
   };
   practiceEl("modeCountWrong").textContent = counts.wrong;
   practiceEl("modeCountPending").textContent = counts.pending;
   practiceEl("modeCountCorrect").textContent = counts.correct;
+  practiceEl("modeCountEverWrong").textContent = counts.everWrong;
 
   document.querySelectorAll(".mode-option").forEach(option => {
     const input = option.querySelector("input");
@@ -188,6 +195,11 @@ function startPractice(items, mode, label) {
     index: 0,
     mode,
     label,
+    startedAt: new Date().toISOString(),
+    // Filters the test was taken with, shown under Recent tests on Stats
+    scope: selectedValues("practiceScopeFilter").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + "),
+    difficulty: difficultySummary("practiceDifficultyFilter"),
+    letters: [...practiceLetters].sort(),
     saved: false
   };
   showQuestion(0, true);
@@ -476,7 +488,11 @@ function finishPractice() {
   if (answered && !practice.saved) {
     practice.saved = true;
     savePracticeSession({
-      at: new Date().toISOString(),
+      at: new Date().toISOString(), // when the test ended
+      startedAt: practice.startedAt,
+      scope: practice.scope,
+      difficulty: practice.difficulty,
+      letters: practice.letters,
       label: practice.label,
       mode: practice.mode,
       total,

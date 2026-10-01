@@ -162,7 +162,20 @@
     }
 
     .multi-select summary::-webkit-details-marker { display: none; }
-    .multi-select summary::after { content: "▾"; color: var(--text-secondary); }
+    /* Chevron used by every dropdown and expand/collapse toggle */
+    .multi-select summary::after,
+    .collapse-toggle::after {
+      content: "";
+      display: block;
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      background-color: var(--text-secondary);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+      transition: transform 0.15s ease;
+    }
+    .multi-select[open] summary::after { transform: rotate(180deg); }
     .multi-select[open] summary { border-color: var(--accent); }
 
     .multi-select-menu {
@@ -336,12 +349,7 @@
       cursor: pointer;
       touch-action: manipulation;
     }
-    .collapse-toggle::after {
-      content: "▾";
-      margin-left: auto;
-      color: var(--text-secondary);
-      transition: transform 0.15s ease;
-    }
+    .collapse-toggle::after { margin-left: auto; }
     .collapsible.collapsed .collapse-toggle::after { transform: rotate(-90deg); }
     .collapse-summary { color: var(--text-secondary); font-weight: 500; font-size: 13px; }
 
@@ -1067,7 +1075,9 @@
     }
     .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
 
-    .mode-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 480px) { .mode-picker { grid-template-columns: repeat(4, 1fr); } }
+    .mode-option.mode-ever-wrong .mode-count { color: var(--warning); }
     .mode-option {
       position: relative;
       display: flex;
@@ -1172,10 +1182,10 @@
     .missed-count { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
 
     .session-list { display: flex; flex-direction: column; gap: 12px; }
-    .session-row { display: grid; grid-template-columns: minmax(0, 1fr) 40%; align-items: center; gap: 12px; }
+    .session-row { display: grid; grid-template-columns: minmax(0, 1fr) 28%; align-items: center; gap: 12px; }
     .session-score { font-weight: 800; font-size: 16px; }
     .session-pct { font-weight: 600; font-size: 13px; color: var(--text-secondary); margin-left: 4px; }
-    .session-meta { font-size: 12px; color: var(--text-tertiary); }
+    .session-meta { font-size: 12px; line-height: 1.45; color: var(--text-tertiary); }
     .letter-btn.all-btn { width: auto; padding: 0 12px; }
     .letter-btn.no-words { opacity: 0.35; }
 
@@ -1335,6 +1345,7 @@
           <label class="multi-select-option"><input type="radio" name="resultFilter" value="correction" />Marked for correction</label>
           <div class="select-group-label">Practice</div>
           <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-wrong" />Spelled wrong</label>
+          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-ever-wrong" />Ever spelled wrong</label>
           <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-correct" />Spelled right</label>
           <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-pending" />Not practiced</label>
         </div>
@@ -1526,8 +1537,14 @@
               <span class="mode-name">✅ Spelled right</span>
               <span class="mode-count" id="modeCountCorrect"></span>
             </label>
+            <label class="mode-option mode-ever-wrong" title="Spelled wrong in at least one attempt, even if right since">
+              <input type="checkbox" name="practiceMode" value="everWrong" />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">🔁 Ever spelled wrong</span>
+              <span class="mode-count" id="modeCountEverWrong"></span>
+            </label>
           </div>
-          <p class="practice-hint mode-hint">Tap to include or leave out a group. Pick all three to test every word.</p>
+          <p class="practice-hint mode-hint">Tap to include or leave out a group. Ever spelled wrong = wrong in any attempt, even if right since.</p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>
@@ -1705,7 +1722,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026093021"></script>
-<script src="practice.js?v=2026093021"></script>
+<script src="app.js?v=2026093028"></script>
+<script src="practice.js?v=2026093028"></script>
 </body>
 </html>
