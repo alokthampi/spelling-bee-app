@@ -9,9 +9,9 @@ on:
       input:
         description: "Word list in the repo (.txt one word per line, or .csv with Word and Category columns)"
         required: true
-        default: "school_word_list_2027.csv"
+        default: "2027_school_words.csv"
       output:
-        description: "JSON file to write. Don't use words_school_2027.json: it has hand-filled origins that would be lost."
+        description: "JSON file to write. Don't use word_list_school.json: it has hand-filled origins that would be lost."
         required: true
         default: "words_new.json"
 

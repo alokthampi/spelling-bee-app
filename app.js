@@ -120,7 +120,7 @@ async function resetCloudProgress() {
 // Regional has no word list yet.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "words_school_2027.json?v=2026093002",
+  school: "word_list_school.json?v=2026093003",
   regional: null
 };
 
@@ -550,7 +550,9 @@ function scrollActiveWordIntoView() {
   const row = document.querySelector("#wordList .word-item.active");
   if (!panel || !row || panel.scrollHeight <= panel.clientHeight) return;
   const rowTop = row.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
-  if (rowTop < panel.scrollTop + 40 || rowTop > panel.scrollTop + panel.clientHeight - 60) {
+  // The pinned header covers the top of the panel
+  const headerHeight = panel.querySelector(".word-list-header")?.offsetHeight || 0;
+  if (rowTop < panel.scrollTop + headerHeight + 8 || rowTop > panel.scrollTop + panel.clientHeight - 60) {
     panel.scrollTop = Math.max(0, rowTop - panel.clientHeight / 2);
   }
 }
