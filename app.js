@@ -120,7 +120,7 @@ async function resetCloudProgress() {
 // Regional has no word list yet.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026093003",
+  school: "word_list_school.json?v=2026100101",
   regional: null
 };
 
