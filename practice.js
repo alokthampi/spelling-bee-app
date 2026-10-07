@@ -18,6 +18,8 @@ function showPracticeScreen(name) {
   });
   // Filters can't change mid-test; they come back on the start/results screens
   practiceEl("practiceFilters").hidden = name === "practiceQuestion";
+  // "Your Words" only appears once a test has started (questions and results)
+  practiceEl("practiceListPanel").hidden = name === "practiceStart";
 }
 
 /* ---------------------------
@@ -29,8 +31,16 @@ function practiceScopeAndLevelWords() {
   return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
 }
 
+// Scope + Difficulty + Origin. Origin's options are counted from Scope + Difficulty.
+function practiceFilteredWords() {
+  const base = practiceScopeAndLevelWords();
+  renderOriginOptions("practiceOriginFilter", base);
+  const origins = filterSelectValues("practiceOriginFilter");
+  return origins.length ? base.filter(w => originsOf(w).some(o => origins.includes(o))) : base;
+}
+
 function practicePool() {
-  return practiceScopeAndLevelWords().filter(w =>
+  return practiceFilteredWords().filter(w =>
     !practiceLetters.size || practiceLetters.has(w.word.charAt(0).toUpperCase())
   );
 }
@@ -66,7 +76,7 @@ function renderPracticeLetters() {
 
   const counts = {};
   const all = { correct: 0, wrong: 0, pending: 0 };
-  practiceScopeAndLevelWords().forEach(w => {
+  practiceFilteredWords().forEach(w => {
     const letter = w.word.charAt(0).toUpperCase();
     const c = counts[letter] || (counts[letter] = { correct: 0, wrong: 0, pending: 0 });
     c[practiceStatus(w)]++;
@@ -140,10 +150,12 @@ function practiceSetLabel(modes) {
   const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
     .join(" + ");
+  const origins = filterSelectValues("practiceOriginFilter");
+  const originText = origins.length ? ` · ${document.querySelector("#practiceOriginFilter .summary-text").textContent}` : "";
   const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
   const everyWord = modes && ["wrong", "pending", "correct"].every(m => modes.includes(m));
   const modeText = modes && !everyWord ? ` · ${modes.map(m => MODE_NAMES[m]).join(" + ")}` : "";
-  return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${letters}${modeText}`;
+  return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${originText}${letters}${modeText}`;
 }
 
 function showPracticeStart() {
@@ -169,7 +181,7 @@ function showPracticeStart() {
   const count = wordsForModes(pool, modes).length;
   let text;
   if (!pool.length) {
-    text = "No words match these filters. Try a different Scope, Difficulty or letter.";
+    text = "No words match these filters. Try a different Scope, Difficulty, Origin or letter.";
   } else if (!modes.length) {
     text = "Pick at least one group of words below.";
   } else if (!count) {
@@ -183,6 +195,7 @@ function showPracticeStart() {
   practiceEl("practiceStartBtn").disabled = !count;
 
   renderPracticeLetters();
+  renderSavedPractice();
   showPracticeScreen("practiceStart");
   renderPracticeList();
 }
@@ -200,9 +213,151 @@ function startPractice(items, mode, label) {
     scope: selectedValues("practiceScopeFilter").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + "),
     difficulty: difficultySummary("practiceDifficultyFilter"),
     letters: [...practiceLetters].sort(),
+    origins: filterSelectValues("practiceOriginFilter"),
     saved: false
   };
   showQuestion(0, true);
+}
+
+/* ---------------------------
+   Save for later / resume (several tests can be saved)
+   A saved test keeps itself up to date after every word, so closing the app
+   after resuming doesn't lose answers. Ending or finishing it removes it.
+--------------------------- */
+function practiceSnapshot() {
+  const entry = currentEntry();
+  const timeLeft = entry && !isAnswered(entry)
+    ? (timerInterval ? Math.max(0, timerDeadline - Date.now()) : timerRemaining)
+    : null;
+  return {
+    savedAt: new Date().toISOString(),
+    startedAt: practice.startedAt,
+    label: practice.label,
+    mode: practice.mode,
+    scope: practice.scope,
+    difficulty: practice.difficulty,
+    letters: practice.letters,
+    origins: practice.origins,
+    index: practice.index,
+    timeLeft,
+    entries: practice.entries.map(e => ({
+      scope: e.item._scope,
+      word: e.item.word,
+      status: e.status,
+      typed: e.typed,
+      timedOut: e.timedOut
+    }))
+  };
+}
+
+// Saved tests are stored by id; `practice.savedId` is set once a test is saved
+function persistSavedTest() {
+  if (practice?.savedId && practice.index >= 0) storeSavedPracticeTest(practice.savedId, practiceSnapshot());
+}
+
+function savePracticeForLater() {
+  if (!practice) return;
+  if (!practice.savedId && savedPracticeTests().length >= MAX_SAVED_TESTS) {
+    alert(`You already have ${MAX_SAVED_TESTS} saved tests. Discard one on the start screen, then save this test.`);
+    return;
+  }
+  pauseTimer();
+  cancelAutoNext();
+  stopAllAudio();
+  practice.savedId = practice.savedId || `t${Date.now().toString(36)}`;
+  persistSavedTest();
+  practice = null;
+  showPracticeStart();
+}
+
+function resumeSavedPractice(id) {
+  const saved = savedPracticeTests().find(test => test.id === id);
+  if (!saved) return;
+  const byKey = new Map(words.map(w => [`${w._scope}|${w.word}`, w]));
+  const entries = saved.entries
+    .map(e => ({ ...e, item: byKey.get(`${e.scope}|${e.word}`) }))
+    .filter(e => e.item) // a word since removed from its list is dropped
+    .map(e => ({ item: e.item, status: e.status, typed: e.typed || "", timedOut: Boolean(e.timedOut) }));
+  if (!entries.length) {
+    discardSavedPractice(id, false);
+    return;
+  }
+
+  practice = {
+    entries,
+    index: Math.min(saved.index || 0, entries.length - 1),
+    mode: saved.mode,
+    label: saved.label,
+    startedAt: saved.startedAt,
+    scope: saved.scope,
+    difficulty: saved.difficulty,
+    letters: saved.letters || [],
+    origins: saved.origins || [],
+    savedId: id,
+    saved: false
+  };
+  // Carry on from the word that was showing, or the next one still to answer
+  let index = practice.index;
+  if (isAnswered(entries[index])) index = nextUnansweredIndex();
+  if (index === -1) {
+    finishPractice();
+    return;
+  }
+  const resumeOnSameWord = index === practice.index;
+  showQuestion(index, true);
+  // Give back the time that was left on that word
+  if (resumeOnSameWord && saved.timeLeft > 0) {
+    stopTimer();
+    timerRemaining = saved.timeLeft;
+    resumeTimer();
+    persistSavedTest();
+  }
+}
+
+function discardSavedPractice(id, confirmFirst = true) {
+  if (confirmFirst && !confirm("Discard this saved test? Answers already given stay in your practice history.")) return;
+  storeSavedPracticeTest(id, null);
+  renderSavedPractice();
+}
+
+function renderSavedPractice() {
+  const tests = savedPracticeTests();
+  practiceEl("practiceSaved").hidden = !tests.length;
+  practiceEl("practiceSavedCount").textContent = tests.length > 1 ? `(${tests.length})` : "";
+  practiceEl("practiceSavedList").replaceChildren(...tests.map(test => {
+    const total = test.entries.length;
+    const correct = test.entries.filter(e => e.status === "correct").length;
+    const wrong = test.entries.filter(e => e.status === "wrong").length;
+
+    const row = document.createElement("div");
+    row.className = "saved-test";
+    const info = document.createElement("div");
+    info.className = "saved-test-info";
+    const progress = document.createElement("div");
+    progress.className = "saved-test-progress";
+    progress.textContent = `${correct + wrong} of ${total} answered · ✅ ${correct} · ❌ ${wrong} · ${total - correct - wrong} left`;
+    const meta = document.createElement("div");
+    meta.className = "saved-test-meta";
+    meta.textContent = [test.label, `saved ${formatSessionDate(test.savedAt)}`].filter(Boolean).join(" · ");
+    info.append(progress, meta);
+
+    const actions = document.createElement("div");
+    actions.className = "saved-test-actions";
+    const resume = document.createElement("button");
+    resume.type = "button";
+    resume.className = "primary-btn";
+    resume.textContent = "▶️ Resume";
+    resume.addEventListener("click", () => resumeSavedPractice(test.id));
+    const discard = document.createElement("button");
+    discard.type = "button";
+    discard.className = "link-btn";
+    discard.textContent = "Discard";
+    discard.addEventListener("click", () => discardSavedPractice(test.id));
+    actions.append(resume, discard);
+
+    row.append(info, actions);
+    return row;
+  }));
 }
 
 /* ---------------------------
@@ -350,12 +505,12 @@ function showQuestion(index, autoplay) {
     input.classList.remove("is-correct", "is-wrong");
     practiceEl("practiceFeedback").hidden = true;
     practiceEl("practiceCheckBtn").hidden = false;
-    practiceEl("practiceSkipBtn").hidden = false;
     practiceEl("practiceNextBtn").hidden = true;
     startTimer();
   }
 
   renderPracticeList();
+  persistSavedTest();
   // focus() must run inside the tap/keypress for iOS to raise the keyboard
   input.focus({ preventScroll: true });
   if (autoplay) playPracticeWord();
@@ -417,7 +572,6 @@ function showAnswerState(entry) {
   feedback.hidden = false;
 
   practiceEl("practiceCheckBtn").hidden = true;
-  practiceEl("practiceSkipBtn").hidden = true;
   const next = practiceEl("practiceNextBtn");
   next.hidden = false;
   next.textContent = nextUnansweredIndex() === -1 ? "See results →" : "Next word →";
@@ -434,6 +588,7 @@ function recordPracticeResult(entry) {
   // Every attempt in order, oldest first: "c" = correct, "w" = wrong
   p.history = (p.history || "") + (entry.status === "correct" ? "c" : "w");
   saveWord(item, { practice: { ...p } });
+  persistSavedTest();
 
   renderWordList();
   updateProgress();
@@ -456,18 +611,13 @@ function nextPracticeWord() {
   else showQuestion(next, true);
 }
 
-function skipPracticeWord() {
-  const entry = currentEntry();
-  if (!entry) return;
-  stopTimer();
-  entry.status = "skipped";
-  nextPracticeWord();
-}
-
 function finishPractice() {
   stopTimer();
   cancelAutoNext();
   stopAllAudio();
+  // Ending or finishing a saved test removes it from Saved tests
+  if (practice.savedId) storeSavedPracticeTest(practice.savedId, null);
+  practice.savedId = null;
   const { correct, wrong, total } = testCounts();
   const answered = correct + wrong;
   const pct = answered ? Math.round((correct / answered) * 100) : 0;
@@ -495,6 +645,7 @@ function finishPractice() {
       scope: practice.scope,
       difficulty: practice.difficulty,
       letters: practice.letters,
+      origins: practice.origins,
       label: practice.label,
       mode: practice.mode,
       total,
@@ -575,15 +726,7 @@ function renderPracticeList() {
   const list = practiceEl("practiceList");
   list.innerHTML = "";
 
-  if (!practice) {
-    const count = wordsForModes(practicePool(), selectedModes()).length;
-    practiceEl("practiceScore").textContent = `${count} word${count === 1 ? "" : "s"}`;
-    const note = document.createElement("div");
-    note.className = "practice-empty";
-    note.textContent = "Your words will appear here as you spell them.";
-    list.appendChild(note);
-    return;
-  }
+  if (!practice) return; // start screen: the panel is hidden
 
   const { total, correct, wrong } = testCounts();
   practiceEl("practiceScore").textContent = `✅ ${correct} · ❌ ${wrong} · ${total} words`;
@@ -636,9 +779,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const modes = selectedModes();
     startPractice(wordsForModes(practicePool(), modes), modes.join("+"), practiceSetLabel(modes));
   });
-  document.querySelectorAll("#practiceFilters .multi-select input").forEach(input => {
+  document.querySelectorAll("#practiceFilters .multi-select:not(.filter-select) input").forEach(input => {
     input.addEventListener("change", practiceFiltersChanged);
   });
+  wireFilterSelect("practiceOriginFilter", practiceFiltersChanged);
   document.querySelectorAll('input[name="practiceMode"]').forEach(input => {
     input.addEventListener("change", showPracticeStart);
   });
@@ -652,7 +796,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startPractice(missed, "wrong", `${practice.label} · Retry`);
   });
   practiceEl("practiceEndBtn").addEventListener("click", finishPractice);
-  practiceEl("practiceSkipBtn").addEventListener("click", skipPracticeWord);
+  practiceEl("practiceSaveBtn").addEventListener("click", savePracticeForLater);
   practiceEl("practiceNextBtn").addEventListener("click", nextPracticeWord);
 
   practiceEl("practiceForm").addEventListener("submit", event => {
