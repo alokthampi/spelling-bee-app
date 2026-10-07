@@ -387,15 +387,15 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* ---------- Single-choice dropdown with group labels (Results) ---------- */
-    .single-select .multi-select-menu {
+    /* ---------- Dropdowns with group labels and an "All" option (Results, Origin) ---------- */
+    .grouped-select .multi-select-menu {
       min-width: 100%;
       width: max-content;
       max-width: calc(100vw - 32px);
       right: auto;
       gap: 2px;
     }
-    .single-select .multi-select-option input { accent-color: var(--accent); }
+    .grouped-select .multi-select-option input { accent-color: var(--accent); }
 
     /* Origin: dozens of languages, so the menu scrolls. It's anchored to the field's
        right edge and grows leftward when the field is narrower than the options
@@ -408,7 +408,18 @@
       overflow-y: auto;
       overscroll-behavior: contain;
     }
-    .origin-select .summary-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .filter-select .summary-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Learning Scope / Difficulty show counts too: grow to fit them. Difficulty is
+       the right-hand column on phones, so it grows leftward. */
+    #scopeFilter .multi-select-menu,
+    #difficultyFilter .multi-select-menu {
+      min-width: 100%;
+      width: max-content;
+      max-width: calc(100vw - 32px);
+      white-space: nowrap;
+    }
+    #scopeFilter .multi-select-menu { right: auto; }
+    #difficultyFilter .multi-select-menu { left: auto; }
     .option-count { margin-left: auto; padding-left: 8px; color: var(--text-tertiary); font-size: 12px; font-variant-numeric: tabular-nums; }
     .select-group-label {
       margin: 8px 6px 2px;
@@ -1009,6 +1020,44 @@
       touch-action: manipulation;
     }
 
+    .practice-top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .practice-top-btn { min-height: 38px; padding: 8px 12px; }
+    /* Phones: "Word 1 of 450" on its own line, the two buttons side by side under it */
+    @media (max-width: 480px) {
+      .practice-top { flex-wrap: wrap; gap: 8px; }
+      .practice-top-actions { width: 100%; flex-wrap: nowrap; }
+      .practice-top-btn { flex: 1; }
+    }
+    .end-test-btn { color: var(--danger); }
+    .end-test-btn:hover { background: var(--danger-soft); border-color: var(--danger); }
+
+    /* Saved tests (Practice start screen) */
+    .saved-tests {
+      margin: 12px 0 4px;
+      padding: 12px 14px;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      background: var(--accent-soft);
+    }
+    .saved-tests-title { font-weight: 700; font-size: 15px; color: var(--text); }
+    .saved-tests-count { color: var(--text-secondary); font-weight: 600; font-size: 13px; }
+    .saved-tests-list { max-height: min(50vh, 420px); overflow-y: auto; overscroll-behavior: contain; }
+    .saved-test {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-strong);
+    }
+    .saved-test:first-child { margin-top: 8px; }
+    .saved-test-info { min-width: 0; flex: 1 1 220px; }
+    .saved-test-progress { font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
+    .saved-test-meta { margin-top: 2px; font-size: 13px; color: var(--text-secondary); overflow-wrap: anywhere; }
+    .saved-test-actions { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+    .saved-test-actions .primary-btn { width: auto; padding: 10px 16px; }
+
     .primary-btn {
       min-height: var(--tap);
       padding: 12px 18px;
@@ -1068,6 +1117,7 @@
 
     .practice-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .practice-actions > * { flex: 1; min-width: 140px; }
+    .practice-actions .reset-btn { white-space: normal; line-height: 1.3; } /* long labels wrap on phones */
 
     .practice-big-score { font-size: 44px; font-weight: 800; color: var(--text); }
 
@@ -1098,11 +1148,16 @@
     .practice-item.current .pi-blank { background: var(--accent); }
     .practice-item.correct { background: var(--success-soft); border-left-color: var(--success); color: var(--success); }
     .practice-item.wrong { background: var(--danger-soft); border-left-color: var(--danger); color: var(--danger); }
-    .practice-item.skipped .pi-blank { background: var(--text-tertiary); opacity: 0.5; }
 
     .practice-empty { color: var(--text-tertiary); font-size: 14px; padding: 8px 4px; }
 
-    .practice-filters { grid-template-columns: 1fr 1fr !important; }
+    #statsFilters, #practiceFilters { grid-template-columns: 1fr 1fr !important; }
+    #practiceFilters .field-origin { grid-column: 1 / -1; }
+    @media (min-width: 700px) {
+      #practiceFilters { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      #practiceFilters .field-origin { grid-column: auto; }
+    }
+
     .letter-legend { margin: 8px 0 0; }
 
     /* Letter buttons with a correct/wrong/pending grade bar */
@@ -1191,6 +1246,7 @@
     .stats-columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 16px; align-items: start; }
     .stats-col { min-width: 0; }
     .stats-col .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-tile.stat-wide { grid-column: 1 / -1; } /* odd tile out fills the last row */
     .stats-col-header {
       display: flex;
       align-items: center;
@@ -1264,7 +1320,7 @@
     /* Phones and iPads: bigger group labels and roomier options in the Results dropdown */
     @media (max-width: 1366px) and (pointer: coarse), (max-width: 1024px) {
       .select-group-label { font-size: 17px; }
-      .single-select .multi-select-option { min-height: 42px; font-size: 15px; }
+      .grouped-select .multi-select-option { min-height: 42px; font-size: 15px; }
     }
 
     /* Small phones */
@@ -1378,27 +1434,27 @@
     <div class="field">
       <label class="field-label" for="resultFilter">Results</label>
       <!-- Custom dropdown: phones ignore styling on a native <select>'s group labels -->
-      <details class="multi-select single-select" id="resultFilter">
-        <summary>All words</summary>
+      <details class="multi-select grouped-select filter-select" id="resultFilter" data-all-text="All words">
+        <summary><span class="summary-text">All words</span></summary>
         <div class="multi-select-menu">
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="all" checked />All words</label>
+          <label class="multi-select-option"><input type="checkbox" value="all" checked />All words</label>
           <div class="select-group-label">Learning</div>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="covered" />Covered</label>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="not-covered" />Not covered</label>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="correction" />Marked for correction</label>
+          <label class="multi-select-option"><input type="checkbox" value="completed" />Completed</label>
+          <label class="multi-select-option"><input type="checkbox" value="not-started" />Not started</label>
+          <label class="multi-select-option"><input type="checkbox" value="correction" />Marked for correction</label>
           <div class="select-group-label">Practice</div>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-wrong" />Spelled wrong</label>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-ever-wrong" />Ever spelled wrong</label>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-correct" />Spelled right</label>
-          <label class="multi-select-option"><input type="radio" name="resultFilter" value="practice-pending" />Not practiced</label>
+          <label class="multi-select-option"><input type="checkbox" value="practice-wrong" />Spelled wrong</label>
+          <label class="multi-select-option"><input type="checkbox" value="practice-ever-wrong" />Ever spelled wrong</label>
+          <label class="multi-select-option"><input type="checkbox" value="practice-correct" />Spelled right</label>
+          <label class="multi-select-option"><input type="checkbox" value="practice-pending" />Not practiced</label>
         </div>
       </details>
     </div>
 
     <div class="field field-origin">
       <label class="field-label" for="originFilter">Origin</label>
-      <!-- Options are built from the words in the selected scopes (app.js) -->
-      <details class="multi-select single-select origin-select" id="originFilter">
+      <!-- Options are built from the words matching Scope, Difficulty and Results (app.js) -->
+      <details class="multi-select grouped-select origin-select filter-select" id="originFilter" data-all-text="All origins">
         <summary><span class="summary-text">All origins</span></summary>
         <div class="multi-select-menu"></div>
       </details>
@@ -1438,7 +1494,7 @@
       </div>
       <div class="collapse-body">
         <div class="list-legend">
-          <span><i class="dot dot-covered"></i>Covered</span>
+          <span><i class="dot dot-covered"></i>Completed</span>
           <span><i class="dot dot-correct"></i>Spelled right</span>
           <span><i class="dot dot-wrong"></i>Spelled wrong</span>
         </div>
@@ -1535,6 +1591,15 @@
         </details>
       </div>
 
+      <div class="field field-origin">
+        <label class="field-label" for="practiceOriginFilter">Origin</label>
+        <!-- Options are built from the words matching Scope and Difficulty (practice.js) -->
+        <details class="multi-select grouped-select origin-select filter-select" id="practiceOriginFilter" data-all-text="All origins">
+          <summary><span class="summary-text">All origins</span></summary>
+          <div class="multi-select-menu"></div>
+        </details>
+      </div>
+
       <div class="collapsible letters-collapsible collapsed">
         <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
           <span>Letters</span>
@@ -1568,6 +1633,11 @@
         <!-- Start -->
         <div id="practiceStart" class="practice-screen">
           <h2 class="practice-title">Spelling test</h2>
+          <!-- Tests saved with "Save for later" (newest first); ending or finishing one removes it -->
+          <section id="practiceSaved" class="saved-tests" aria-labelledby="practiceSavedTitle" hidden>
+            <div class="saved-tests-title" id="practiceSavedTitle">💾 Saved tests <span id="practiceSavedCount" class="saved-tests-count"></span></div>
+            <div id="practiceSavedList" class="saved-tests-list"></div>
+          </section>
           <p class="practice-sub" id="practiceSetText"></p>
           <div class="practice-tally practice-tally-start" aria-label="Word counts">
             <div class="tally-item"><span class="tally-value" id="startTallyTotal">0</span><span class="tally-label">Total words</span></div>
@@ -1615,7 +1685,10 @@
         <div id="practiceQuestion" class="practice-screen" hidden>
           <div class="practice-top">
             <span id="practiceCounter" class="practice-counter"></span>
-            <button class="link-btn" id="practiceEndBtn">End test</button>
+            <div class="practice-top-actions">
+              <button type="button" class="reset-btn practice-top-btn" id="practiceSaveBtn" title="Keep this test to finish later">💾 Save for later</button>
+              <button type="button" class="reset-btn practice-top-btn end-test-btn" id="practiceEndBtn" title="Finish now and see your results">⏹️ End test</button>
+            </div>
           </div>
           <div class="practice-tally" aria-label="Test progress">
             <div class="tally-item"><span class="tally-value" id="tallyTotal">0</span><span class="tally-label">Total</span></div>
@@ -1662,7 +1735,6 @@
           <div id="practiceFeedback" class="practice-feedback" hidden aria-live="polite"></div>
 
           <div class="practice-actions">
-            <button class="reset-btn" id="practiceSkipBtn">Skip for now</button>
             <button class="primary-btn" id="practiceNextBtn" hidden>Next word →</button>
           </div>
         </div>
@@ -1674,7 +1746,7 @@
           <p class="practice-sub" id="practiceDoneText"></p>
           <div class="practice-actions">
             <button class="primary-btn" id="practiceRetryBtn">🔁 Practice missed words</button>
-            <button class="reset-btn" id="practiceRestartBtn">New test</button>
+            <button class="reset-btn" id="practiceRestartBtn">🏠 Go to practice home</button>
           </div>
         </div>
       </div>
@@ -1778,7 +1850,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026100801"></script>
-<script src="practice.js?v=2026100704"></script>
+<script src="app.js?v=2026100809"></script>
+<script src="practice.js?v=2026100810"></script>
 </body>
 </html>

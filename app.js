@@ -2,7 +2,6 @@ let words = [];
 let filteredWords = [];
 let currentIndex = -1;
 let currentItem = null;               // canonical selected word
-let searchQuery = "";
 
 const USER_ID = "nikku";
 const SESSIONS_KEY = "_practiceSessions"; // practice test summaries, same doc
@@ -105,7 +104,56 @@ function practiceSessions() {
   return (progressData && progressData[SESSIONS_KEY]) || [];
 }
 
+/* Practice tests saved part-way through ("Save for later"), so they can be
+   resumed on any device. Stored as { id: test } so each one is saved or
+   removed on its own; ending or finishing a test removes it. Also kept in
+   this browser in case the progress doc can't be reached. */
+const SAVED_TESTS_KEY = "_savedPracticeTests";
+const SAVED_TESTS_LOCAL = "spellingBeeSavedPracticeTests";
+const MAX_SAVED_TESTS = 10; // the whole progress doc has to stay under Firestore's 1 MB
+
+function savedTestsMap() {
+  if (progressData) return progressData[SAVED_TESTS_KEY] || {};
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_TESTS_LOCAL)) || {};
+  } catch {
+    return {};
+  }
+}
+
+// Newest first
+function savedPracticeTests() {
+  return Object.entries(savedTestsMap())
+    .map(([id, test]) => ({ ...test, id }))
+    .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
+}
+
+// `test` = null removes that saved test
+async function storeSavedPracticeTest(id, test) {
+  const map = { ...savedTestsMap() };
+  if (test) map[id] = test;
+  else delete map[id];
+  if (progressData) progressData[SAVED_TESTS_KEY] = map;
+  try {
+    localStorage.setItem(SAVED_TESTS_LOCAL, JSON.stringify(map));
+  } catch {
+    // private browsing / storage full: the progress doc still has them
+  }
+  if (!window.db) return;
+  try {
+    const { doc, setDoc, deleteField } = await import(FIRESTORE_URL);
+    await setDoc(
+      doc(window.db, "progress", USER_ID),
+      { [SAVED_TESTS_KEY]: { [id]: test || deleteField() } },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn("Could not save the practice test:", err);
+  }
+}
+
 async function resetCloudProgress() {
+  try { localStorage.removeItem(SAVED_TESTS_LOCAL); } catch {}
   if (progressData) progressData = {};
   if (!window.db) return;
   const { doc, setDoc } = await import(FIRESTORE_URL);
@@ -233,7 +281,8 @@ function practiceStatus(item) {
 document.addEventListener("DOMContentLoaded", () => {
   loadAmericanVoice();
 
-  document.querySelectorAll(".multi-select input[type=checkbox]").forEach(input => {
+  // Scope and Difficulty (Results and Origin are wired by wireFilterSelect)
+  document.querySelectorAll(".multi-select:not(.filter-select) input[type=checkbox]").forEach(input => {
     input.addEventListener("change", event => {
       updateMultiSelectSummary(event.target.closest(".multi-select"));
       if (event.target.closest("#learningTab")) applyFilter();
@@ -241,20 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  document.querySelectorAll('#resultFilter input[type="radio"]').forEach(input => {
-    input.addEventListener("change", () => {
-      updateResultFilterSummary();
-      document.getElementById("resultFilter").open = false;
-      applyFilter();
-    });
-  });
-  // Origin options are rebuilt on scope changes, so listen on the dropdown itself
-  document.getElementById("originFilter").addEventListener("change", event => {
-    if (event.target.name !== "originFilter") return;
-    updateOriginFilterSummary();
-    document.getElementById("originFilter").open = false;
-    applyFilter();
-  });
+  wireFilterSelect("resultFilter", applyFilter);
+  wireFilterSelect("originFilter", applyFilter);
   document.getElementById("prevWordBtn").addEventListener("click", () => stepWord(-1));
   document.getElementById("nextWordBtn").addEventListener("click", () => stepWord(1));
   document.querySelectorAll(".collapse-toggle").forEach(toggle => {
@@ -269,10 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("clearCoveredBtn").addEventListener("click", clearCovered);
   document.getElementById("syncRetryBtn").addEventListener("click", retryProgressNow);
 
-  document.getElementById("searchInput").addEventListener("input", e => {
-    searchQuery = e.target.value.toLowerCase().trim();
-    applyFilter();
-  });
+  document.getElementById("searchInput").addEventListener("input", applyFilter);
 
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -324,16 +358,19 @@ function switchTab(tab) {
   if (tab === "practice" && typeof openPractice === "function") openPractice();
 }
 
+// Opening Learning from a Stats tile or word shows exactly those words:
+// any Origin pick there would hide some of them
 function showFilteredResults(filter) {
-  setResultFilter(filter);
+  setFilterSelect("resultFilter", [filter]);
+  setFilterSelect("originFilter", []);
   switchTab("learning");
   applyFilter();
 }
 
 function showWordInLearning(word) {
-  setResultFilter("all");
+  setFilterSelect("resultFilter", []);
+  setFilterSelect("originFilter", []);
   document.getElementById("searchInput").value = word;
-  searchQuery = word.toLowerCase();
   switchTab("learning");
   applyFilter();
   const index = filteredWords.findIndex(w => w.word === word);
@@ -361,6 +398,43 @@ function difficultySummary(id = "difficultyFilter") {
   return levels.map(difficultyLabel).join(", ") || "No difficulty";
 }
 
+// An option's name without its count badge: "School", not "School450"
+function optionText(input) {
+  return input.dataset.label || Array.from(input.parentElement.childNodes)
+    .filter(node => node.nodeType === Node.TEXT_NODE)
+    .map(node => node.textContent).join("").trim();
+}
+
+// Shows how many words an option would match (right-aligned, like Origin's)
+function setOptionCount(input, count) {
+  let badge = input.parentElement.querySelector(".option-count");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.className = "option-count";
+    input.parentElement.append(badge);
+  }
+  badge.textContent = count;
+}
+
+// Learning dropdown counts, each counted within the filters before it:
+// Scope from every word, Difficulty within the picked scopes, Results within
+// Scope + Difficulty, Origin within Scope + Difficulty + Results
+function renderLearningCounts() {
+  const scopes = selectedValues("scopeFilter");
+  const levels = selectedValues("difficultyFilter");
+  document.querySelectorAll('#scopeFilter input[type="checkbox"]').forEach(input =>
+    setOptionCount(input, words.filter(w => w._scope === input.value).length));
+  const inScope = words.filter(w => scopes.includes(w._scope));
+  document.querySelectorAll('#difficultyFilter input[type="checkbox"]').forEach(input =>
+    setOptionCount(input, inScope.filter(w => w.difficulty === input.value).length));
+  const base = inScope.filter(w => levels.includes(w.difficulty));
+  document.querySelectorAll('#resultFilter input[type="checkbox"]').forEach(input =>
+    setOptionCount(input, input.value === "all"
+      ? base.length
+      : base.filter(w => matchesResultFilter(w, input.value)).length));
+  renderOriginOptions(LEARNING_FILTERS.origin, wordsBeforeOrigin(LEARNING_FILTERS));
+}
+
 function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
@@ -373,79 +447,155 @@ function updateMultiSelectSummary(container) {
     summary.textContent = "All Bees";
     return;
   }
-  summary.textContent = selected.map(input => input.parentElement.textContent.trim()).join(", ");
+  summary.textContent = selected.map(optionText).join(", ");
 }
 
-/* Results dropdown (radio buttons inside a <details>) */
-function getResultFilter() {
-  return document.querySelector('#resultFilter input[type="radio"]:checked')?.value || "all";
+/* ---------------------------
+   Results and Origin dropdowns (Learning and Practice)
+   Multi-select checkboxes with an "All" option: ticking "All" clears the
+   others, ticking anything else clears "All", and clearing everything goes
+   back to "All".
+--------------------------- */
+function filterSelectValues(id) {
+  return selectedValues(id).filter(value => value !== "all");
 }
 
-function setResultFilter(value) {
-  document.querySelectorAll('#resultFilter input[type="radio"]').forEach(input => {
-    input.checked = input.value === value;
+function updateFilterSelectSummary(id) {
+  const container = document.getElementById(id);
+  const names = Array.from(container.querySelectorAll('input[type="checkbox"]:checked'))
+    .filter(input => input.value !== "all")
+    .map(optionText);
+  container.querySelector(".summary-text").textContent = !names.length
+    ? container.dataset.allText
+    : names.length <= 2 ? names.join(", ") : `${names.slice(0, 2).join(", ")} +${names.length - 2}`;
+}
+
+function setFilterSelect(id, values) {
+  const container = document.getElementById(id);
+  container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+    input.checked = values.length ? values.includes(input.value) : input.value === "all";
   });
-  updateResultFilterSummary();
+  updateFilterSelectSummary(id);
 }
 
-function updateResultFilterSummary() {
-  const container = document.getElementById("resultFilter");
-  const checked = container.querySelector("input:checked");
-  container.querySelector("summary").textContent = checked
-    ? checked.parentElement.textContent.trim()
-    : "All words";
+// Listens on the dropdown itself because Origin's options are rebuilt
+function wireFilterSelect(id, onChange) {
+  const container = document.getElementById(id);
+  container.addEventListener("change", event => {
+    const input = event.target;
+    if (input.type !== "checkbox") return;
+    const all = container.querySelector('input[value="all"]');
+    if (input === all) {
+      if (all.checked) container.querySelectorAll('input[type="checkbox"]').forEach(i => (i.checked = i === all));
+      else all.checked = true; // "All" can't be unticked on its own
+    } else {
+      all.checked = !filterSelectValues(id).length;
+    }
+    updateFilterSelectSummary(id);
+    onChange();
+  });
 }
 
-/* Origin dropdown (radio buttons built from the words in the selected scopes) */
+// "Not started" vs "Completed": a word counts as completed once it's been
+// opened on the Learning card or attempted in Practice
+function isCompleted(item) {
+  return item.covered || item.practice.attempts > 0;
+}
+
+function matchesResultFilter(w, filter) {
+  switch (filter) {
+    case "completed": return isCompleted(w);
+    case "not-started": return !isCompleted(w);
+    case "practice-wrong": return practiceStatus(w) === "wrong";
+    // Wrong in any attempt, even if spelled right since
+    case "practice-ever-wrong": return w.practice.wrong > 0;
+    case "practice-correct": return practiceStatus(w) === "correct";
+    case "practice-pending": return practiceStatus(w) === "pending";
+    case "correction": return w.markedForCorrection;
+    default: return true;
+  }
+}
+
+// Picks in the same group widen the list (Spelled wrong OR Not practiced);
+// picks in different groups narrow it (Completed AND Spelled wrong)
+const RESULT_GROUPS = [
+  ["completed", "not-started", "correction"],
+  ["practice-wrong", "practice-ever-wrong", "practice-correct", "practice-pending"]
+];
+
+function matchesResults(w, picked) {
+  return RESULT_GROUPS.every(group => {
+    const chosen = group.filter(value => picked.includes(value));
+    return !chosen.length || chosen.some(value => matchesResultFilter(w, value));
+  });
+}
+
 // Languages in a word's origin: "Latin, French" -> ["Latin", "French"]
 function originsOf(item) {
   return (item.origin || "").split(",").map(s => s.trim()).filter(Boolean);
 }
 
-function getOriginFilter() {
-  return document.querySelector('#originFilter input[type="radio"]:checked')?.value || "all";
-}
-
-function updateOriginFilterSummary() {
-  const origin = getOriginFilter();
-  document.querySelector("#originFilter .summary-text").textContent =
-    origin === "all" ? "All origins" : origin;
-}
-
-// One option per language, with how many words in the selected scopes have it.
-// Rebuilt only when the scopes (or loaded words) change; keeps the current
-// choice unless no word in the new scopes has that origin.
-let originOptionsKey = null;
-function renderOriginOptions() {
-  const key = `${selectedValues("scopeFilter").join(",")}|${words.length}`;
-  if (key === originOptionsKey) return;
-  originOptionsKey = key;
-
-  const scopeWords = learningScopeWords();
-  const counts = new Map();
-  scopeWords.forEach(w => originsOf(w).forEach(o => counts.set(o, (counts.get(o) || 0) + 1)));
-  const current = counts.has(getOriginFilter()) ? getOriginFilter() : "all";
+// One option per language among `baseWords` (the words matching the filters
+// before Origin), with counts. Picked languages stay listed (count 0) even if
+// those filters no longer include them, so they can still be unticked.
+function renderOriginOptions(id, baseWords) {
+  const menu = document.querySelector(`#${id} .multi-select-menu`);
+  const picked = filterSelectValues(id);
+  const counts = new Map(picked.map(origin => [origin, 0]));
+  baseWords.forEach(w => originsOf(w).forEach(o => counts.set(o, (counts.get(o) || 0) + 1)));
 
   const option = (value, text, count) => {
     const label = document.createElement("label");
     label.className = "multi-select-option";
     const input = document.createElement("input");
-    input.type = "radio";
-    input.name = "originFilter";
+    input.type = "checkbox";
     input.value = value;
-    input.checked = value === current;
+    input.dataset.label = text;
+    input.checked = value === "all" ? !picked.length : picked.includes(value);
     const countEl = document.createElement("span");
     countEl.className = "option-count";
     countEl.textContent = count;
     label.append(input, text, countEl);
     return label;
   };
-  const sorted = [...counts].sort((a, b) => a[0].localeCompare(b[0]));
-  document.querySelector("#originFilter .multi-select-menu").replaceChildren(
-    option("all", "All origins", scopeWords.length),
-    ...sorted.map(([origin, count]) => option(origin, origin, count))
+
+  const scrollTop = menu.scrollTop; // rebuilt while open: don't jump to the top
+  menu.replaceChildren(
+    option("all", "All origins", baseWords.length),
+    ...[...counts].sort((a, b) => a[0].localeCompare(b[0])).map(([o, n]) => option(o, o, n))
   );
-  updateOriginFilterSummary();
+  menu.scrollTop = scrollTop;
+  updateFilterSelectSummary(id);
+}
+
+/* Shared filtering for Learning and Practice. Each tab names its own controls. */
+const LEARNING_FILTERS = {
+  scope: "scopeFilter", difficulty: "difficultyFilter", results: "resultFilter",
+  origin: "originFilter", search: "searchInput", letters: () => window.selectedLetters
+};
+
+// Scope, Difficulty and Results: the words the Origin options are counted from
+function wordsBeforeOrigin(f) {
+  const scopes = selectedValues(f.scope);
+  const levels = selectedValues(f.difficulty);
+  const results = filterSelectValues(f.results);
+  return words.filter(w =>
+    scopes.includes(w._scope) && levels.includes(w.difficulty) && matchesResults(w, results)
+  );
+}
+
+// Every filter; `ignoreLetters` gives the words the letter buttons are counted from
+function wordsMatchingFilters(f, { ignoreLetters = false } = {}) {
+  const base = wordsBeforeOrigin(f);
+  renderOriginOptions(f.origin, base);
+  const origins = filterSelectValues(f.origin);
+  const query = document.getElementById(f.search).value.toLowerCase().trim();
+  const letters = f.letters();
+  return base.filter(w =>
+    (!origins.length || originsOf(w).some(o => origins.includes(o))) &&
+    w.word.toLowerCase().includes(query) &&
+    (ignoreLetters || !letters || !letters.size || letters.has(w.word.charAt(0).toUpperCase()))
+  );
 }
 
 /* Collapsed-toggle text for a letter row, e.g. "All" or "A, C" */
@@ -470,47 +620,8 @@ function shuffleArray(arr) {
 /* ---------------------------
    Filtering
 --------------------------- */
-// Words in the scopes picked on the Learning tab
-function learningScopeWords() {
-  const scopes = selectedValues("scopeFilter");
-  return words.filter(w => scopes.includes(w._scope));
-}
-
-function matchesResultFilter(w, filter) {
-  switch (filter) {
-    case "covered": return w.covered;
-    case "not-covered": return !w.covered;
-    case "practice-wrong": return practiceStatus(w) === "wrong";
-    // Wrong in any attempt, even if spelled right since
-    case "practice-ever-wrong": return w.practice.wrong > 0;
-    case "practice-correct": return practiceStatus(w) === "correct";
-    case "practice-pending": return practiceStatus(w) === "pending";
-    case "correction": return w.markedForCorrection;
-    default: return true;
-  }
-}
-
 function applyFilter() {
-  renderOriginOptions();
-  const levels = selectedValues("difficultyFilter");
-  const resultFilter = getResultFilter();
-  const origin = getOriginFilter();
-
-  filteredWords = learningScopeWords().filter(w => {
-    const firstLetter = w.word?.charAt(0)?.toUpperCase();
-    const letterMatch =
-      !window.selectedLetters ||
-      window.selectedLetters.size === 0 ||
-      window.selectedLetters.has(firstLetter);
-
-    return (
-      levels.includes(w.difficulty) &&
-      matchesResultFilter(w, resultFilter) &&
-      (origin === "all" || originsOf(w).includes(origin)) &&
-      w.word.toLowerCase().includes(searchQuery) &&
-      letterMatch
-    );
-  });
+  filteredWords = wordsMatchingFilters(LEARNING_FILTERS);
 
   // Keep the selected word highlighted if it's still in the list
   currentIndex = currentItem ? filteredWords.indexOf(currentItem) : -1;
@@ -551,11 +662,11 @@ function renderWordList() {
     if (index === currentIndex) {
       div.classList.add("active");
     }
-    // Practice results win over "covered"; a wrong latest attempt shows red
+    // Practice results win over "completed"; a wrong latest attempt shows red
     const status = practiceStatus(item);
     if (status === "wrong") div.classList.add("wrong");
     else if (status === "correct") div.classList.add("correct");
-    else if (item.covered) div.classList.add("covered");
+    else if (isCompleted(item)) div.classList.add("covered");
 
     list.appendChild(div);
   });
@@ -846,6 +957,7 @@ function toggleCorrection(event) {
     markedForCorrection: currentItem.markedForCorrection,
     correctionNote: currentItem.correctionNote
   });
+  renderLearningCounts(); // "Marked for correction" count
 
   applyFilter();
 }
@@ -895,20 +1007,22 @@ function readSentence() {
 --------------------------- */
 function updateProgress() {
   const total = filteredWords.length;
-  const covered = filteredWords.filter(w => w.covered).length;
+  const completed = filteredWords.filter(isCompleted).length;
 
   document.getElementById("categoryCount").innerText =
     `${difficultySummary()} — ${total} words`;
 
   document.getElementById("progressText").innerText =
-    `${covered} / ${total} covered`;
+    `${completed} / ${total} completed`;
 
   const fill = document.getElementById("progressBarFill");
   if (fill) {
-    const pct = total ? Math.round((covered / total) * 100) : 0;
+    const pct = total ? Math.round((completed / total) * 100) : 0;
     fill.style.width = `${pct}%`;
   }
 
+  // Opening or practicing a word moves it between Results groups
+  renderLearningCounts();
   if (activeTab === "stats") renderStats();
 }
 
@@ -922,19 +1036,20 @@ function escapeHtml(text) {
 }
 
 function learningCounts(list) {
-  const covered = list.filter(w => w.covered).length;
+  const completed = list.filter(isCompleted).length;
   return {
     total: list.length,
-    covered,
-    notCovered: list.length - covered,
+    completed,
+    notStarted: list.length - completed,
     correction: list.filter(w => w.markedForCorrection).length
   };
 }
 
 function practiceCounts(list) {
-  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, attempts: 0, correctAttempts: 0, wrongAttempts: 0 };
+  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, everWrong: 0, attempts: 0, correctAttempts: 0, wrongAttempts: 0 };
   list.forEach(w => {
     counts[practiceStatus(w)]++;
+    if (w.practice.wrong > 0) counts.everWrong++; // wrong in any attempt, even if right since
     counts.attempts += w.practice.attempts;
     counts.correctAttempts += w.practice.correct;
     counts.wrongAttempts += w.practice.wrong;
@@ -952,12 +1067,12 @@ function stackBarHtml(segments, total, small) {
   return `<div class="${small ? "mini-bar-track" : "stack-bar"}">${segs}</div>`;
 }
 
-function statTile(label, value, color, filter) {
+function statTile(label, value, color, filter, extraClass = "") {
   const attrs = filter
     ? ` stat-filter" data-filter="${filter}" role="button" tabindex="0" title="Show these words in Learning`
     : "";
   return `
-    <div class="stat-tile${attrs}">
+    <div class="stat-tile${extraClass ? ` ${extraClass}` : ""}${attrs}">
       <div class="stat-label">${label}</div>
       <div class="stat-value"${color ? ` style="color:${color}"` : ""}>${value}</div>
     </div>`;
@@ -1000,6 +1115,8 @@ function formatSessionFilters(session) {
   return [
     scope || "",
     difficulty || "",
+    session.results || "",
+    session.origins && session.origins.length ? session.origins.join(", ") : "",
     letters && letters.length ? `Letters ${letters.join(", ")}` : "All letters"
   ].filter(Boolean).join(" · ");
 }
@@ -1073,7 +1190,6 @@ function copyStatsFiltersToLearning() {
       btn.classList.toggle("active", statsLetters.has(btn.textContent));
     });
   }
-  searchQuery = "";
   document.getElementById("searchInput").value = "";
 }
 
@@ -1091,8 +1207,8 @@ function renderStats() {
   // ---- Learning ----
   const lc = learningCounts(scopeWords);
   const learningSegments = c => [
-    { count: c.covered, cls: "seg-covered", label: "Covered" },
-    { count: c.notCovered, cls: "seg-empty", label: "Not covered" }
+    { count: c.completed, cls: "seg-covered", label: "Completed" },
+    { count: c.notStarted, cls: "seg-empty", label: "Not started" }
   ];
   const learningRows = levels.map(level => {
     const c = learningCounts(scopeWords.filter(w => w.difficulty === level));
@@ -1101,7 +1217,7 @@ function renderStats() {
       <div class="mini-bar-row">
         <div class="mini-bar-row-header">
           <span class="mini-bar-title">${difficultyLabel(level)}</span>
-          <span class="mini-bar-caption">${c.covered} of ${c.total} covered</span>
+          <span class="mini-bar-caption">${c.completed} of ${c.total} completed</span>
         </div>
         ${stackBarHtml(learningSegments(c), c.total, true)}
       </div>`;
@@ -1168,17 +1284,17 @@ function renderStats() {
         <div class="stats-col-header learning"><h2 class="stats-heading">📖 Learning</h2></div>
         <div class="stat-grid">
           ${statTile("Total words", lc.total)}
-          ${statTile("✓ Covered", lc.covered, "var(--covered)", "covered")}
-          ${statTile("○ Not covered", lc.notCovered, null, "not-covered")}
+          ${statTile("✓ Completed", lc.completed, "var(--covered)", "completed")}
+          ${statTile("○ Not started", lc.notStarted, null, "not-started")}
           ${statTile("⚑ Marked for correction", lc.correction, "var(--accent-hover)", "correction")}
         </div>
         <div class="stat-section">
           <h3>Overall</h3>
           ${stackBarHtml(learningSegments(lc), lc.total, false)}
           <div class="stack-legend">
-            <div class="legend-item"><span class="legend-swatch" style="background:var(--covered)"></span>Covered — <strong>${lc.covered}</strong></div>
-            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not covered — <strong>${lc.notCovered}</strong></div>
-            <div class="legend-item">${lc.total ? Math.round((lc.covered / lc.total) * 100) : 0}% covered</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--covered)"></span>Completed — <strong>${lc.completed}</strong></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:var(--border-strong)"></span>Not started — <strong>${lc.notStarted}</strong></div>
+            <div class="legend-item">${lc.total ? Math.round((lc.completed / lc.total) * 100) : 0}% completed</div>
           </div>
         </div>
         <div class="stat-section">
@@ -1192,8 +1308,9 @@ function renderStats() {
         <div class="stat-grid">
           ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
           ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
+          ${statTile("🔁 Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong")}
           ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
-          ${statTile("🎯 Accuracy", `${accuracy}%`)}
+          ${statTile("🎯 Accuracy", `${accuracy}%`, null, null, "stat-wide")}
         </div>
         <div class="stat-section">
           <h3>Overall</h3>
@@ -1249,7 +1366,7 @@ function renderStats() {
    Reset
 --------------------------- */
 async function confirmReset() {
-  if (!confirm("⚠️ This will reset ALL progress — covered words, practice history and test results.\n\nContinue?")) return;
+  if (!confirm("⚠️ This will reset ALL progress — completed words, practice history and test results.\n\nContinue?")) return;
   if (!confirm("❗ Are you REALLY sure?")) return;
   if (!confirm("🛑 Last chance: all progress will be permanently deleted. This cannot be undone.\n\nDelete everything?")) return;
   await resetSelection();
@@ -1258,7 +1375,6 @@ async function confirmReset() {
 async function resetSelection() {
   currentIndex = -1;
   currentItem = null;
-  searchQuery = "";
   document.getElementById("correctionCheckbox").checked = false;
   document.getElementById("correctionNote").value = "";
   document.getElementById("correctionNote").hidden = true;
@@ -1272,7 +1388,8 @@ async function resetSelection() {
 
   document.querySelectorAll("#difficultyFilter input").forEach(input => (input.checked = true));
   updateMultiSelectSummary(document.getElementById("difficultyFilter"));
-  setResultFilter("all");
+  setFilterSelect("resultFilter", []);
+  setFilterSelect("originFilter", []);
   document.getElementById("searchInput").value = "";
 
   if (window.selectedLetters) {
