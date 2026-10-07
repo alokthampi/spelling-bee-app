@@ -117,11 +117,10 @@ async function resetCloudProgress() {
 --------------------------- */
 // Every scope is loaded once up front; the Learning and Practice tabs each
 // filter by scope in memory, and share the same word objects.
-// Regional has no word list yet.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026100101",
-  regional: null
+  school: "word_list_school.json?v=2026100704",
+  regional: "word_list_regional.json?v=2026100704"
 };
 
 function emptyPractice() {
@@ -579,6 +578,46 @@ function playMWAudio(url) {
   audioPlayer.play().catch(() => {});
 }
 
+// Recorded MW pronunciations of a word, the default (MW's preferred) first.
+// Older word files only have audio_url.
+function recordedPronunciations(item) {
+  const urls = (item?.pronunciations || []).map(p => p.audio_url).filter(Boolean);
+  return urls.length ? urls : (item?.audio_url ? [item.audio_url] : []);
+}
+
+// Every MW pronunciation as written by MW; recorded ones play when tapped,
+// ones MW spells out without a recording are shown dashed
+function renderPronunciations(item) {
+  const el = document.getElementById("pronunciations");
+  el.replaceChildren();
+  const list = item?.pronunciations || [];
+  if (!list.length) {
+    el.textContent = "—";
+    return;
+  }
+  const defaultUrl = recordedPronunciations(item)[0];
+  for (const p of list) {
+    const chip = document.createElement(p.audio_url ? "button" : "span");
+    chip.className = "pronunciation-chip";
+    chip.textContent = `${p.audio_url ? "🔊 " : ""}\\${p.written}\\`;
+    if (p.label) {
+      const label = document.createElement("small");
+      label.textContent = p.label;
+      chip.append(label);
+    }
+    if (p.audio_url) {
+      chip.type = "button";
+      chip.title = "Play this pronunciation";
+      chip.addEventListener("click", () => playMWAudio(p.audio_url));
+      if (p.audio_url === defaultUrl) chip.classList.add("default");
+    } else {
+      chip.classList.add("unrecorded");
+      chip.title = "Merriam-Webster gives this pronunciation but has no recording of it";
+    }
+    el.append(chip);
+  }
+}
+
 function speakAmerican(text) {
   stopAllAudio();
   if (!synth) return;
@@ -610,7 +649,9 @@ function selectWord(index, autoplay = true) {
     currentItem.sentence;
   document.getElementById("pos").innerText =
     currentItem.part_of_speech;
-  renderSentenceSource(currentItem);
+  renderPronunciations(currentItem);
+  renderSourceBadge("definitionSource", currentItem.definition, currentItem.definition_source);
+  renderSourceBadge("sentenceSource", currentItem.sentence, currentItem.sentence_source);
   document.getElementById("correctionCheckbox").checked = currentItem.markedForCorrection;
   document.getElementById("correctionNote").value = currentItem.correctionNote;
   updateCorrectionNoteState(currentItem);
@@ -626,11 +667,12 @@ function selectWord(index, autoplay = true) {
   updateProgress();
 }
 
-// Merriam-Webster sentences get their own badge; every other source shows as generated
-function renderSentenceSource(item) {
-  const badge = document.getElementById("sentenceSource");
-  const isMW = item?.sentence_source === "merriam_webster";
-  badge.hidden = !item?.sentence;
+// Merriam-Webster definitions and sentences get their own badge; every other
+// source shows as generated
+function renderSourceBadge(id, text, source) {
+  const badge = document.getElementById(id);
+  const isMW = source === "merriam_webster";
+  badge.hidden = !text;
   badge.textContent = isMW ? "📖 Merriam-Webster" : "🤖 Generated";
   badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
   badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
@@ -1180,7 +1222,9 @@ async function resetSelection() {
 
   stopAllAudio();
   showCardWord(null);
-  renderSentenceSource(null);
+  renderPronunciations(null);
+  renderSourceBadge("definitionSource", null);
+  renderSourceBadge("sentenceSource", null);
   renderWordCardStatus();
   await resetCloudProgress();
   applyFilter();

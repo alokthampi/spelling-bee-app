@@ -330,6 +330,8 @@ function showQuestion(index, autoplay) {
   updatePracticeCounter();
 
   practiceEl("practiceMWBtn").disabled = !entry.item.audio_url;
+  practiceEl("practiceAltBtn").disabled = recordedPronunciations(entry.item).length < 2;
+  practice.altPronunciation = 0;
   practiceEl("practiceDefBtn").disabled = !entry.item.definition;
   practiceEl("practiceSentBtn").disabled = !entry.item.sentence;
   practiceEl("practiceOriginBtn").disabled = !entry.item.origin;
@@ -669,6 +671,14 @@ document.addEventListener("DOMContentLoaded", () => {
   practiceEl("practiceMWBtn").addEventListener("click", () => {
     const item = currentEntry()?.item;
     if (item?.audio_url) playMWAudio(item.audio_url);
+  });
+  // Steps through MW's other recordings (never the default, which has its own
+  // button) without showing them written out, like asking the pronouncer
+  practiceEl("practiceAltBtn").addEventListener("click", () => {
+    const urls = recordedPronunciations(currentEntry()?.item);
+    if (urls.length < 2) return;
+    practice.altPronunciation = (practice.altPronunciation % (urls.length - 1)) + 1;
+    playMWAudio(urls[practice.altPronunciation]);
   });
   practiceEl("practiceUSBtn").addEventListener("click", () => {
     const item = currentEntry()?.item;

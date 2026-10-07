@@ -110,19 +110,84 @@ def is_exact_entry(entry: dict, word: str) -> bool:
     return headword == word.lower()
 
 
-def extract_audio_id(entry: dict) -> Optional[str]:
-    for prs in entry.get("hwi", {}).get("prs", []):
-        sound = prs.get("sound")
-        if sound and sound.get("audio"):
-            return sound["audio"]
+# ============================================================
+# Pronunciations
+# ============================================================
+def headword(entry: dict) -> str:
+    """The entry's headword without MW's syllable dots, e.g. "de*tail" -> "detail"."""
+    return entry.get("hwi", {}).get("hw", "").replace("*", "")
 
-    for ins in entry.get("ins", []):
-        for prs in ins.get("prs", []):
-            sound = prs.get("sound")
-            if sound and sound.get("audio"):
-                return sound["audio"]
 
-    return None
+def pronunciation_items(prs_list: list) -> List[Dict]:
+    """MW "prs" objects as {written, label, audio_url}, in MW's order. A written
+    form without audio is kept: MW often spells out an alternate it hasn't
+    recorded. Partial forms such as "-ˈrij-nəl" are kept as MW shows them."""
+    items = []
+    for prs in prs_list or []:
+        written = prs.get("mw", "")
+        audio = (prs.get("sound") or {}).get("audio")
+        if not written and not audio:
+            continue
+        item = {"written": written, "audio_url": build_audio_url(audio)}
+        label = " ".join(part for part in (prs.get("l"), prs.get("l2")) if part)
+        if label:
+            item["label"] = label
+        items.append(item)
+    return items
+
+
+def find_pronunciations(data: list, word: str, part_of_speech: str = "",
+                        definition: str = "") -> List[Dict]:
+    """Every MW pronunciation of the word, MW's preferred one first.
+
+    Homographs can be pronounced differently ("august" the adjective vs.
+    "August" the month), so the entry is matched on exact spelling first, then
+    on the definition or part of speech the word list uses. Words without their
+    own entry ("amiably", plurals) are looked up among the run-on words and
+    inflections of related entries."""
+    entries = [e for e in data if isinstance(e, dict)]
+
+    candidates = ([e for e in entries if headword(e) == word]
+                  or [e for e in entries if headword(e).lower() == word.lower()])
+    if candidates:
+        chosen = (next((e for e in candidates if definition and definition in e.get("shortdef", [])), None)
+                  or next((e for e in candidates if part_of_speech and e.get("fl") == part_of_speech), None)
+                  or candidates[0])
+        # Later homographs often leave out a pronunciation shared with the first
+        for entry in [chosen] + [e for e in candidates if e is not chosen]:
+            items = pronunciation_items(entry.get("hwi", {}).get("prs"))
+            if items:
+                return items
+        return []
+
+    for entry in entries:
+        for uro in entry.get("uros", []) or []:
+            if uro.get("ure", "").replace("*", "").lower() == word.lower():
+                items = pronunciation_items(uro.get("prs"))
+                if items:
+                    return items
+        for ins in entry.get("ins", []) or []:
+            if ins.get("if", "").replace("*", "").lower() == word.lower():
+                items = pronunciation_items(ins.get("prs"))
+                if items:
+                    return items
+    return []
+
+
+def default_audio_url(pronunciations: List[Dict]) -> Optional[str]:
+    """The first recorded pronunciation, used by the app's Dictionary button."""
+    return next((p["audio_url"] for p in pronunciations if p.get("audio_url")), None)
+
+
+def fetch_mw(word: str) -> Optional[list]:
+    """MW's raw response for a word, or None if the request failed or MW
+    returned something other than a list (such as a key or quota error)."""
+    try:
+        response = requests.get(f"{MW_BASE_URL}/{word}?key={MW_API_KEY}", timeout=15)
+        data = response.json() if response.status_code == 200 else None
+    except Exception:
+        return None
+    return data if isinstance(data, list) else None
 
 
 # ============================================================
@@ -339,28 +404,21 @@ def fetch_tatoeba_sentence(word: str) -> Optional[Dict[str, str]]:
 # Fetch a single word
 # ============================================================
 def fetch_word(word: str, difficulty: str = "three") -> Dict:
-    url = f"{MW_BASE_URL}/{word}?key={MW_API_KEY}"
-
     result = {
         "word": word,
         "difficulty": difficulty,
         "part_of_speech": "",
         "definition": "",
+        "definition_source": "",
         "sentence": "",
         "sentence_source": "",
         "sentence_attribution": "",
         "origin": "",
-        "audio_url": None
+        "audio_url": None,
+        "pronunciations": []
     }
 
-    try:
-        response = requests.get(url, timeout=10)
-        data = response.json() if response.status_code == 200 else []
-    except Exception:
-        data = []
-
-    if not isinstance(data, list):
-        data = []
+    data = fetch_mw(word) or []
 
     exact_entries = []
     related_entries = []
@@ -385,6 +443,7 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
         defs = meaning_entry.get("shortdef", [])
         if defs:
             result["definition"] = defs[0]
+            result["definition_source"] = "merriam_webster"
 
         # Blank origins (compounds, place names, words MW doesn't trace) are
         # filled in by hand in the output file
@@ -416,10 +475,10 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
     # --------------------------------------------------------
     # Audio (exact entry only)
     # --------------------------------------------------------
-    if exact_entries:
-        audio_id = extract_audio_id(exact_entries[0])
-        if audio_id:
-            result["audio_url"] = build_audio_url(audio_id)
+    result["pronunciations"] = find_pronunciations(
+        data, word, result["part_of_speech"], result["definition"]
+    )
+    result["audio_url"] = default_audio_url(result["pronunciations"])
 
     # Prefer a separately sourced, complete practice sentence when MW does
     # not provide one. Tatoeba attribution is retained for CC BY compliance.
@@ -465,6 +524,48 @@ def fetch_words(words: List[Dict[str, str]]) -> List[Dict]:
     return results
 
 
+def update_pronunciations(path: str) -> None:
+    """Refresh pronunciations and audio_url in an existing word file, leaving
+    every other field (including hand edits) untouched. A word whose lookup
+    fails keeps what it had, so the run can simply be repeated."""
+    with open(path, "r", encoding="utf-8") as f:
+        items = json.load(f)
+
+    def lookup(item: Dict) -> Optional[List[Dict]]:
+        data = fetch_mw(item["word"])
+        if data is None:
+            return None
+        return find_pronunciations(data, item["word"],
+                                   item.get("part_of_speech", ""), item.get("definition", ""))
+
+    failed = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {executor.submit(lookup, item): item for item in items}
+        for completed, future in enumerate(as_completed(futures), 1):
+            item = futures[future]
+            pronunciations = future.result()
+            if pronunciations is None:
+                failed.append(item["word"])
+            else:
+                item["pronunciations"] = pronunciations
+                item["audio_url"] = default_audio_url(pronunciations)
+            print(f"[ {completed:>4} / {len(items)} ] {item['word']}", end="\r", flush=True)
+    print()
+
+    # pronunciations sits right after audio_url
+    items = [
+        {**{k: v for k, v in item.items() if k != "pronunciations"},
+         "pronunciations": item.get("pronunciations", [])}
+        for item in items
+    ]
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(items, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+    print(f"Updated {len(items) - len(failed)} words; {len(failed)} lookups failed"
+          + (f": {', '.join(failed)}" if failed else ""))
+
+
 # ============================================================
 # Main
 # ============================================================
@@ -476,11 +577,18 @@ def main() -> None:
                         help="Text file (one word per line) or CSV with Word and Category columns.")
     parser.add_argument("--output", default=OUTPUT_WORD_FILE,
                         help="Destination JSON file.")
+    parser.add_argument("--pronunciations-only", action="store_true",
+                        help="Treat --input as an existing word JSON file and refresh only its "
+                             "pronunciations and audio_url, in place.")
     args = parser.parse_args()
 
     if not MW_API_KEY:
         raise SystemExit("MW_API_KEY is not set. Run this from the 'Generate word data' "
                          "GitHub Actions workflow, or set $env:MW_API_KEY first.")
+
+    if args.pronunciations_only:
+        update_pronunciations(args.input)
+        return
 
     if args.input.lower().endswith(".csv"):
         try:
@@ -506,11 +614,13 @@ def main() -> None:
 
     results = fetch_words(words)
 
-    # Keep the established word fields and add transparent sentence provenance.
+    # Keep the established word fields and add transparent definition and
+    # sentence provenance. Definitions rewritten by hand are marked "generated".
     results = [
         {key: item[key] for key in (
-            "word", "difficulty", "origin", "part_of_speech", "definition", "sentence",
-            "sentence_source", "audio_url"
+            "word", "difficulty", "origin", "part_of_speech", "definition",
+            "definition_source", "sentence", "sentence_source", "audio_url",
+            "pronunciations"
         )}
         for item in results
     ]
