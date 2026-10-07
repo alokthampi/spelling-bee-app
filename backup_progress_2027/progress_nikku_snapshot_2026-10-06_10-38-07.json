@@ -1,0 +1,73 @@
+{
+  "school": {
+    "seminal": {
+      "covered": true
+    },
+    "cataract": {
+      "covered": true
+    },
+    "Addis Ababa": {
+      "covered": true
+    },
+    "a cappella": {
+      "covered": false
+    },
+    "sensilla": {
+      "covered": true
+    },
+    "Cappadocia": {
+      "covered": false
+    },
+    "bioluminescence": {
+      "covered": false
+    },
+    "spes phthisica": {
+      "covered": true
+    },
+    "carrion": {
+      "covered": true
+    },
+    "mysticetes": {
+      "covered": true
+    },
+    "opposite": {
+      "covered": false
+    },
+    "settee": {
+      "covered": true
+    },
+    "trichobothria": {
+      "covered": false
+    },
+    "vibrissae": {
+      "covered": true
+    },
+    "bogong moth": {
+      "covered": true
+    },
+    "chitinous": {
+      "covered": true
+    },
+    "consulate": {
+      "covered": true
+    },
+    "market": {
+      "covered": false
+    },
+    "doberman": {
+      "covered": true
+    },
+    "ototoxic": {
+      "covered": true
+    },
+    "quizzically": {
+      "covered": true
+    },
+    "Eritrea": {
+      "covered": true
+    },
+    "annelids": {
+      "covered": true
+    }
+  }
+}
