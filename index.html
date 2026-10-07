@@ -705,6 +705,35 @@
     .source-badge.source-mw { background: var(--success-soft); color: var(--success); }
     .source-badge.source-generated { background: rgba(251, 191, 36, 0.14); color: var(--warning); }
 
+    /* Every MW pronunciation of the word, MW's preferred one first */
+    .pronunciation-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .pronunciation-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-inset);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      touch-action: manipulation;
+    }
+    button.pronunciation-chip { cursor: pointer; }
+    button.pronunciation-chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .pronunciation-chip.default { border-color: var(--accent); }
+    .pronunciation-chip.unrecorded { color: var(--text-secondary); border-style: dashed; }
+    .pronunciation-chip small { color: var(--text-tertiary); font-size: 11px; }
+
     #definition, #sentence {
       font-size: 14px;
       line-height: 1.55;
@@ -1421,13 +1450,16 @@
         <button onclick="readSentence()">▶️ Sentence</button>
       </div>
 
+      <div class="label">Pronunciation</div>
+      <div id="pronunciations" class="pronunciation-list">—</div>
+
       <div class="label">Difficulty</div>
       <div id="difficulty">—</div>
 
       <div class="label">Origin</div>
       <div id="origin">—</div>
 
-      <div class="label">Definition</div>
+      <div class="label">Definition <span id="definitionSource" class="source-badge" hidden></span></div>
       <div id="definition">—</div>
 
       <div class="label">Sentence <span id="sentenceSource" class="source-badge" hidden></span></div>
@@ -1575,6 +1607,7 @@
 
           <div class="audio-buttons">
             <button id="practiceMWBtn">🔊 Dictionary</button>
+            <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations">🔁 Other pronunciation</button>
             <button id="practiceUSBtn">🗣️ American</button>
           </div>
           <div class="audio-buttons">
@@ -1722,7 +1755,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026100101"></script>
-<script src="practice.js?v=2026100101"></script>
+<script src="app.js?v=2026100704"></script>
+<script src="practice.js?v=2026100704"></script>
 </body>
 </html>
