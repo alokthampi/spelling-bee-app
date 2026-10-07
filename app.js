@@ -248,6 +248,13 @@ document.addEventListener("DOMContentLoaded", () => {
       applyFilter();
     });
   });
+  // Origin options are rebuilt on scope changes, so listen on the dropdown itself
+  document.getElementById("originFilter").addEventListener("change", event => {
+    if (event.target.name !== "originFilter") return;
+    updateOriginFilterSummary();
+    document.getElementById("originFilter").open = false;
+    applyFilter();
+  });
   document.getElementById("prevWordBtn").addEventListener("click", () => stepWord(-1));
   document.getElementById("nextWordBtn").addEventListener("click", () => stepWord(1));
   document.querySelectorAll(".collapse-toggle").forEach(toggle => {
@@ -389,6 +396,58 @@ function updateResultFilterSummary() {
     : "All words";
 }
 
+/* Origin dropdown (radio buttons built from the words in the selected scopes) */
+// Languages in a word's origin: "Latin, French" -> ["Latin", "French"]
+function originsOf(item) {
+  return (item.origin || "").split(",").map(s => s.trim()).filter(Boolean);
+}
+
+function getOriginFilter() {
+  return document.querySelector('#originFilter input[type="radio"]:checked')?.value || "all";
+}
+
+function updateOriginFilterSummary() {
+  const origin = getOriginFilter();
+  document.querySelector("#originFilter .summary-text").textContent =
+    origin === "all" ? "All origins" : origin;
+}
+
+// One option per language, with how many words in the selected scopes have it.
+// Rebuilt only when the scopes (or loaded words) change; keeps the current
+// choice unless no word in the new scopes has that origin.
+let originOptionsKey = null;
+function renderOriginOptions() {
+  const key = `${selectedValues("scopeFilter").join(",")}|${words.length}`;
+  if (key === originOptionsKey) return;
+  originOptionsKey = key;
+
+  const scopeWords = learningScopeWords();
+  const counts = new Map();
+  scopeWords.forEach(w => originsOf(w).forEach(o => counts.set(o, (counts.get(o) || 0) + 1)));
+  const current = counts.has(getOriginFilter()) ? getOriginFilter() : "all";
+
+  const option = (value, text, count) => {
+    const label = document.createElement("label");
+    label.className = "multi-select-option";
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "originFilter";
+    input.value = value;
+    input.checked = value === current;
+    const countEl = document.createElement("span");
+    countEl.className = "option-count";
+    countEl.textContent = count;
+    label.append(input, text, countEl);
+    return label;
+  };
+  const sorted = [...counts].sort((a, b) => a[0].localeCompare(b[0]));
+  document.querySelector("#originFilter .multi-select-menu").replaceChildren(
+    option("all", "All origins", scopeWords.length),
+    ...sorted.map(([origin, count]) => option(origin, origin, count))
+  );
+  updateOriginFilterSummary();
+}
+
 /* Collapsed-toggle text for a letter row, e.g. "All" or "A, C" */
 function updateLetterSummary(containerId, letters) {
   const summary = document.getElementById(containerId)
@@ -432,8 +491,10 @@ function matchesResultFilter(w, filter) {
 }
 
 function applyFilter() {
+  renderOriginOptions();
   const levels = selectedValues("difficultyFilter");
   const resultFilter = getResultFilter();
+  const origin = getOriginFilter();
 
   filteredWords = learningScopeWords().filter(w => {
     const firstLetter = w.word?.charAt(0)?.toUpperCase();
@@ -445,6 +506,7 @@ function applyFilter() {
     return (
       levels.includes(w.difficulty) &&
       matchesResultFilter(w, resultFilter) &&
+      (origin === "all" || originsOf(w).includes(origin)) &&
       w.word.toLowerCase().includes(searchQuery) &&
       letterMatch
     );
