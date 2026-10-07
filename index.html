@@ -396,6 +396,20 @@
       gap: 2px;
     }
     .single-select .multi-select-option input { accent-color: var(--accent); }
+
+    /* Origin: dozens of languages, so the menu scrolls. It's anchored to the field's
+       right edge and grows leftward when the field is narrower than the options
+       (phones, where Origin is the right-hand column) */
+    .origin-select .multi-select-menu {
+      left: auto;
+      right: 0;
+      white-space: nowrap;
+      max-height: min(60vh, 420px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .origin-select .summary-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .option-count { margin-left: auto; padding-left: 8px; color: var(--text-tertiary); font-size: 12px; font-variant-numeric: tabular-nums; }
     .select-group-label {
       margin: 8px 6px 2px;
       padding-top: 8px;
@@ -1263,17 +1277,15 @@
       .letter-btn { width: 30px; height: 32px; font-size: 12px; }
     }
 
-    /* Larger phones / phablets */
-    @media (min-width: 480px) {
-      .difficulty-bar { grid-template-columns: 1fr 1fr; }
-      .field:nth-child(4) { grid-column: 1 / -1; }
-    }
+    /* Learning filters on phones: Scope | Difficulty, Results | Origin, then Search full width */
+    .field-search { grid-column: 1 / -1; }
 
-    /* Tablets portrait (iPad mini/Air/Pro portrait ~744-1024px) and up */
+    /* Tablets portrait (iPad mini/Air/Pro portrait ~744-1024px) and up:
+       Scope | Difficulty | Results, then Origin | Search */
     @media (min-width: 700px) {
-      .difficulty-bar { grid-template-columns: repeat(4, 1fr); }
+      .difficulty-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .field-search { grid-column: span 2; }
       .stats-columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-      .field:nth-child(4) { grid-column: auto; }
       .word-list { max-height: 42vh; }
       .stat-grid { grid-template-columns: repeat(4, 1fr); }
     }
@@ -1297,6 +1309,8 @@
 
     /* Laptop / desktop */
     @media (min-width: 1024px) {
+      .difficulty-bar { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .field-search { grid-column: auto; }
       body { padding: 24px; }
       .app-title { margin-bottom: 24px; }
     }
@@ -1381,7 +1395,16 @@
       </details>
     </div>
 
-    <div class="field">
+    <div class="field field-origin">
+      <label class="field-label" for="originFilter">Origin</label>
+      <!-- Options are built from the words in the selected scopes (app.js) -->
+      <details class="multi-select single-select origin-select" id="originFilter">
+        <summary><span class="summary-text">All origins</span></summary>
+        <div class="multi-select-menu"></div>
+      </details>
+    </div>
+
+    <div class="field field-search">
       <label class="field-label" for="searchInput">Search</label>
       <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
     </div>
@@ -1755,7 +1778,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026100704"></script>
+<script src="app.js?v=2026100801"></script>
 <script src="practice.js?v=2026100704"></script>
 </body>
 </html>
