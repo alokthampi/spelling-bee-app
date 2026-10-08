@@ -41,11 +41,11 @@ function practiceFilteredWords() {
 
 function practicePool() {
   return practiceFilteredWords().filter(w =>
-    !practiceLetters.size || practiceLetters.has(w.word.charAt(0).toUpperCase())
+    !practiceLetters.size || practiceLetters.has(firstLetter(w.word))
   );
 }
 
-const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right", everWrong: "Ever spelled wrong" };
+const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right", everWrong: "Ever spelled wrong", learned: "Completed in Learning" };
 
 // Which practice groups to test: any mix of "wrong", "pending", "correct"
 function selectedModes() {
@@ -55,9 +55,13 @@ function selectedModes() {
 
 // Groups combine: a word is in the test if it's in any picked group.
 // "everWrong" = spelled wrong in at least one attempt, even if right since.
+// "learned" = opened on the Learning card and not practiced yet: once it's
+// spelled in a test it moves to Spelled right or Wrong instead.
 function wordsForModes(pool, modes) {
   return pool.filter(w =>
-    modes.includes(practiceStatus(w)) || (modes.includes("everWrong") && w.practice.wrong > 0)
+    modes.includes(practiceStatus(w)) ||
+    (modes.includes("everWrong") && w.practice.wrong > 0) ||
+    (modes.includes("learned") && w.covered && !w.practice.attempts)
   );
 }
 
@@ -73,11 +77,13 @@ function renderPracticeLetters() {
   const container = practiceEl("practiceLetterFilter");
   container.innerHTML = "";
   updateLetterSummary("practiceLetterFilter", practiceLetters);
+  practiceEl("clearPracticeFilters").disabled =
+    filterDropdownsAtDefault(PRACTICE_DROPDOWNS) && !practiceLetters.size;
 
   const counts = {};
   const all = { correct: 0, wrong: 0, pending: 0 };
   practiceFilteredWords().forEach(w => {
-    const letter = w.word.charAt(0).toUpperCase();
+    const letter = firstLetter(w.word);
     const c = counts[letter] || (counts[letter] = { correct: 0, wrong: 0, pending: 0 });
     c[practiceStatus(w)]++;
     all[practiceStatus(w)]++;
@@ -116,6 +122,14 @@ function renderPracticeLetters() {
       practiceFiltersChanged();
     });
   });
+}
+
+const PRACTICE_DROPDOWNS = ["practiceScopeFilter", "practiceDifficultyFilter", "practiceOriginFilter"];
+
+function clearPracticeFilters() {
+  resetFilterDropdowns(PRACTICE_DROPDOWNS);
+  practiceLetters.clear();
+  practiceFiltersChanged();
 }
 
 function practiceFiltersChanged() {
@@ -164,12 +178,14 @@ function showPracticeStart() {
     wrong: wordsForModes(pool, ["wrong"]).length,
     pending: wordsForModes(pool, ["pending"]).length,
     correct: wordsForModes(pool, ["correct"]).length,
-    everWrong: wordsForModes(pool, ["everWrong"]).length
+    everWrong: wordsForModes(pool, ["everWrong"]).length,
+    learned: wordsForModes(pool, ["learned"]).length
   };
   practiceEl("modeCountWrong").textContent = counts.wrong;
   practiceEl("modeCountPending").textContent = counts.pending;
   practiceEl("modeCountCorrect").textContent = counts.correct;
   practiceEl("modeCountEverWrong").textContent = counts.everWrong;
+  practiceEl("modeCountLearned").textContent = counts.learned;
 
   document.querySelectorAll(".mode-option").forEach(option => {
     const input = option.querySelector("input");
@@ -516,10 +532,13 @@ function showQuestion(index, autoplay) {
   if (autoplay) playPracticeWord();
 }
 
+// Accents don't count, so "pinata" matches "piñata" (spoken bees never spell them)
 function normalizeSpelling(text) {
   return (text || "")
     .trim()
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[‘’]/g, "'")
     .replace(/[‐-—]/g, "-")
     .replace(/\s+/g, " ");
@@ -783,6 +802,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("change", practiceFiltersChanged);
   });
   wireFilterSelect("practiceOriginFilter", practiceFiltersChanged);
+  practiceEl("clearPracticeFilters").addEventListener("click", clearPracticeFilters);
   document.querySelectorAll('input[name="practiceMode"]').forEach(input => {
     input.addEventListener("change", showPracticeStart);
   });

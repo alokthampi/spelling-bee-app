@@ -223,6 +223,10 @@ async function loadWords() {
   if (progress) applyProgressToWords(progress);
   else retryProgressLoad();
 
+  // Shuffle starts on (the button's aria-pressed in index.html)
+  if (!shuffleRanks && document.getElementById("shuffleWordsBtn").getAttribute("aria-pressed") === "true") {
+    shuffleRanks = newShuffleRanks();
+  }
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
 }
@@ -307,6 +311,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("syncRetryBtn").addEventListener("click", retryProgressNow);
 
   document.getElementById("searchInput").addEventListener("input", applyFilter);
+  document.getElementById("clearLearningFilters").addEventListener("click", clearLearningFilters);
+  document.getElementById("shuffleWordsBtn").addEventListener("click", toggleShuffle);
 
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -478,6 +484,49 @@ function setFilterSelect(id, values) {
   updateFilterSelectSummary(id);
 }
 
+/* ---------------------------
+   Clear filters (Learning and Practice): back to how the page opens.
+   Scope and Difficulty go back to their ticked-in-the-HTML options;
+   Results and Origin go back to "All".
+--------------------------- */
+function resetFilterDropdowns(ids) {
+  ids.forEach(id => {
+    const container = document.getElementById(id);
+    if (container.classList.contains("filter-select")) {
+      setFilterSelect(id, []);
+    } else {
+      container.querySelectorAll('input[type="checkbox"]').forEach(input => (input.checked = input.defaultChecked));
+      updateMultiSelectSummary(container);
+    }
+  });
+}
+
+function filterDropdownsAtDefault(ids) {
+  return ids.every(id => {
+    const container = document.getElementById(id);
+    return container.classList.contains("filter-select")
+      ? !filterSelectValues(id).length
+      : Array.from(container.querySelectorAll('input[type="checkbox"]')).every(input => input.checked === input.defaultChecked);
+  });
+}
+
+const LEARNING_DROPDOWNS = ["scopeFilter", "difficultyFilter", "resultFilter", "originFilter"];
+
+function clearLearningFilters() {
+  resetFilterDropdowns(LEARNING_DROPDOWNS);
+  document.getElementById("searchInput").value = "";
+  window.selectedLetters.clear();
+  document.querySelectorAll("#letterFilter .letter-btn.active").forEach(btn => btn.classList.remove("active"));
+  applyFilter();
+}
+
+function updateClearLearningButton() {
+  document.getElementById("clearLearningFilters").disabled =
+    filterDropdownsAtDefault(LEARNING_DROPDOWNS) &&
+    !document.getElementById("searchInput").value.trim() &&
+    !window.selectedLetters.size;
+}
+
 // Listens on the dropdown itself because Origin's options are rebuilt
 function wireFilterSelect(id, onChange) {
   const container = document.getElementById(id);
@@ -594,8 +643,13 @@ function wordsMatchingFilters(f, { ignoreLetters = false } = {}) {
   return base.filter(w =>
     (!origins.length || originsOf(w).some(o => origins.includes(o))) &&
     w.word.toLowerCase().includes(query) &&
-    (ignoreLetters || !letters || !letters.size || letters.has(w.word.charAt(0).toUpperCase()))
+    (ignoreLetters || !letters || !letters.size || letters.has(firstLetter(w.word)))
   );
+}
+
+// A word's letter-button letter, ignoring accents: "éclair" -> "E"
+function firstLetter(word) {
+  return word.normalize("NFD").charAt(0).toUpperCase();
 }
 
 /* Collapsed-toggle text for a letter row, e.g. "All" or "A, C" */
@@ -618,15 +672,43 @@ function shuffleArray(arr) {
 
 
 /* ---------------------------
+   Shuffle (Learning word list)
+   While on, every word keeps one random position, so the order doesn't
+   jump around as filters change. Off goes back to the list's own order.
+--------------------------- */
+let shuffleRanks = null; // "scope:word" -> random position, while Shuffle is on
+
+function wordKey(item) {
+  return `${item._scope}:${item.word}`;
+}
+
+function newShuffleRanks() {
+  const keys = words.map(wordKey);
+  shuffleArray(keys);
+  return new Map(keys.map((key, i) => [key, i]));
+}
+
+function toggleShuffle() {
+  shuffleRanks = shuffleRanks ? null : newShuffleRanks();
+  document.getElementById("shuffleWordsBtn").setAttribute("aria-pressed", String(!!shuffleRanks));
+  applyFilter();
+  document.getElementById("wordList").closest(".word-list").scrollTop = 0;
+}
+
+/* ---------------------------
    Filtering
 --------------------------- */
 function applyFilter() {
   filteredWords = wordsMatchingFilters(LEARNING_FILTERS);
+  if (shuffleRanks) {
+    filteredWords.sort((a, b) => (shuffleRanks.get(wordKey(a)) ?? 0) - (shuffleRanks.get(wordKey(b)) ?? 0));
+  }
 
   // Keep the selected word highlighted if it's still in the list
   currentIndex = currentItem ? filteredWords.indexOf(currentItem) : -1;
 
   updateLetterSummary("letterFilter", window.selectedLetters || new Set());
+  updateClearLearningButton();
   renderWordList();
   updateProgress();
 }
@@ -706,7 +788,7 @@ function showLetterInWordList(letter) {
     panel.classList.remove("collapsed");
     panel.querySelector(".collapse-toggle")?.setAttribute("aria-expanded", "true");
   }
-  const index = filteredWords.findIndex(w => w.word.charAt(0).toUpperCase() === letter);
+  const index = filteredWords.findIndex(w => firstLetter(w.word) === letter);
   if (index >= 0) selectWord(index, false);
   const row = document.querySelectorAll("#wordList .word-item")[index];
   if (index <= 0 || !row) {
@@ -1132,7 +1214,7 @@ function statsScopeAndLevelWords() {
 
 function statsWords() {
   return statsScopeAndLevelWords().filter(w =>
-    !statsLetters.size || statsLetters.has(w.word.charAt(0).toUpperCase())
+    !statsLetters.size || statsLetters.has(firstLetter(w.word))
   );
 }
 
@@ -1144,7 +1226,7 @@ function renderStatsLetters() {
 
   const counts = {};
   statsScopeAndLevelWords().forEach(w => {
-    const letter = w.word.charAt(0).toUpperCase();
+    const letter = firstLetter(w.word);
     counts[letter] = (counts[letter] || 0) + 1;
   });
 
