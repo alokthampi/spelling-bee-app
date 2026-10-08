@@ -328,6 +328,19 @@
       padding-top: 2px;
     }
 
+    /* ---------- Clear filters (Learning and Practice) ---------- */
+    /* The last filter and its Clear button share a line, Clear on the right */
+    .field-row { display: flex; gap: 8px; align-items: stretch; min-width: 0; }
+    .field-row > :first-child { flex: 1; min-width: 0; }
+    .clear-filters-btn { flex: none; align-self: end; }
+
+    /* Word List header: Shuffle on/off */
+    .list-shuffle-btn { flex: none; min-height: 32px; padding: 6px 10px; font-size: 12px; }
+    .list-shuffle-btn[aria-pressed="true"],
+    .list-shuffle-btn[aria-pressed="true"]:hover { background: var(--accent); border-color: var(--accent); color: white; }
+    .clear-filters-btn:disabled { opacity: 0.4; cursor: default; }
+    .clear-filters-btn:disabled:hover { background: var(--bg-inset); border-color: var(--border-strong); }
+
     /* ---------- Collapsible sections (collapse only on phones) ---------- */
     .letters-collapsible { grid-column: 1 / -1; min-width: 0; }
 
@@ -1151,10 +1164,15 @@
 
     .practice-empty { color: var(--text-tertiary); font-size: 14px; padding: 8px 4px; }
 
-    #statsFilters, #practiceFilters { grid-template-columns: 1fr 1fr !important; }
-    #practiceFilters .field-origin { grid-column: 1 / -1; }
+    #statsFilters { grid-template-columns: 1fr 1fr !important; }
+    /* Practice on phones: Scope | Difficulty, then Origin | Clear */
+    #practiceFilters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto !important; }
+    #practiceFilters .field-difficulty { grid-column: span 2; }
+    #practiceFilters .field-origin { grid-column: span 2; }
+    /* Wider screens: everything on one line, Clear on the right */
     @media (min-width: 700px) {
-      #practiceFilters { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      #practiceFilters { grid-template-columns: repeat(3, minmax(0, 1fr)) auto !important; }
+      #practiceFilters .field-difficulty,
       #practiceFilters .field-origin { grid-column: auto; }
     }
 
@@ -1174,7 +1192,13 @@
     .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
 
     .mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    @media (min-width: 480px) { .mode-picker { grid-template-columns: repeat(4, 1fr); } }
+    .mode-option.mode-learned { grid-column: 1 / -1; }
+    @media (min-width: 480px) {
+      .mode-picker { grid-template-columns: repeat(3, 1fr); }
+      .mode-option.mode-learned { grid-column: auto; }
+    }
+    @media (min-width: 700px) { .mode-picker { grid-template-columns: repeat(5, 1fr); } }
+    .mode-option.mode-learned .mode-count { color: var(--accent); }
     .mode-option.mode-ever-wrong .mode-count { color: var(--warning); }
     .mode-option {
       position: relative;
@@ -1462,7 +1486,10 @@
 
     <div class="field field-search">
       <label class="field-label" for="searchInput">Search</label>
-      <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
+      <div class="field-row">
+        <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
+        <button type="button" class="reset-btn clear-filters-btn" id="clearLearningFilters" title="Clear all filters" disabled>✖ Clear</button>
+      </div>
     </div>
 
     <div class="collapsible letters-collapsible collapsed">
@@ -1491,6 +1518,7 @@
           <span class="word-list-title">Word List</span>
           <span class="collapse-summary" id="wordListCount"></span>
         </button>
+        <button type="button" class="reset-btn list-shuffle-btn" id="shuffleWordsBtn" aria-pressed="true" title="Show the words in a random order">🔀 Shuffle</button>
       </div>
       <div class="collapse-body">
         <div class="list-legend">
@@ -1579,7 +1607,7 @@
         </details>
       </div>
 
-      <div class="field">
+      <div class="field field-difficulty">
         <label class="field-label" for="practiceDifficultyFilter">Difficulty</label>
         <details class="multi-select" id="practiceDifficultyFilter" data-kind="difficulty">
           <summary>All Bees</summary>
@@ -1599,6 +1627,8 @@
           <div class="multi-select-menu"></div>
         </details>
       </div>
+
+      <button type="button" class="reset-btn clear-filters-btn" id="clearPracticeFilters" title="Clear all filters" disabled>✖ Clear</button>
 
       <div class="collapsible letters-collapsible collapsed">
         <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
@@ -1644,6 +1674,12 @@
             <div class="tally-item"><span class="tally-value" id="startTallyTest">0</span><span class="tally-label">To test</span></div>
           </div>
           <div class="mode-picker" role="group" aria-label="Which words to test">
+            <label class="mode-option mode-learned" title="Opened on the Learning card and not practiced yet">
+              <input type="checkbox" name="practiceMode" value="learned" checked />
+              <span class="mode-check" aria-hidden="true"></span>
+              <span class="mode-name">📘 Completed in Learning</span>
+              <span class="mode-count" id="modeCountLearned"></span>
+            </label>
             <label class="mode-option mode-wrong">
               <input type="checkbox" name="practiceMode" value="wrong" checked />
               <span class="mode-check" aria-hidden="true"></span>
@@ -1651,7 +1687,7 @@
               <span class="mode-count" id="modeCountWrong"></span>
             </label>
             <label class="mode-option mode-pending">
-              <input type="checkbox" name="practiceMode" value="pending" checked />
+              <input type="checkbox" name="practiceMode" value="pending" />
               <span class="mode-check" aria-hidden="true"></span>
               <span class="mode-name">⏳ Not attempted</span>
               <span class="mode-count" id="modeCountPending"></span>
@@ -1669,7 +1705,7 @@
               <span class="mode-count" id="modeCountEverWrong"></span>
             </label>
           </div>
-          <p class="practice-hint mode-hint">Tap to include or leave out a group. Ever spelled wrong = wrong in any attempt, even if right since.</p>
+          <p class="practice-hint mode-hint">Tap to include or leave out a group. Completed in Learning = opened on the Learning card and not practiced yet. Ever spelled wrong = wrong in any attempt, even if right since.</p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>
@@ -1835,7 +1871,12 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { initializeFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = {
+  // The live site (GitHub Pages, built from main) uses the real project.
+  // Anywhere else (localhost, opening the file, other hosts) uses the dev
+  // project, so testing never touches Nikku's real progress.
+  const PROD_HOST = "alokthampi.github.io";
+
+  const prodConfig = {
     apiKey: "AIzaSyD6HuzbJxcucxjO0NCFqivfk9zXuTFrbMM",
     authDomain: "spelling-bee-practice-e4b0c.firebaseapp.com",
     projectId: "spelling-bee-practice-e4b0c",
@@ -1843,14 +1884,32 @@
     appId: "1:431771439388:web:598787f7878e564ddc2ad9"
   };
 
-  window.firebaseApp = initializeApp(firebaseConfig);
-  // Long polling instead of the default streaming connection, which can
-  // stall on iPhone/iPad Safari and leave the app without saved progress
-  window.db = initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+  const devConfig = {
+    apiKey: "AIzaSyA8lcBwj5a1C06ZmhTKg5xZ6G9f7gcrUUw",
+    authDomain: "spelling-bee-practice-dev.firebaseapp.com",
+    projectId: "spelling-bee-practice-dev",
+    messagingSenderId: "372614187923",
+    appId: "1:372614187923:web:afe1a5acdd9121c9bf3666"
+  };
+
+  const isProd = location.hostname === PROD_HOST;
+  const firebaseConfig = isProd ? prodConfig : devConfig;
+  window.firebaseEnv = isProd ? "prod" : "dev";
+
+  if (!firebaseConfig.projectId) {
+    // No dev project set up yet: run without saving rather than fall back to prod
+    console.warn("Dev Firebase config is empty; progress will not be saved.");
+  } else {
+    if (!isProd) console.info("Using dev Firebase project:", firebaseConfig.projectId);
+    window.firebaseApp = initializeApp(firebaseConfig);
+    // Long polling instead of the default streaming connection, which can
+    // stall on iPhone/iPad Safari and leave the app without saved progress
+    window.db = initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+  }
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026100809"></script>
-<script src="practice.js?v=2026100810"></script>
+<script src="app.js?v=2026100816"></script>
+<script src="practice.js?v=2026100818"></script>
 </body>
 </html>
