@@ -83,7 +83,11 @@
         "written": "ˈa-pəl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/apple001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Apple",
+    "image_link": "https://en.wikipedia.org/wiki/Apple"
   },
   {
     "word": "bamboo",
@@ -104,7 +108,11 @@
         "written": "ˈbam-ˌbü",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/bamboo01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Bamboo_forest.jpg/500px-Bamboo_forest.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bamboo",
+    "image_link": "https://en.wikipedia.org/wiki/Bamboo"
   },
   {
     "word": "barge",
@@ -133,7 +141,11 @@
     "sentence": "Baked beans is a summer classic.",
     "sentence_source": "merriam_webster",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/French_beans_J1.JPG/500px-French_beans_J1.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bean",
+    "image_link": "https://en.wikipedia.org/wiki/Bean"
   },
   {
     "word": "beasts",
@@ -217,7 +229,11 @@
         "written": "ˈbə-nē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/bunny001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/500px-Oryctolagus_cuniculus_Rcdo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Rabbit",
+    "image_link": "https://en.wikipedia.org/wiki/Rabbit"
   },
   {
     "word": "bush",
@@ -309,7 +325,11 @@
     "sentence": "The cat sharpened its claws on the scratching post.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Cat_claw_closeup.jpg/500px-Cat_claw_closeup.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Claw",
+    "image_link": "https://en.wikipedia.org/wiki/Claw"
   },
   {
     "word": "cliffs",
@@ -321,7 +341,11 @@
     "sentence": "Stay away from cliffs.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/White_Cliffs_of_Dover_02.JPG/500px-White_Cliffs_of_Dover_02.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cliff",
+    "image_link": "https://en.wikipedia.org/wiki/Cliff"
   },
   {
     "word": "cloak",
@@ -338,7 +362,11 @@
         "written": "ˈklōk",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/cloak001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Fashion_Plate_Manteau_1823.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cloak",
+    "image_link": "https://en.wikipedia.org/wiki/Cloak"
   },
   {
     "word": "come",
@@ -376,7 +404,11 @@
         "written": "ˈkəmp-nē",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Nokia_office_building_in_Hervanta_Tampere_1.jpg/500px-Nokia_office_building_in_Hervanta_Tampere_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Company",
+    "image_link": "https://en.wikipedia.org/wiki/Company"
   },
   {
     "word": "cottage",
@@ -393,7 +425,11 @@
         "written": "ˈkä-tij",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/cottag01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Country_cottage%2C_Inch_Island_-_geograph.org.uk_-_3951065_%28cropped%29.jpg/500px-Country_cottage%2C_Inch_Island_-_geograph.org.uk_-_3951065_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cottage",
+    "image_link": "https://en.wikipedia.org/wiki/Cottage"
   },
   {
     "word": "crack",
@@ -461,7 +497,11 @@
         "written": "ˈdärk-nəs",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/d/darkness_1.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Creation_of_Light.png/500px-Creation_of_Light.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Darkness",
+    "image_link": "https://en.wikipedia.org/wiki/Darkness"
   },
   {
     "word": "dirt",
@@ -478,7 +518,11 @@
         "written": "ˈdərt",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/d/dirt0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/King%27s_Cross%2C_London%3B_the_Great_Dust-Heap%2C_next_to_Battle_Br_Wellcome_V0013642.jpg/500px-King%27s_Cross%2C_London%3B_the_Great_Dust-Heap%2C_next_to_Battle_Br_Wellcome_V0013642.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Dirt",
+    "image_link": "https://en.wikipedia.org/wiki/Dirt"
   },
   {
     "word": "distance",
@@ -495,7 +539,11 @@
         "written": "ˈdi-stən(t)s",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/d/distan01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Distance_board_in_Vizag_cropped.jpg/500px-Distance_board_in_Vizag_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Distance",
+    "image_link": "https://en.wikipedia.org/wiki/Distance"
   },
   {
     "word": "dive",
@@ -563,7 +611,11 @@
         "written": "ˈərth",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/earth001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Meteosat-12-fci-march-equinox-2025-noon.jpg/500px-Meteosat-12-fci-march-equinox-2025-noon.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Earth",
+    "image_link": "https://en.wikipedia.org/wiki/Earth"
   },
   {
     "word": "easy",
@@ -635,7 +687,11 @@
         "written": "ˈfir",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fear0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/%22Fear%22_from_Le_Brun%2C_Characters_des_passions%2C_circa_1720._Wellcome_L0010224.jpg/500px-%22Fear%22_from_Le_Brun%2C_Characters_des_passions%2C_circa_1720._Wellcome_L0010224.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Fear",
+    "image_link": "https://en.wikipedia.org/wiki/Fear"
   },
   {
     "word": "feed",
@@ -703,7 +759,11 @@
         "written": "ˈfī(-ə)r",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fire0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Large_bonfire.jpg/500px-Large_bonfire.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Fire",
+    "image_link": "https://en.wikipedia.org/wiki/Fire"
   },
   {
     "word": "flock",
@@ -749,7 +809,11 @@
     "sentence": "We followed the footprints in the fresh snow.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Buzz_Aldrin%27s_bootprint_on_the_Moon%2C_AS11-40-5877.jpg/500px-Buzz_Aldrin%27s_bootprint_on_the_Moon%2C_AS11-40-5877.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Footprint",
+    "image_link": "https://en.wikipedia.org/wiki/Footprint"
   },
   {
     "word": "frazzled",
@@ -783,7 +847,11 @@
         "written": "ˈfrend",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/friend01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Best_friends_%281934%29%2C_by_Romualdo_Locatelli.jpg/500px-Best_friends_%281934%29%2C_by_Romualdo_Locatelli.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Friendship",
+    "image_link": "https://en.wikipedia.org/wiki/Friendship"
   },
   {
     "word": "frozen",
@@ -834,7 +902,11 @@
         "written": "ˈjin-jər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/ginger01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Koeh-146-no_text.jpg/500px-Koeh-146-no_text.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Ginger",
+    "image_link": "https://en.wikipedia.org/wiki/Ginger"
   },
   {
     "word": "good",
@@ -868,7 +940,11 @@
         "written": "ˈgran(d)-ˌfä-t͟hər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/grandf01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/The_Favorite_by_Georgios_Iakovidis.jpg/500px-The_Favorite_by_Georgios_Iakovidis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Grandparent",
+    "image_link": "https://en.wikipedia.org/wiki/Grandparent"
   },
   {
     "word": "groan",
@@ -919,7 +995,11 @@
         "written": "ˈgīd",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/guide001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Anselm_Klotz%28L%29-Josef_Frey%28R%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Guide",
+    "image_link": "https://en.wikipedia.org/wiki/Guide"
   },
   {
     "word": "half",
@@ -957,7 +1037,11 @@
         "written": "ˈhärt",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/heart001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Heart_anterior_exterior_view.png/500px-Heart_anterior_exterior_view.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Heart",
+    "image_link": "https://en.wikipedia.org/wiki/Heart"
   },
   {
     "word": "hello",
@@ -978,7 +1062,11 @@
         "written": "he-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/TelephoneHelloNellie.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hello",
+    "image_link": "https://en.wikipedia.org/wiki/Hello"
   },
   {
     "word": "hiking",
@@ -1012,7 +1100,11 @@
         "audio_url": null,
         "label": "British usually"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Lathmar_Holi_2022_in_Nandgaon%2C_Uttar_Pradesh_%28edited%29.jpg/500px-Lathmar_Holi_2022_in_Nandgaon%2C_Uttar_Pradesh_%28edited%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Holiday",
+    "image_link": "https://en.wikipedia.org/wiki/Holiday"
   },
   {
     "word": "hopped",
@@ -1041,7 +1133,11 @@
         "written": "ˈhä-(ˌ)spi-tᵊl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/hospit04.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Hospital-de-Bellvitge.jpg/500px-Hospital-de-Bellvitge.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hospital",
+    "image_link": "https://en.wikipedia.org/wiki/Hospital"
   },
   {
     "word": "house",
@@ -1058,7 +1154,11 @@
         "written": "ˈhau̇s",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/house001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/500px-Katsura_Imperial_Villa_in_Spring.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: House",
+    "image_link": "https://en.wikipedia.org/wiki/House"
   },
   {
     "word": "humble",
@@ -1229,7 +1329,11 @@
         "audio_url": null,
         "label": "also"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/InsectLeg.svg/500px-InsectLeg.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Leg",
+    "image_link": "https://en.wikipedia.org/wiki/Leg"
   },
   {
     "word": "library",
@@ -1270,7 +1374,11 @@
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/l/librar03b.mp3",
         "label": "nonstandard"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/SanDiegoCityCollegeLearningResource_-_bookshelf.jpg/500px-SanDiegoCityCollegeLearningResource_-_bookshelf.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Library",
+    "image_link": "https://en.wikipedia.org/wiki/Library"
   },
   {
     "word": "lizard",
@@ -1287,7 +1395,11 @@
         "written": "ˈli-zərd",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/l/lizard01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Hemidactylus_platyurus_%28Flat-tailed_House_Gecko%29_on_white_background%2C_focus_stacking.jpg/500px-Hemidactylus_platyurus_%28Flat-tailed_House_Gecko%29_on_white_background%2C_focus_stacking.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Lizard",
+    "image_link": "https://en.wikipedia.org/wiki/Lizard"
   },
   {
     "word": "lovely",
@@ -1355,7 +1467,11 @@
         "written": "ˈmist",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/mist0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/%D0%97%D0%B0_%D1%81%D0%B5%D0%BB%D0%BE%D0%BC_2.jpg/500px-%D0%97%D0%B0_%D1%81%D0%B5%D0%BB%D0%BE%D0%BC_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Mist",
+    "image_link": "https://en.wikipedia.org/wiki/Mist"
   },
   {
     "word": "money",
@@ -1372,7 +1488,11 @@
         "written": "ˈmə-nē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/money001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/500px-Euro_coins_and_banknotes_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Money",
+    "image_link": "https://en.wikipedia.org/wiki/Money"
   },
   {
     "word": "morning",
@@ -1389,7 +1509,11 @@
         "written": "ˈmȯr-niŋ",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/mornin01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Morning%2C_just_after_sunrise%2C_Namibia.jpg/500px-Morning%2C_just_after_sunrise%2C_Namibia.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Morning",
+    "image_link": "https://en.wikipedia.org/wiki/Morning"
   },
   {
     "word": "mossy",
@@ -1440,7 +1564,11 @@
         "written": "ˈmau̇th",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/mouth001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Lion_Showing_off_His_Mouth_%2821454262492%29.jpg/500px-Lion_Showing_off_His_Mouth_%2821454262492%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Mouth",
+    "image_link": "https://en.wikipedia.org/wiki/Mouth"
   },
   {
     "word": "mustard",
@@ -1495,7 +1623,11 @@
         "written": "ˈnərs",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/n/nurse001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Nurse_checks_blood_pressure.jpg/500px-Nurse_checks_blood_pressure.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Nursing",
+    "image_link": "https://en.wikipedia.org/wiki/Nursing"
   },
   {
     "word": "pancake",
@@ -1512,7 +1644,11 @@
         "written": "ˈpan-ˌkāk",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/pancak01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Foodiesfeed.com_pouring-honey-on-pancakes-with-walnuts.jpg/500px-Foodiesfeed.com_pouring-honey-on-pancakes-with-walnuts.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pancake",
+    "image_link": "https://en.wikipedia.org/wiki/Pancake"
   },
   {
     "word": "paper",
@@ -1529,7 +1665,11 @@
         "written": "ˈpā-pər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/paper001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Various_products_made_from_paper.JPG/500px-Various_products_made_from_paper.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Paper",
+    "image_link": "https://en.wikipedia.org/wiki/Paper"
   },
   {
     "word": "parade",
@@ -1546,7 +1686,11 @@
         "written": "pə-ˈrād",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/parade01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Macy%27s_Thanksgiving_Day_Parade_2022_New_York_City_%2852523112564%29.jpg/500px-Macy%27s_Thanksgiving_Day_Parade_2022_New_York_City_%2852523112564%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Parade",
+    "image_link": "https://en.wikipedia.org/wiki/Parade"
   },
   {
     "word": "path",
@@ -1584,7 +1728,11 @@
         "written": "ˈpēch",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/peach001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Illustration_Prunus_persica_clean_no_descr.jpg/500px-Illustration_Prunus_persica_clean_no_descr.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Peach",
+    "image_link": "https://en.wikipedia.org/wiki/Peach"
   },
   {
     "word": "pearls",
@@ -1596,7 +1744,11 @@
     "sentence": "The diver found pearls inside the oyster shells.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Various_pearls.jpg/500px-Various_pearls.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pearl",
+    "image_link": "https://en.wikipedia.org/wiki/Pearl"
   },
   {
     "word": "peer",
@@ -1630,7 +1782,11 @@
         "written": "ˈpe-nēz",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/penny002.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/1911-Australian-Penny-Reverse.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Penny",
+    "image_link": "https://en.wikipedia.org/wiki/Penny"
   },
   {
     "word": "pump",
@@ -1664,7 +1820,11 @@
         "written": "ˈra-bət",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/r/rabbit01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Oryctolagus_cuniculus_Rcdo.jpg/500px-Oryctolagus_cuniculus_Rcdo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Rabbit",
+    "image_link": "https://en.wikipedia.org/wiki/Rabbit"
   },
   {
     "word": "ran",
@@ -1778,7 +1938,11 @@
         "written": "ˈri-dᵊl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/r/riddle01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Oedipus_and_the_Sphinx_of_Thebes%2C_Red_Figure_Kylix%2C_c._470_BC%2C_from_Vulci%2C_attributed_to_the_Oedipus_Painter%2C_Vatican_Museums_%289665213064%29.jpg/500px-Oedipus_and_the_Sphinx_of_Thebes%2C_Red_Figure_Kylix%2C_c._470_BC%2C_from_Vulci%2C_attributed_to_the_Oedipus_Painter%2C_Vatican_Museums_%289665213064%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Riddle",
+    "image_link": "https://en.wikipedia.org/wiki/Riddle"
   },
   {
     "word": "rod",
@@ -1812,7 +1976,11 @@
         "written": "ˈsāf-tē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/safety01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Snake_warning_sign.jpg/500px-Snake_warning_sign.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Safety",
+    "image_link": "https://en.wikipedia.org/wiki/Safety"
   },
   {
     "word": "seal",
@@ -1866,7 +2034,11 @@
     "sentence": "Our shadows grew long in the evening sun.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/The_shadow_of_a_musician_playing_transverse_flute.jpg/500px-The_shadow_of_a_musician_playing_transverse_flute.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Shadow",
+    "image_link": "https://en.wikipedia.org/wiki/Shadow"
   },
   {
     "word": "sharp",
@@ -2049,7 +2221,11 @@
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/sloth001.mp3",
         "label": "also"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Bicho-pregui%C3%A7a_3.jpg/500px-Bicho-pregui%C3%A7a_3.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Sloth",
+    "image_link": "https://en.wikipedia.org/wiki/Sloth"
   },
   {
     "word": "smoothly",
@@ -2153,7 +2329,11 @@
     "sentence": "Spiders spin webs to catch insects.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Araneus_diadematus_%28Clerck%2C_1757%29.JPG/500px-Araneus_diadematus_%28Clerck%2C_1757%29.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Spider",
+    "image_link": "https://en.wikipedia.org/wiki/Spider"
   },
   {
     "word": "spray",
@@ -2262,7 +2442,11 @@
         "written": "ˈswe-tər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/sweate02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Selburose-sweater.jpg/500px-Selburose-sweater.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Sweater",
+    "image_link": "https://en.wikipedia.org/wiki/Sweater"
   },
   {
     "word": "swift",
@@ -2376,7 +2560,11 @@
         "written": "ˈtrək",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/t/truck001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/2001_Ford_F-250_Super_Duty_XL_regular_cab_flatbed%2C_front_left%2C_05-17-2025.jpg/500px-2001_Ford_F-250_Super_Duty_XL_regular_cab_flatbed%2C_front_left%2C_05-17-2025.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Truck",
+    "image_link": "https://en.wikipedia.org/wiki/Truck"
   },
   {
     "word": "truth",
@@ -2410,7 +2598,11 @@
         "written": "ˈtəsk",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/t/tusk0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Xavliodontes.jpg/500px-Xavliodontes.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Tusk",
+    "image_link": "https://en.wikipedia.org/wiki/Tusk"
   },
   {
     "word": "voice",
@@ -2444,7 +2636,11 @@
         "written": "ˈ(h)wāl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/w/whale001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Southern_right_whale.jpg/500px-Southern_right_whale.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Whale",
+    "image_link": "https://en.wikipedia.org/wiki/Whale"
   },
   {
     "word": "whistle",
@@ -2461,7 +2657,11 @@
         "written": "ˈ(h)wi-səl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/w/whistl01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Pea_Whistle.jpg/500px-Pea_Whistle.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Whistle",
+    "image_link": "https://en.wikipedia.org/wiki/Whistle"
   },
   {
     "word": "wind",
@@ -2483,7 +2683,11 @@
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/w/wind0004.mp3",
         "label": "archaic or poetic"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Cherry_tree_moving_in_the_wind_1.gif/500px-Cherry_tree_moving_in_the_wind_1.gif?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Wind",
+    "image_link": "https://en.wikipedia.org/wiki/Wind"
   },
   {
     "word": "wings",
@@ -2495,7 +2699,11 @@
     "sentence": "The butterfly spread its colorful wings.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Wing.two.arp.600pix.jpg/500px-Wing.two.arp.600pix.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Wing",
+    "image_link": "https://en.wikipedia.org/wiki/Wing"
   },
   {
     "word": "winter",
@@ -2512,7 +2720,11 @@
         "written": "ˈwin-tər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/w/winter01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Winter_forest_silver.jpg/500px-Winter_forest_silver.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Winter",
+    "image_link": "https://en.wikipedia.org/wiki/Winter"
   },
   {
     "word": "wrong",
@@ -2546,7 +2758,11 @@
         "written": "ˈyärn",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/y/yarn0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Yarn_at_Folklife_-_Stierch.jpg/500px-Yarn_at_Folklife_-_Stierch.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Yarn",
+    "image_link": "https://en.wikipedia.org/wiki/Yarn"
   },
   {
     "word": "year",
@@ -2563,7 +2779,11 @@
         "written": "ˈyir",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/y/year0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Solar_system_orrery_inner_planets.gif/500px-Solar_system_orrery_inner_planets.gif?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Year",
+    "image_link": "https://en.wikipedia.org/wiki/Year"
   },
   {
     "word": "yellow",
@@ -2607,7 +2827,11 @@
         "written": "ə-ˈdre-nə-lən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/adrena04.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Epinephrine_chemical_structure.svg/500px-Epinephrine_chemical_structure.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Adrenaline",
+    "image_link": "https://en.wikipedia.org/wiki/Adrenaline"
   },
   {
     "word": "Aeolus",
@@ -2687,7 +2911,11 @@
         "written": "ə-ˈpren-təs",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/appren01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Apprenticeship.jpg/500px-Apprenticeship.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Apprenticeship",
+    "image_link": "https://en.wikipedia.org/wiki/Apprenticeship"
   },
   {
     "word": "arnica",
@@ -2704,7 +2932,11 @@
         "written": "ˈär-ni-kə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/arnica01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Arnica_montana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-015.jpg/500px-Arnica_montana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-015.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Arnica",
+    "image_link": "https://en.wikipedia.org/wiki/Arnica"
   },
   {
     "word": "arthritis",
@@ -2738,7 +2970,11 @@
         "written": "ˈat-mə-ˌsfir",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/atmosp01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Top_of_Atmosphere.jpg/500px-Top_of_Atmosphere.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Atmosphere",
+    "image_link": "https://en.wikipedia.org/wiki/Atmosphere"
   },
   {
     "word": "awning",
@@ -2759,7 +2995,11 @@
         "written": "ˈä-niŋ",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Baden-Baden_Kurmuschel.jpg/500px-Baden-Baden_Kurmuschel.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Awning",
+    "image_link": "https://en.wikipedia.org/wiki/Awning"
   },
   {
     "word": "basement",
@@ -2776,7 +3016,11 @@
         "written": "ˈbās-mənt",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/baseme01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Basement-after.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Basement",
+    "image_link": "https://en.wikipedia.org/wiki/Basement"
   },
   {
     "word": "battalion",
@@ -2793,7 +3037,11 @@
         "written": "bə-ˈtal-yən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/battal03.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Military_Symbol_-_Friendly_Battalion_or_Squadron_%28Solid_Light_1.5x1_Frame%29-_Infantry_%28NATO_APP-6%29.svg/500px-Military_Symbol_-_Friendly_Battalion_or_Squadron_%28Solid_Light_1.5x1_Frame%29-_Infantry_%28NATO_APP-6%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Battalion",
+    "image_link": "https://en.wikipedia.org/wiki/Battalion"
   },
   {
     "word": "bellowed",
@@ -2838,7 +3086,11 @@
     "sentence": "It's time for me to get bifocals.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Bifokalbrille_%28fcm%29.jpg/500px-Bifokalbrille_%28fcm%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bifocals",
+    "image_link": "https://en.wikipedia.org/wiki/Bifocals"
   },
   {
     "word": "boycotting",
@@ -2882,7 +3134,11 @@
         "audio_url": null,
         "label": "sometimes"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/German_Bratw%C3%BCrste.jpg/500px-German_Bratw%C3%BCrste.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bratwurst",
+    "image_link": "https://en.wikipedia.org/wiki/Bratwurst"
   },
   {
     "word": "burlap",
@@ -2899,7 +3155,11 @@
         "written": "ˈbər-ˌlap",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/burlap01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Burlap_%288963603095%29.jpg/500px-Burlap_%288963603095%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hessian fabric",
+    "image_link": "https://en.wikipedia.org/wiki/Hessian_fabric"
   },
   {
     "word": "business",
@@ -2925,7 +3185,11 @@
         "audio_url": null,
         "label": "Southern also"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Norwich_Market_-_geograph.org.uk_-_2224675.jpg/500px-Norwich_Market_-_geograph.org.uk_-_2224675.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Business",
+    "image_link": "https://en.wikipedia.org/wiki/Business"
   },
   {
     "word": "butterflies",
@@ -2937,7 +3201,11 @@
     "sentence": "I caught twenty butterflies.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Fesoj_-_Papilio_machaon_%28by%29.jpg/500px-Fesoj_-_Papilio_machaon_%28by%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Butterfly",
+    "image_link": "https://en.wikipedia.org/wiki/Butterfly"
   },
   {
     "word": "buttons",
@@ -2949,7 +3217,11 @@
     "sentence": "My coat has four shiny buttons.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Reserveknapper_til_Hans%27_uniform.jpg/500px-Reserveknapper_til_Hans%27_uniform.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Button",
+    "image_link": "https://en.wikipedia.org/wiki/Button"
   },
   {
     "word": "Caesar",
@@ -2983,7 +3255,11 @@
         "written": "ˈka-li-ˌkō",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/calico01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Calico_Sample.JPG/500px-Calico_Sample.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Calico",
+    "image_link": "https://en.wikipedia.org/wiki/Calico"
   },
   {
     "word": "carefully",
@@ -3021,7 +3297,11 @@
         "written": "ˈka-rē-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/WedgetailEagleCarrion.jpg/500px-WedgetailEagleCarrion.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Carrion",
+    "image_link": "https://en.wikipedia.org/wiki/Carrion"
   },
   {
     "word": "cartridge",
@@ -3064,7 +3344,11 @@
         "written": "-ˌte-rē",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Kerepesi_temet%C5%91_Budapest.jpg/500px-Kerepesi_temet%C5%91_Budapest.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cemetery",
+    "image_link": "https://en.wikipedia.org/wiki/Cemetery"
   },
   {
     "word": "chimpanzees",
@@ -3076,7 +3360,11 @@
     "sentence": "Chimpanzees are social animals.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/015_Chimpanzee_at_Kibale_forest_National_Park_Photo_by_Giles_Laurent.jpg/500px-015_Chimpanzee_at_Kibale_forest_National_Park_Photo_by_Giles_Laurent.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Chimpanzee",
+    "image_link": "https://en.wikipedia.org/wiki/Chimpanzee"
   },
   {
     "word": "chisel",
@@ -3093,7 +3381,11 @@
         "written": "ˈchi-zᵊl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/chisel01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Neolithic_chisels_4100-2700_BC.jpg/500px-Neolithic_chisels_4100-2700_BC.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Chisel",
+    "image_link": "https://en.wikipedia.org/wiki/Chisel"
   },
   {
     "word": "civilian",
@@ -3115,7 +3407,11 @@
         "audio_url": null,
         "label": "also"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Refugee_children_and_babies_in_a_basement_in_Kiev.jpg/500px-Refugee_children_and_babies_in_a_basement_in_Kiev.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Civilian",
+    "image_link": "https://en.wikipedia.org/wiki/Civilian"
   },
   {
     "word": "clever",
@@ -3238,7 +3534,11 @@
         "written": "kən-ˈvər-tə-bəl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/conver25.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Peugeot-204-cabriolet-de-1968-rouge-China-1135-villegiature-arriere.jpg/500px-Peugeot-204-cabriolet-de-1968-rouge-China-1135-villegiature-arriere.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Convertible",
+    "image_link": "https://en.wikipedia.org/wiki/Convertible"
   },
   {
     "word": "cosmodrome",
@@ -3250,7 +3550,11 @@
     "sentence": "The Progress 75 spacecraft is scheduled to launch from the Baikonur Cosmodrome in Kazakhstan.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Baikonur_Cosmodrome_Soyuz_launch_pad.jpg/500px-Baikonur_Cosmodrome_Soyuz_launch_pad.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Spaceport",
+    "image_link": "https://en.wikipedia.org/wiki/Spaceport"
   },
   {
     "word": "cuddle",
@@ -3301,7 +3605,11 @@
         "written": "ˈkət-lə-rē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/cutler02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/Besteck_WMF_Stockholm_ca_1960er.jpg/500px-Besteck_WMF_Stockholm_ca_1960er.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cutlery",
+    "image_link": "https://en.wikipedia.org/wiki/Cutlery"
   },
   {
     "word": "dachshund",
@@ -3331,7 +3639,11 @@
         "audio_url": null,
         "label": "especially British"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/%EB%8B%A5%EC%8A%A4%ED%9B%88%ED%8A%B8%28%EB%8B%A8%EB%AA%A8%EC%A2%85%29_%28Dachshund_%28Short%29%29.jpg/500px-%EB%8B%A5%EC%8A%A4%ED%9B%88%ED%8A%B8%28%EB%8B%A8%EB%AA%A8%EC%A2%85%29_%28Dachshund_%28Short%29%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Dachshund",
+    "image_link": "https://en.wikipedia.org/wiki/Dachshund"
   },
   {
     "word": "December",
@@ -3352,7 +3664,11 @@
         "written": "dē-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/12_December_-_Percent_of_global_area_at_temperature_records_-_Global_warming_-_NOAA.svg/500px-12_December_-_Percent_of_global_area_at_temperature_records_-_Global_warming_-_NOAA.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: December",
+    "image_link": "https://en.wikipedia.org/wiki/December"
   },
   {
     "word": "desperate",
@@ -3394,7 +3710,11 @@
         "written": "-ˌne-rē",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Woerterbuchstapel_Langenscheidt.jpg/500px-Woerterbuchstapel_Langenscheidt.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Dictionary",
+    "image_link": "https://en.wikipedia.org/wiki/Dictionary"
   },
   {
     "word": "disappear",
@@ -3428,7 +3748,11 @@
         "written": "ˌdis-ə-ˈpȯint-mənt",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/d/disapp05.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/87/%22Disappointment%22_-_1882_-_Julius_Leblanc_Stewart.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Disappointment",
+    "image_link": "https://en.wikipedia.org/wiki/Disappointment"
   },
   {
     "word": "duende",
@@ -3445,7 +3769,11 @@
         "written": "dü-ˈen-(ˌ)dā",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/d/duende01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Goya_-_Caprichos_%2849%29.jpg/500px-Goya_-_Caprichos_%2849%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Duende",
+    "image_link": "https://en.wikipedia.org/wiki/Duende"
   },
   {
     "word": "duration",
@@ -3492,7 +3820,11 @@
         "written": "ā-",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/elite002.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Prime_Minister_Boris_Johnson_UNGA_visit_%2851786182369%29.jpg/500px-Prime_Minister_Boris_Johnson_UNGA_visit_%2851786182369%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Elite",
+    "image_link": "https://en.wikipedia.org/wiki/Elite"
   },
   {
     "word": "elliptical",
@@ -3586,7 +3918,11 @@
         "written": "ˈfər-tə-ˌlī-zər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fertil09.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Manure_spreading_Hlokozi_2007_11_29.jpg/500px-Manure_spreading_Hlokozi_2007_11_29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Fertilizer",
+    "image_link": "https://en.wikipedia.org/wiki/Fertilizer"
   },
   {
     "word": "fickle",
@@ -3654,7 +3990,11 @@
         "written": "ˈfənd-ˌrā-zər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fund_r01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Hand_holding_a_red_fundraising_box.jpg/500px-Hand_holding_a_red_fundraising_box.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Fundraising",
+    "image_link": "https://en.wikipedia.org/wiki/Fundraising"
   },
   {
     "word": "geologist",
@@ -3671,7 +4011,11 @@
         "written": "jē-ˈä-lə-jist",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/geolog06.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Carl_Spitzweg_025.jpg/500px-Carl_Spitzweg_025.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Geologist",
+    "image_link": "https://en.wikipedia.org/wiki/Geologist"
   },
   {
     "word": "glamorous",
@@ -3730,7 +4074,11 @@
         "written": "grə-ˈnō-lə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/granol01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Granola%2C_yogurt%2C_fruit._%2816696981528%29.jpg/500px-Granola%2C_yogurt%2C_fruit._%2816696981528%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Granola",
+    "image_link": "https://en.wikipedia.org/wiki/Granola"
   },
   {
     "word": "haddock",
@@ -3747,7 +4095,11 @@
         "written": "ˈha-dək",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/haddoc01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Haddock%2C_Boston_Aquarium.JPG/500px-Haddock%2C_Boston_Aquarium.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Haddock",
+    "image_link": "https://en.wikipedia.org/wiki/Haddock"
   },
   {
     "word": "Halloween",
@@ -3768,7 +4120,11 @@
         "written": "ˌhä-",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/hallow03.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Jack-o%27-Lantern_2003-10-31.jpg/500px-Jack-o%27-Lantern_2003-10-31.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Halloween",
+    "image_link": "https://en.wikipedia.org/wiki/Halloween"
   },
   {
     "word": "helium",
@@ -3789,7 +4145,11 @@
         "written": "ˈhēl-yəm",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Helium_discharge_tube.jpg/500px-Helium_discharge_tube.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Helium",
+    "image_link": "https://en.wikipedia.org/wiki/Helium"
   },
   {
     "word": "hurdler",
@@ -3810,7 +4170,11 @@
         "written": "ˈhərd-lər",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Leichtathletik_Gala_Linz_2018_men%C2%B4s_110m_hurdles_Okafor-6401.jpg/500px-Leichtathletik_Gala_Linz_2018_men%C2%B4s_110m_hurdles_Okafor-6401.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hurdling",
+    "image_link": "https://en.wikipedia.org/wiki/Hurdling"
   },
   {
     "word": "hypothermia",
@@ -3865,7 +4229,11 @@
         "written": "ˈin-di-ˌgō",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/i/indigo01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Indian_indigo_dye_lump.jpg/500px-Indian_indigo_dye_lump.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Indigo",
+    "image_link": "https://en.wikipedia.org/wiki/Indigo"
   },
   {
     "word": "inferior",
@@ -3899,7 +4267,11 @@
         "written": "i-ˌni-shē-ˈā-shən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/i/initia12.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Monks_Initiation_%2826392071260%29.jpg/500px-Monks_Initiation_%2826392071260%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Initiation",
+    "image_link": "https://en.wikipedia.org/wiki/Initiation"
   },
   {
     "word": "insurrection",
@@ -4001,7 +4373,11 @@
         "written": "i-ˈri-dē-əm",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/i/iridiu01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Iridium_%2877_Ir%29_%28cropped%29.jpg/500px-Iridium_%2877_Ir%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Iridium",
+    "image_link": "https://en.wikipedia.org/wiki/Iridium"
   },
   {
     "word": "Japanese",
@@ -4060,7 +4436,11 @@
         "written": "ˈkelp",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/k/kelp0001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Kelp_In_Freycinet_Tasmania.jpg/500px-Kelp_In_Freycinet_Tasmania.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Kelp",
+    "image_link": "https://en.wikipedia.org/wiki/Kelp"
   },
   {
     "word": "laughter",
@@ -4081,7 +4461,11 @@
         "written": "ˈläf-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Laughing_boy_at_golden_hour.jpg/500px-Laughing_boy_at_golden_hour.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Laughter",
+    "image_link": "https://en.wikipedia.org/wiki/Laughter"
   },
   {
     "word": "lounge",
@@ -4158,7 +4542,11 @@
         "written": "-zhəm",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/CSIRO_ScienceImage_2893_Crystalised_magnesium.jpg/500px-CSIRO_ScienceImage_2893_Crystalised_magnesium.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Magnesium",
+    "image_link": "https://en.wikipedia.org/wiki/Magnesium"
   },
   {
     "word": "marlin",
@@ -4175,7 +4563,11 @@
         "written": "ˈmär-lən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/marlin01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Atlantic_blue_marlin.jpg/500px-Atlantic_blue_marlin.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Marlin",
+    "image_link": "https://en.wikipedia.org/wiki/Marlin"
   },
   {
     "word": "mascara",
@@ -4196,7 +4588,11 @@
         "written": "-ˈska-rə",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Mascara_de_pesta%C3%B1as.jpg/500px-Mascara_de_pesta%C3%B1as.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Mascara",
+    "image_link": "https://en.wikipedia.org/wiki/Mascara"
   },
   {
     "word": "materialize",
@@ -4255,7 +4651,11 @@
         "written": "-ˌherts",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/59/FrequencyAnimation.gif?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hertz",
+    "image_link": "https://en.wikipedia.org/wiki/Hertz"
   },
   {
     "word": "meticulous",
@@ -4306,7 +4706,11 @@
         "written": "ˈmä-nə-ˌrāl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/m/monora01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Chongqing_Rail_Transit_Line_3_Monorail_Train_near_Xuetangwan_Station.jpg/500px-Chongqing_Rail_Transit_Line_3_Monorail_Train_near_Xuetangwan_Station.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Monorail",
+    "image_link": "https://en.wikipedia.org/wiki/Monorail"
   },
   {
     "word": "opposite",
@@ -4370,7 +4774,11 @@
         "audio_url": null,
         "label": "chiefly by outsiders"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Flag_of_Oregon.svg/500px-Flag_of_Oregon.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Oregon",
+    "image_link": "https://en.wikipedia.org/wiki/Oregon"
   },
   {
     "word": "organism",
@@ -4404,7 +4812,11 @@
         "written": "ˈpam(p)-flət",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/pamphl01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Girl_with_a_Basket_of_Pamphlets.jpg/500px-Girl_with_a_Basket_of_Pamphlets.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pamphlet",
+    "image_link": "https://en.wikipedia.org/wiki/Pamphlet"
   },
   {
     "word": "pentathlete",
@@ -4426,7 +4838,11 @@
         "audio_url": null,
         "label": "nonstandard"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Pentathlon_athlets_Staatliche_Antikensammlungen_2637.jpg/500px-Pentathlon_athlets_Staatliche_Antikensammlungen_2637.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pentathlon",
+    "image_link": "https://en.wikipedia.org/wiki/Pentathlon"
   },
   {
     "word": "perimeter",
@@ -4493,7 +4909,11 @@
     "sentence": "Colorful pheasants walked along the edge of the field.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Pheasant.jpg/500px-Pheasant.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pheasant",
+    "image_link": "https://en.wikipedia.org/wiki/Pheasant"
   },
   {
     "word": "piñata",
@@ -4505,7 +4925,11 @@
     "sentence": "Carlos's birthday party had a piñata.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/PI%C3%91ATA.jpg/500px-PI%C3%91ATA.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Piñata",
+    "image_link": "https://en.wikipedia.org/wiki/Piñata"
   },
   {
     "word": "piteously",
@@ -4635,7 +5059,11 @@
         "written": "ˈprä-pər-tē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/proper04.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Brunswick_Terrace%2C_Weymouth_%28geograph_1943843%29.jpg/500px-Brunswick_Terrace%2C_Weymouth_%28geograph_1943843%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Property",
+    "image_link": "https://en.wikipedia.org/wiki/Property"
   },
   {
     "word": "puffy",
@@ -4669,7 +5097,11 @@
         "written": "ˈkwāl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/q/quail001.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Brown_Quail.jpg/500px-Brown_Quail.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Quail",
+    "image_link": "https://en.wikipedia.org/wiki/Quail"
   },
   {
     "word": "rebuttal",
@@ -4703,7 +5135,11 @@
         "written": "ˈre-gə-ˌlith",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/r/regoli01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Properties_of_regolith_on_Eros.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Regolith",
+    "image_link": "https://en.wikipedia.org/wiki/Regolith"
   },
   {
     "word": "reinstate",
@@ -4737,7 +5173,11 @@
         "written": "ri-ˈlēf",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/r/relief01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Abraham_%28Gates_of_Paradise%29_01.JPG/500px-Abraham_%28Gates_of_Paradise%29_01.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Relief",
+    "image_link": "https://en.wikipedia.org/wiki/Relief"
   },
   {
     "word": "rendezvous",
@@ -4788,7 +5228,11 @@
         "audio_url": null,
         "label": "also"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/%D0%AF%D0%B7%D0%BE%D0%B2%D0%B8%D1%80_%D0%9A%D1%8A%D1%80%D0%B4%D0%B6%D0%B0%D0%BB%D0%B8_%D0%9D%D1%83%D0%BB%D0%B0%D1%82%D0%B0.jpg/500px-%D0%AF%D0%B7%D0%BE%D0%B2%D0%B8%D1%80_%D0%9A%D1%8A%D1%80%D0%B4%D0%B6%D0%B0%D0%BB%D0%B8_%D0%9D%D1%83%D0%BB%D0%B0%D1%82%D0%B0.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Reservoir",
+    "image_link": "https://en.wikipedia.org/wiki/Reservoir"
   },
   {
     "word": "ridiculous",
@@ -4846,7 +5290,11 @@
     "sentence": "Are newts and salamanders amphibians or reptiles?",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/SpottedSalamander.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Salamander",
+    "image_link": "https://en.wikipedia.org/wiki/Salamander"
   },
   {
     "word": "salary",
@@ -4888,7 +5336,11 @@
         "written": "ˈshnau̇t-sər",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Schnauzer_Size_Montage.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Schnauzer",
+    "image_link": "https://en.wikipedia.org/wiki/Schnauzer"
   },
   {
     "word": "segregation",
@@ -4934,7 +5386,11 @@
         "written": "-ˌgäl",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Flag_of_Senegal.svg/500px-Flag_of_Senegal.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Senegal",
+    "image_link": "https://en.wikipedia.org/wiki/Senegal"
   },
   {
     "word": "singularity",
@@ -5005,7 +5461,11 @@
         "written": "-ˈda-rə-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/The_hand_that_will_rule_the_world.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Solidarity",
+    "image_link": "https://en.wikipedia.org/wiki/Solidarity"
   },
   {
     "word": "sorceress",
@@ -5143,7 +5603,11 @@
         "written": "ˈter-ə-ˌtȯr-ē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/t/territ08.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/View_from_saana.JPG/500px-View_from_saana.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Territory",
+    "image_link": "https://en.wikipedia.org/wiki/Territory"
   },
   {
     "word": "thimble",
@@ -5160,7 +5624,11 @@
         "written": "ˈthim-bəl",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/t/thimbl01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Fingerhut.jpg/500px-Fingerhut.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Thimble",
+    "image_link": "https://en.wikipedia.org/wiki/Thimble"
   },
   {
     "word": "tiptoed",
@@ -5196,7 +5664,11 @@
     "sentence": "My father was cooking tortillas.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Stacks_of_corn_tortillas_and_flour_tortillas%2C_with_the_top_one_rolled%2C_side_view_%282%29.jpg/500px-Stacks_of_corn_tortillas_and_flour_tortillas%2C_with_the_top_one_rolled%2C_side_view_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Tortilla",
+    "image_link": "https://en.wikipedia.org/wiki/Tortilla"
   },
   {
     "word": "tractor",
@@ -5213,7 +5685,11 @@
         "written": "ˈtrak-tər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/t/tracto01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Ford_8N.jpg/500px-Ford_8N.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Tractor",
+    "image_link": "https://en.wikipedia.org/wiki/Tractor"
   },
   {
     "word": "truant",
@@ -5293,7 +5769,11 @@
     "sentence": "Swamps, marshes, and bogs are types of wetlands.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Coastal_marsh_profile.png/500px-Coastal_marsh_profile.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Wetland",
+    "image_link": "https://en.wikipedia.org/wiki/Wetland"
   },
   {
     "word": "woven",
@@ -5348,7 +5828,11 @@
         "written": "-kō-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Solomon_Abraham_The_Acolyte.jpg/500px-Solomon_Abraham_The_Acolyte.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Acolyte",
+    "image_link": "https://en.wikipedia.org/wiki/Acolyte"
   },
   {
     "word": "Addis Ababa",
@@ -5369,7 +5853,11 @@
         "written": "ˌa-dəs-ˈa-bə-bə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/addis1s3.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Addis_in_night.jpg/500px-Addis_in_night.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Addis Ababa",
+    "image_link": "https://en.wikipedia.org/wiki/Addis_Ababa"
   },
   {
     "word": "affinities",
@@ -5398,7 +5886,11 @@
         "written": "ˈa-lə-ˌba-stər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/alabas01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Lioness_Bast_cosmetic_jar_83d40m_tut_burial_artifact.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Alabaster",
+    "image_link": "https://en.wikipedia.org/wiki/Alabaster"
   },
   {
     "word": "alleviate",
@@ -5444,7 +5936,11 @@
         "written": "äm-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Ethiopia_-_Amharic-speaking_regions.png/500px-Ethiopia_-_Amharic-speaking_regions.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Amharic",
+    "image_link": "https://en.wikipedia.org/wiki/Amharic"
   },
   {
     "word": "ampulla",
@@ -5465,7 +5961,11 @@
         "written": "ˈam-ˌpyü-lə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/ampull01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Ampoule_Th%C3%A8cle_01.JPG/500px-Ampoule_Th%C3%A8cle_01.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Ampulla",
+    "image_link": "https://en.wikipedia.org/wiki/Ampulla"
   },
   {
     "word": "annelids",
@@ -5477,7 +5977,11 @@
     "sentence": "Both earthworms and leeches belong to the annelids.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Annelida_collage_%282%29.png/500px-Annelida_collage_%282%29.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Annelid",
+    "image_link": "https://en.wikipedia.org/wiki/Annelid"
   },
   {
     "word": "Aphrodite",
@@ -5494,7 +5998,11 @@
         "written": "ˌa-frə-ˈdī-tē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/a/aphrod04.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Cnidus_Aphrodite_Altemps_Inv8619.jpg/500px-Cnidus_Aphrodite_Altemps_Inv8619.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Aphrodite",
+    "image_link": "https://en.wikipedia.org/wiki/Aphrodite"
   },
   {
     "word": "apologetic",
@@ -5566,7 +6074,11 @@
         "written": "-ˌnid",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Arachnida_collage.png/500px-Arachnida_collage.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Arachnid",
+    "image_link": "https://en.wikipedia.org/wiki/Arachnid"
   },
   {
     "word": "arsonist",
@@ -5604,7 +6116,11 @@
         "written": "-gyə-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Eruca_sativa_sl11.jpg/500px-Eruca_sativa_sl11.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Eruca sativa",
+    "image_link": "https://en.wikipedia.org/wiki/Eruca_sativa"
   },
   {
     "word": "assemblage",
@@ -5680,7 +6196,11 @@
         "written": "-ˈthär-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/AuthorityOfLaw.JPG/500px-AuthorityOfLaw.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Authority",
+    "image_link": "https://en.wikipedia.org/wiki/Authority"
   },
   {
     "word": "Bildungsroman",
@@ -5718,7 +6238,11 @@
         "written": "ˌbī-ō-ˌlü-mə-ˈne-sᵊn(t)s",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/biolum01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Photinus_pyralis_Firefly_glowing.jpg/500px-Photinus_pyralis_Firefly_glowing.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bioluminescence",
+    "image_link": "https://en.wikipedia.org/wiki/Bioluminescence"
   },
   {
     "word": "blithely",
@@ -5742,7 +6266,11 @@
     "sentence": "The bogong moth migrates to mountain caves in summer.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Agrotis_infusa.jpg/500px-Agrotis_infusa.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Bogong moth",
+    "image_link": "https://en.wikipedia.org/wiki/Bogong_moth"
   },
   {
     "word": "brazier",
@@ -5759,7 +6287,11 @@
         "written": "ˈbrā-zhər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/brazie01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Brazier_with_soap_stone_pot.jpg/500px-Brazier_with_soap_stone_pot.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Brazier",
+    "image_link": "https://en.wikipedia.org/wiki/Brazier"
   },
   {
     "word": "burnished",
@@ -5788,7 +6320,11 @@
         "written": "ˈbyü-ˌtān",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/b/butane01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Butan_Lewis.svg/500px-Butan_Lewis.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Butane",
+    "image_link": "https://en.wikipedia.org/wiki/Butane"
   },
   {
     "word": "calibrate",
@@ -5839,7 +6375,11 @@
         "written": "ˌka-pə-ˈdō-sh(ē-)ə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/gg/ggcapp01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Cappadocia_balloon_trip%2C_Ortahisar_Castle_%2811893715185%29.jpg/500px-Cappadocia_balloon_trip%2C_Ortahisar_Castle_%2811893715185%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cappadocia",
+    "image_link": "https://en.wikipedia.org/wiki/Cappadocia"
   },
   {
     "word": "cataract",
@@ -5902,7 +6442,11 @@
         "written": "ˈchi-kə-(ˌ)dē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/chicka01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Sumpfmeise.jpg/500px-Sumpfmeise.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Poecile",
+    "image_link": "https://en.wikipedia.org/wiki/Poecile"
   },
   {
     "word": "chitinous",
@@ -5961,7 +6505,11 @@
         "written": "ˌkän-flə-ˈgrā-shən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/confla02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Doe_Fire_looking_south_from_forest_highway_7_%282020-08-19%29.jpg/500px-Doe_Fire_looking_south_from_forest_highway_7_%282020-08-19%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Conflagration",
+    "image_link": "https://en.wikipedia.org/wiki/Conflagration"
   },
   {
     "word": "conspicuous",
@@ -5999,7 +6547,11 @@
         "written": "ˈkän(t)-s(ə-)lət",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/consul04.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/IndonesiaConsulateHouston.JPG/500px-IndonesiaConsulateHouston.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Consulate",
+    "image_link": "https://en.wikipedia.org/wiki/Consulate"
   },
   {
     "word": "credenza",
@@ -6016,7 +6568,11 @@
         "written": "kri-ˈden-zə",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/creden05.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/15th_or_16th_century_Italian_credenza%2C_HAA.JPG/500px-15th_or_16th_century_Italian_credenza%2C_HAA.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Credenza",
+    "image_link": "https://en.wikipedia.org/wiki/Credenza"
   },
   {
     "word": "crocheted",
@@ -6049,7 +6605,11 @@
         "written": "kwē-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/%E0%A6%AE%E0%A6%9B%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%B0%E0%A7%80-%E0%A6%A8%E0%A6%B2%E0%A6%9F%E0%A7%87%E0%A6%99%E0%A6%BE-%E0%A6%95%E0%A6%9A%E0%A7%81%E0%A6%A0%E0%A7%8B%E0%A7%B0_%E0%A6%AA%E0%A6%BE%E0%A6%A4%E0%A6%A4_%E0%A6%A6%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A6%BE_%E0%A6%AA%E0%A6%BF%E0%A6%9F%E0%A6%BF%E0%A6%95%E0%A6%BE.webm/500px--%E0%A6%AE%E0%A6%9B%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%B0%E0%A7%80-%E0%A6%A8%E0%A6%B2%E0%A6%9F%E0%A7%87%E0%A6%99%E0%A6%BE-%E0%A6%95%E0%A6%9A%E0%A7%81%E0%A6%A0%E0%A7%8B%E0%A7%B0_%E0%A6%AA%E0%A6%BE%E0%A6%A4%E0%A6%A4_%E0%A6%A6%E0%A6%BF%E0%A6%AF%E0%A6%BC%E0%A6%BE_%E0%A6%AA%E0%A6%BF%E0%A6%9F%E0%A6%BF%E0%A6%95%E0%A6%BE.webm.jpg",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Cuisine",
+    "image_link": "https://en.wikipedia.org/wiki/Cuisine"
   },
   {
     "word": "cul-de-sac",
@@ -6078,7 +6638,11 @@
         "written": "ˌku̇l-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Cul-de-sac_1.jpg/500px-Cul-de-sac_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Dead-end street",
+    "image_link": "https://en.wikipedia.org/wiki/Dead-end_street"
   },
   {
     "word": "curriculum",
@@ -6095,7 +6659,11 @@
         "written": "kə-ˈri-kyə-ləm",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/c/curric03.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/MMC_MD_Curriculum.png/500px-MMC_MD_Curriculum.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Curriculum",
+    "image_link": "https://en.wikipedia.org/wiki/Curriculum"
   },
   {
     "word": "decisively",
@@ -6128,7 +6696,11 @@
         "written": "-wər",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Flag_of_Delaware.svg/500px-Flag_of_Delaware.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Delaware",
+    "image_link": "https://en.wikipedia.org/wiki/Delaware"
   },
   {
     "word": "despondent",
@@ -6166,7 +6738,11 @@
         "written": "-fə-ˌden(t)s",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/20220801_Introversion_-_Shyness_-_Social_anxiety_disorder_-_comparative_chart.svg/500px-20220801_Introversion_-_Shyness_-_Social_anxiety_disorder_-_comparative_chart.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Shyness",
+    "image_link": "https://en.wikipedia.org/wiki/Shyness"
   },
   {
     "word": "diplomatically",
@@ -6195,7 +6771,11 @@
     "sentence": "Ziri has a Doberman.",
     "sentence_source": "tatoeba",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Dobermann_handling.jpg/500px-Dobermann_handling.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Dobermann",
+    "image_link": "https://en.wikipedia.org/wiki/Dobermann"
   },
   {
     "word": "dominion",
@@ -6241,7 +6821,11 @@
     "sentence": "We shared a chocolate éclair after lunch.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Two_Safeway_Chocolate_Eclairs_%2819043880936%29.jpg/500px-Two_Safeway_Chocolate_Eclairs_%2819043880936%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Éclair",
+    "image_link": "https://en.wikipedia.org/wiki/Éclair"
   },
   {
     "word": "electrolytes",
@@ -6304,7 +6888,11 @@
         "written": "ˈen-də-ˌthər-mē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/endoth09.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Wiki_ostrich.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Endotherm",
+    "image_link": "https://en.wikipedia.org/wiki/Endotherm"
   },
   {
     "word": "enigmatic",
@@ -6368,7 +6956,11 @@
         "written": "-ˈtrā-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Flag_of_Eritrea.svg/500px-Flag_of_Eritrea.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Eritrea",
+    "image_link": "https://en.wikipedia.org/wiki/Eritrea"
   },
   {
     "word": "euphemism",
@@ -6385,7 +6977,11 @@
         "written": "ˈyü-fə-ˌmi-zəm",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/euphem01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Drugstore_aisle_sign_with_euphemisms.jpg/500px-Drugstore_aisle_sign_with_euphemisms.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Euphemism",
+    "image_link": "https://en.wikipedia.org/wiki/Euphemism"
   },
   {
     "word": "eureka",
@@ -6451,7 +7047,11 @@
         "audio_url": null,
         "label": "nonstandard"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Lisc_lipy.jpg/500px-Lisc_lipy.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Leaf",
+    "image_link": "https://en.wikipedia.org/wiki/Leaf"
   },
   {
     "word": "forsythia",
@@ -6473,7 +7073,11 @@
         "audio_url": null,
         "label": "chiefly British"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Forsythia_flower.JPG/500px-Forsythia_flower.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Forsythia",
+    "image_link": "https://en.wikipedia.org/wiki/Forsythia"
   },
   {
     "word": "frankincense",
@@ -6490,7 +7094,11 @@
         "written": "ˈfraŋ-kən-ˌsen(t)s",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/franki01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Frankincense_2005-12-31.jpg/500px-Frankincense_2005-12-31.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Frankincense",
+    "image_link": "https://en.wikipedia.org/wiki/Frankincense"
   },
   {
     "word": "frequency",
@@ -6507,7 +7115,11 @@
         "written": "ˈfrē-kwən(t)-sē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/f/freque02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/%E0%B8%A5%E0%B8%B9%E0%B8%81%E0%B8%95%E0%B8%B8%E0%B9%89%E0%B8%A1%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4.gif?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Frequency",
+    "image_link": "https://en.wikipedia.org/wiki/Frequency"
   },
   {
     "word": "gauntlets",
@@ -6578,7 +7190,11 @@
         "written": "ˈglȯ-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Gloucester_Docks_at_Night.jpeg/500px-Gloucester_Docks_at_Night.jpeg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Gloucester",
+    "image_link": "https://en.wikipedia.org/wiki/Gloucester"
   },
   {
     "word": "glycerin",
@@ -6595,7 +7211,11 @@
         "written": "ˈgli-s(ə-)rən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/g/glycer05.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Glycerin_Skelett.svg/500px-Glycerin_Skelett.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Glycerol",
+    "image_link": "https://en.wikipedia.org/wiki/Glycerol"
   },
   {
     "word": "hemisphere",
@@ -6629,7 +7249,11 @@
         "written": "hī-ˈpä-thə-səs",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/h/hypoth10.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Cellarius_Harmonia_Macrocosmica_-_Hypothesis_Ptolemaica.jpg/500px-Cellarius_Harmonia_Macrocosmica_-_Hypothesis_Ptolemaica.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Hypothesis",
+    "image_link": "https://en.wikipedia.org/wiki/Hypothesis"
   },
   {
     "word": "imperial",
@@ -6781,7 +7405,11 @@
         "written": "ˈjü-nə-pər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/j/junipe01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Juniperus_osteosperma_1.jpg/500px-Juniperus_osteosperma_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Juniper",
+    "image_link": "https://en.wikipedia.org/wiki/Juniper"
   },
   {
     "word": "kerosene",
@@ -6836,7 +7464,11 @@
         "written": "ˌlak-tō-bə-ˈsi-ləs",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/l/lactob01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Lactobacillus_sp_01.png/500px-Lactobacillus_sp_01.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Lactobacillus",
+    "image_link": "https://en.wikipedia.org/wiki/Lactobacillus"
   },
   {
     "word": "lapels",
@@ -6848,7 +7480,11 @@
     "sentence": "He brushed snow from the lapels of his coat.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Dress-pinstripe.jpg/500px-Dress-pinstripe.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Lapel",
+    "image_link": "https://en.wikipedia.org/wiki/Lapel"
   },
   {
     "word": "legation",
@@ -6865,7 +7501,11 @@
         "written": "li-ˈgā-shən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/l/legati02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Museo_del_Antiguo_Legado_Estadounidense%2C_T%C3%A1nger%2C_Marruecos%2C_2015-12-11%2C_DD_44-46_HDR.JPG/500px-Museo_del_Antiguo_Legado_Estadounidense%2C_T%C3%A1nger%2C_Marruecos%2C_2015-12-11%2C_DD_44-46_HDR.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Legation",
+    "image_link": "https://en.wikipedia.org/wiki/Legation"
   },
   {
     "word": "lemmings",
@@ -6877,7 +7517,11 @@
     "sentence": "Lemmings live in the cold northern tundra.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Tunturisopuli_Lemmus_Lemmus.jpg/500px-Tunturisopuli_Lemmus_Lemmus.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Lemming",
+    "image_link": "https://en.wikipedia.org/wiki/Lemming"
   },
   {
     "word": "leprosy",
@@ -6923,7 +7567,11 @@
         "written": "ˈmā-ˌnāz",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Mayonnaise_%281%29.jpg/500px-Mayonnaise_%281%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Mayonnaise",
+    "image_link": "https://en.wikipedia.org/wiki/Mayonnaise"
   },
   {
     "word": "mewling",
@@ -6981,7 +7629,11 @@
     "sentence": "Mysticetes are whales that filter food through baleen.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Mysticeti_Diversity.png/500px-Mysticeti_Diversity.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Baleen whale",
+    "image_link": "https://en.wikipedia.org/wiki/Baleen_whale"
   },
   {
     "word": "neurological",
@@ -7023,7 +7675,11 @@
         "written": "ˈnyüt",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Uhandre_goimenditarra.jpg/500px-Uhandre_goimenditarra.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Newt",
+    "image_link": "https://en.wikipedia.org/wiki/Newt"
   },
   {
     "word": "odorant",
@@ -7074,7 +7730,11 @@
         "written": "pə-ˈlät-(ˌ)sō",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/palazz01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Palacio_Real_de_Madrid_Julio_2016_%28cropped%29.jpg/500px-Palacio_Real_de_Madrid_Julio_2016_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Palace",
+    "image_link": "https://en.wikipedia.org/wiki/Palace"
   },
   {
     "word": "panoramic",
@@ -7133,7 +7793,11 @@
         "written": "-nē-ə",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Flag_of_Pennsylvania.svg/500px-Flag_of_Pennsylvania.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Pennsylvania",
+    "image_link": "https://en.wikipedia.org/wiki/Pennsylvania"
   },
   {
     "word": "perpendicular",
@@ -7209,7 +7873,11 @@
         "written": "-nən",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Streichholz.jpg/500px-Streichholz.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Phenomenon",
+    "image_link": "https://en.wikipedia.org/wiki/Phenomenon"
   },
   {
     "word": "porpoises",
@@ -7221,7 +7889,11 @@
     "sentence": "Porpoises swam alongside our boat.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Phocoena_phocoena.2.jpg/500px-Phocoena_phocoena.2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Porpoise",
+    "image_link": "https://en.wikipedia.org/wiki/Porpoise"
   },
   {
     "word": "preconception",
@@ -7259,7 +7931,11 @@
         "written": "ˌpres-",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Fourth_Chicago.jpg/500px-Fourth_Chicago.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Presbyterianism",
+    "image_link": "https://en.wikipedia.org/wiki/Presbyterianism"
   },
   {
     "word": "procession",
@@ -7276,7 +7952,11 @@
         "written": "prə-ˈse-shən",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/proces07.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Funeral_Procession_-_15th_Century_-_Project_Gutenberg_eText_16531.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Procession",
+    "image_link": "https://en.wikipedia.org/wiki/Procession"
   },
   {
     "word": "propeller",
@@ -7293,7 +7973,11 @@
         "written": "prə-ˈpe-lər",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/propel03.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Ship-propeller_2000.jpg/500px-Ship-propeller_2000.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Propeller",
+    "image_link": "https://en.wikipedia.org/wiki/Propeller"
   },
   {
     "word": "prosciutto",
@@ -7310,7 +7994,11 @@
         "written": "prō-ˈshü-(ˌ)tō",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/prosci01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Prosciutto_di_Parma%2C_ham_producing.jpg/500px-Prosciutto_di_Parma%2C_ham_producing.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Prosciutto",
+    "image_link": "https://en.wikipedia.org/wiki/Prosciutto"
   },
   {
     "word": "prospective",
@@ -7412,7 +8100,11 @@
         "written": "ˈkēsh",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/q/quiche01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Quiche.jpg/500px-Quiche.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Quiche",
+    "image_link": "https://en.wikipedia.org/wiki/Quiche"
   },
   {
     "word": "quizzically",
@@ -7480,7 +8172,11 @@
         "written": "ˌsa-lə-ˈsi-lik-",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/salicy02.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Salicylic_acid_1.jpg/500px-Salicylic_acid_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Salicylic acid",
+    "image_link": "https://en.wikipedia.org/wiki/Salicylic_acid"
   },
   {
     "word": "sauntered",
@@ -7509,7 +8205,11 @@
         "written": "ˈsak-sə-ˌfōn",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/saxoph01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Eight_saxophone_sizes_smaller.png/500px-Eight_saxophone_sizes_smaller.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Saxophone",
+    "image_link": "https://en.wikipedia.org/wiki/Saxophone"
   },
   {
     "word": "self-sufficient",
@@ -7589,7 +8289,11 @@
         "written": "se-ˈtē",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/settee01.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/2009-05-16_Main_office_lobby_at_Hampton_Forest_Apartments.jpg/500px-2009-05-16_Main_office_lobby_at_Hampton_Forest_Apartments.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Couch",
+    "image_link": "https://en.wikipedia.org/wiki/Couch"
   },
   {
     "word": "shar-pei",
@@ -7610,7 +8314,11 @@
         "written": "ˌshär-",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/s/shar-pei.mp3"
       }
-    ]
+    ],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Adult_sharpei.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Shar Pei",
+    "image_link": "https://en.wikipedia.org/wiki/Shar_Pei"
   },
   {
     "word": "Sierra Leone",
@@ -7635,7 +8343,11 @@
         "written": "-lē-ˈō-nē",
         "audio_url": null
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Flag_of_Sierra_Leone.svg/500px-Flag_of_Sierra_Leone.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Sierra Leone",
+    "image_link": "https://en.wikipedia.org/wiki/Sierra_Leone"
   },
   {
     "word": "solenodon",
@@ -7647,7 +8359,11 @@
     "sentence": "A solenodon is a rare mammal from the Caribbean.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Hispaniolan_Solenodon_crop.jpg/500px-Hispaniolan_Solenodon_crop.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Solenodon",
+    "image_link": "https://en.wikipedia.org/wiki/Solenodon"
   },
   {
     "word": "spes phthisica",
@@ -7809,7 +8525,11 @@
     "sentence": "Trichobothria help some spiders detect tiny movements in the air.",
     "sentence_source": "generated",
     "audio_url": null,
-    "pronunciations": []
+    "pronunciations": [],
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Paratropis_tuxtlensis_tarsal_trichobothria_II.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Trichobothria",
+    "image_link": "https://en.wikipedia.org/wiki/Trichobothria"
   },
   {
     "word": "Tripoli",
@@ -7897,7 +8617,11 @@
         "written": "-ˌsī",
         "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/v/vibri02m.mp3"
       }
-    ]
+    ],
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Cat_whiskers_closeup.jpg/500px-Cat_whiskers_closeup.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image_source": "wikipedia",
+    "image_credit": "Wikipedia: Whiskers",
+    "image_link": "https://en.wikipedia.org/wiki/Whiskers"
   },
   {
     "word": "vibrometer",
