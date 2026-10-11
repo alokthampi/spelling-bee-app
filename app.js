@@ -827,8 +827,16 @@ function scrollActiveWordIntoView() {
 const audioPlayer = new Audio();
 audioPlayer.playsInline = true;
 
+// Recordings (and finally the device voice) still to play after the current
+// one; see playMWSequence
+let audioQueue = [];
+let audioQueueTimer = null;
+const PRONUNCIATION_GAP_MS = 600; // pause between one pronunciation and the next
+
 function stopAllAudio() {
   if (synth) synth.cancel();
+  audioQueue = [];
+  clearTimeout(audioQueueTimer);
   audioPlayer.pause();
 }
 
@@ -837,6 +845,34 @@ function playMWAudio(url) {
   audioPlayer.src = url;
   audioPlayer.play().catch(() => {});
 }
+
+// Plays the recordings one after another, then says `speakText` in the
+// device's American voice. A recording that fails to load is skipped.
+function playMWSequence(urls, speakText) {
+  const [first, ...rest] = [...new Set(urls)];
+  if (!first) {
+    if (speakText) speakAmerican(speakText);
+    return;
+  }
+  playMWAudio(first);
+  audioQueue = speakText ? [...rest, { speak: speakText }] : rest;
+}
+
+function playNextQueued() {
+  if (!audioQueue.length) return;
+  audioQueueTimer = setTimeout(() => {
+    const next = audioQueue.shift();
+    if (next.speak) {
+      speakAmerican(next.speak);
+      return;
+    }
+    audioPlayer.src = next;
+    audioPlayer.play().catch(playNextQueued);
+  }, PRONUNCIATION_GAP_MS);
+}
+
+audioPlayer.addEventListener("ended", playNextQueued);
+audioPlayer.addEventListener("error", playNextQueued);
 
 // Recorded MW pronunciations of a word, the default (MW's preferred) first.
 // Older word files only have audio_url.
@@ -920,9 +956,9 @@ function selectWord(index, autoplay = true) {
 
   updateMWButtonState(currentItem);
 
+  // Every recorded pronunciation, MW's preferred one first, then the device's American voice
   if (!autoplay) stopAllAudio();
-  else if (currentItem.audio_url) playMWAudio(currentItem.audio_url);
-  else speakAmerican(currentItem.word);
+  else playMWSequence(recordedPronunciations(currentItem), currentItem.word);
 
   renderWordList();
   updateProgress();
