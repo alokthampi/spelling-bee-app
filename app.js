@@ -700,7 +700,10 @@ function toggleShuffle() {
 --------------------------- */
 function applyFilter() {
   filteredWords = wordsMatchingFilters(LEARNING_FILTERS);
-  if (shuffleRanks) {
+  if (filterSelectValues(LEARNING_FILTERS.results).includes("practice-ever-wrong")) {
+    // Most misspelled first, even while Shuffle is on; ties keep their usual order
+    filteredWords.sort((a, b) => b.practice.wrong - a.practice.wrong);
+  } else if (shuffleRanks) {
     filteredWords.sort((a, b) => (shuffleRanks.get(wordKey(a)) ?? 0) - (shuffleRanks.get(wordKey(b)) ?? 0));
   }
 
@@ -1320,7 +1323,7 @@ function renderStats() {
       <div class="mini-bar-row">
         <div class="mini-bar-row-header">
           <span class="mini-bar-title">${difficultyLabel(level)}</span>
-          <span class="mini-bar-caption">${c.correct} ✅ · ${c.wrong} ❌ · ${c.pending} left</span>
+          <span class="mini-bar-caption">${c.correct} ✅ · ${c.wrong} ❌ · <span title="Ever spelled wrong">${c.everWrong} ⚠️</span> · ${c.pending} left</span>
         </div>
         ${stackBarHtml(practiceSegments(c), c.total, true)}
       </div>`;
@@ -1390,7 +1393,7 @@ function renderStats() {
         <div class="stat-grid">
           ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
           ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
-          ${statTile("🔁 Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong")}
+          ${statTile("⚠️ Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong")}
           ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
           ${statTile("🎯 Accuracy", `${accuracy}%`, null, null, "stat-wide")}
         </div>
