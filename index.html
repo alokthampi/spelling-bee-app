@@ -193,6 +193,23 @@
       box-shadow: var(--shadow-md);
     }
 
+    /* "Make this the default scope" at the bottom of every Scope menu */
+    .scope-default-btn {
+      margin-top: 4px;
+      padding: 8px 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      color: var(--accent);
+      background: none;
+      border: none;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .scope-default-btn:disabled { color: var(--text-tertiary); cursor: default; }
+
     .multi-select-option {
       display: flex;
       align-items: center;
@@ -1473,6 +1490,7 @@
         <div class="multi-select-menu">
           <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
           <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          <button type="button" class="scope-default-btn"></button>
         </div>
       </details>
     </div>
@@ -1646,6 +1664,7 @@
           <div class="multi-select-menu">
             <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
             <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+            <button type="button" class="scope-default-btn"></button>
           </div>
         </details>
       </div>
@@ -1849,6 +1868,7 @@
           <div class="multi-select-menu">
             <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
             <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+            <button type="button" class="scope-default-btn"></button>
           </div>
         </details>
       </div>
@@ -1960,7 +1980,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026101103"></script>
+<script src="app.js?v=2026101104"></script>
 <script src="practice.js?v=2026101101"></script>
 </body>
 </html>

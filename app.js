@@ -222,6 +222,11 @@ async function loadWords() {
   ]);
 
   words = datasets.flat();
+  const defaultScopes = savedDefaultScopes();
+  if (defaultScopes) {
+    applyDefaultScopes(defaultScopes, true);
+    try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(defaultScopes)); } catch {}
+  }
   if (progress) applyProgressToWords(progress);
   else retryProgressLoad();
 
@@ -294,6 +299,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.target.closest("#learningTab")) applyFilter();
       else if (event.target.closest("#statsTab")) renderStats();
     });
+  });
+
+  // Default scope: this browser's copy now; the saved one once progress loads
+  const localDefault = savedDefaultScopes();
+  if (localDefault) applyDefaultScopes(localDefault, true);
+  else updateDefaultScopeButtons();
+  SCOPE_DROPDOWNS.forEach(id => {
+    const container = document.getElementById(id);
+    container.addEventListener("change", updateDefaultScopeButtons);
+    container.querySelector(".scope-default-btn").addEventListener("click", () => makeDefaultScope(id));
   });
 
   wireFilterSelect("resultFilter", applyFilter);
@@ -447,6 +462,7 @@ function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
   const kind = container.dataset.kind; // "scope" or "difficulty"
+  if (kind === "scope") updateDefaultScopeButtons();
   if (!selected.length) {
     summary.textContent = kind === "scope" ? "Select scope" : "No difficulty";
     return;
@@ -513,6 +529,74 @@ function filterDropdownsAtDefault(ids) {
 }
 
 const LEARNING_DROPDOWNS = ["scopeFilter", "difficultyFilter", "resultFilter", "originFilter"];
+
+/* ---------------------------
+   Default scope, shared by all three tabs. It's what each tab opens with and
+   what Clear filters goes back to (the Scope checkboxes' defaultChecked).
+   Saved in the progress doc so it follows to other devices, and in this
+   browser so the page opens with it before the progress doc arrives.
+--------------------------- */
+const SCOPE_DROPDOWNS = ["scopeFilter", "practiceScopeFilter", "statsScopeFilter"];
+const SETTINGS_KEY = "_settings";
+const DEFAULT_SCOPES_LOCAL = "spellingBeeDefaultScopes";
+
+function savedDefaultScopes() {
+  const fromDoc = progressData?.[SETTINGS_KEY]?.defaultScopes;
+  if (Array.isArray(fromDoc) && fromDoc.length) return fromDoc;
+  try {
+    const local = JSON.parse(localStorage.getItem(DEFAULT_SCOPES_LOCAL));
+    if (Array.isArray(local) && local.length) return local;
+  } catch {}
+  return null;
+}
+
+// Makes `scopes` the default in every tab; `select` also ticks them now
+function applyDefaultScopes(scopes, select) {
+  SCOPE_DROPDOWNS.forEach(id => {
+    const container = document.getElementById(id);
+    container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      input.defaultChecked = scopes.includes(input.value);
+      if (select) input.checked = input.defaultChecked;
+    });
+    updateMultiSelectSummary(container);
+  });
+  updateDefaultScopeButtons();
+}
+
+function updateDefaultScopeButtons() {
+  SCOPE_DROPDOWNS.forEach(id => {
+    const inputs = Array.from(document.querySelectorAll(`#${id} input[type="checkbox"]`));
+    const isDefault = inputs.every(input => input.checked === input.defaultChecked);
+    const btn = document.querySelector(`#${id} .scope-default-btn`);
+    btn.disabled = isDefault || !inputs.some(input => input.checked);
+    btn.textContent = isDefault ? "⭐ Default scope for all tabs" : "☆ Make this the default scope";
+  });
+}
+
+async function saveDefaultScopes(scopes) {
+  try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(scopes)); } catch {}
+  if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), defaultScopes: scopes };
+  if (!window.db) return;
+  try {
+    const { doc, setDoc } = await import(FIRESTORE_URL);
+    await setDoc(doc(window.db, "progress", USER_ID), { [SETTINGS_KEY]: { defaultScopes: scopes } }, { merge: true });
+  } catch (err) {
+    console.warn("Could not save the default scope:", err);
+  }
+}
+
+// The picked scopes become the default, and every tab switches to them
+function makeDefaultScope(id) {
+  const scopes = selectedValues(id);
+  if (!scopes.length) return;
+  saveDefaultScopes(scopes);
+  applyDefaultScopes(scopes, true);
+  document.getElementById(id).open = false;
+  applyFilter();
+  if (typeof practiceFiltersChanged === "function" && !(practice && practice.index >= 0)) practiceFiltersChanged();
+  else if (typeof updateClearPracticeButton === "function") updateClearPracticeButton();
+  renderStats();
+}
 
 function clearLearningFilters() {
   resetFilterDropdowns(LEARNING_DROPDOWNS);
@@ -1563,8 +1647,10 @@ async function resetSelection() {
   renderPicture(null);
   renderWordCardStatus();
   await resetCloudProgress();
-  // Hidden pictures aren't progress: keep them hidden after the reset
+  // Hidden pictures and the default scope aren't progress: keep them after the reset
   words.filter(w => w.imageHidden).forEach(w => saveWord(w, { imageHidden: true }));
+  const defaultScopes = savedDefaultScopes();
+  if (defaultScopes) saveDefaultScopes(defaultScopes);
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
 }
