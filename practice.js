@@ -622,6 +622,8 @@ function recordPracticeResult(entry) {
   p[entry.status]++;
   p.last = entry.status;
   p.lastAt = new Date().toISOString();
+  // The day of every attempt from TRACKING_START on, for Stats > Activity
+  p.days = [...(p.days || []), dayNumber()];
   // Every attempt in order, oldest first: "c" = correct, "w" = wrong
   p.history = (p.history || "") + (entry.status === "correct" ? "c" : "w");
   saveWord(item, { practice: { ...p } });

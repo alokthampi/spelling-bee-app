@@ -184,6 +184,7 @@ function applySavedProgress(item, saved) {
   item.covered = typeof obj.covered === "boolean"
     ? obj.covered
     : Boolean(typeof saved === "string" ? saved : obj.result);
+  item.coveredAt = item.covered ? obj.coveredAt || null : null;
   item.markedForCorrection = obj.markedForCorrection === true;
   item.correctionNote = obj.correctionNote || "";
   item.imageHidden = obj.imageHidden === true;
@@ -213,6 +214,7 @@ async function loadWords() {
         _scope: scope,
         _originalIndex: i,
         covered: false,
+        coveredAt: null,
         markedForCorrection: false,
         correctionNote: "",
         imageHidden: false,
@@ -1108,8 +1110,10 @@ function showCardWord(word) {
 --------------------------- */
 function setCovered(item, covered) {
   item.covered = covered;
+  // When it was learned, for Stats > Activity; undoing clears it
+  item.coveredAt = covered ? item.coveredAt || new Date().toISOString() : null;
   // Don't wait on the network before showing the word and playing audio
-  saveWord(item, { covered });
+  saveWord(item, { covered, coveredAt: item.coveredAt });
 }
 
 // Undo an accidental tap: the word goes back to not covered
@@ -1518,6 +1522,7 @@ function renderStats() {
 
   container.innerHTML = `
     <div class="stats-scope">${lc.total} words · ${escapeHtml(scopeLabel)} · ${escapeHtml(difficultySummary("statsDifficultyFilter"))}${escapeHtml(lettersLabel)}</div>
+    ${activitySectionHtml(scopeWords)}
 
     <div class="stats-columns">
       <section class="stats-col" aria-label="Learning">
@@ -1581,6 +1586,8 @@ function renderStats() {
     </div>
   `;
 
+  wireActivity(container);
+
   container.querySelectorAll(".stat-filter").forEach(tile => {
     const open = () => {
       copyStatsFiltersToLearning();
@@ -1603,6 +1610,258 @@ function renderStats() {
 }
 
 /* ---------------------------
+   Stats: activity by day or week. Words learned come from each word's
+   coveredAt (when it was first opened on the Learning card); practice comes
+   from each word's practice.days (the day of every attempt). Both were only
+   recorded from TRACKING_START on, so older activity is counted separately.
+--------------------------- */
+const TRACKING_START = "2026-10-11";
+const DAY_MS = 86400000;
+const MAX_ACTIVITY_DAYS = 366;
+
+// Calendar days as whole numbers in local time, so "today" matches the device
+function dayNumber(date = new Date()) {
+  return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / DAY_MS);
+}
+function dayFromInput(value) {
+  const [y, m, d] = (value || "").split("-").map(Number);
+  return y && m && d ? Math.floor(Date.UTC(y, m - 1, d) / DAY_MS) : null;
+}
+function dayToInput(day) {
+  return new Date(day * DAY_MS).toISOString().slice(0, 10);
+}
+function dayLabel(day, options) {
+  return new Date(day * DAY_MS).toLocaleDateString(undefined, { timeZone: "UTC", ...options });
+}
+function weekStart(day) {
+  return day - ((new Date(day * DAY_MS).getUTCDay() + 6) % 7); // weeks start on Monday
+}
+
+const activityView = { group: "day", range: "7", from: null, to: null };
+
+function activityRange() {
+  const today = dayNumber();
+  if (activityView.range === "custom") {
+    let from = dayFromInput(activityView.from) ?? today - 6;
+    let to = dayFromInput(activityView.to) ?? today;
+    if (from > to) [from, to] = [to, from];
+    return { from: Math.max(from, to - MAX_ACTIVITY_DAYS + 1), to };
+  }
+  return { from: today - Number(activityView.range) + 1, to: today };
+}
+
+// [{ start, end, learned, practiced: Set, attempts, correct, wrong }] oldest first
+function activityPeriods(list) {
+  const { from, to } = activityRange();
+  const periods = [];
+  const byDay = new Map();
+  for (let day = from; day <= to; day++) {
+    const start = activityView.group === "week" ? Math.max(weekStart(day), from) : day;
+    let period = periods[periods.length - 1];
+    if (!period || period.start !== start) {
+      period = { start, end: start, learned: 0, practiced: new Set(), attempts: 0, correct: 0, wrong: 0 };
+      periods.push(period);
+    }
+    period.end = day;
+    byDay.set(day, period);
+  }
+
+  const undated = { learned: 0, attempts: 0 };
+  list.forEach(w => {
+    if (w.covered) {
+      const day = w.coveredAt ? dayNumber(new Date(w.coveredAt)) : null;
+      if (day === null) undated.learned++;
+      else if (byDay.has(day)) byDay.get(day).learned++;
+    }
+    const p = w.practice;
+    const days = p.days || [];
+    undated.attempts += Math.max(0, p.attempts - days.length);
+    // days lines up with the newest attempts in history
+    const results = days.length ? (p.history || "").slice(-days.length) : "";
+    days.forEach((day, i) => {
+      const period = byDay.get(day);
+      if (!period) return;
+      period.practiced.add(w);
+      period.attempts++;
+      if (results[i] === "c") period.correct++;
+      else if (results[i] === "w") period.wrong++;
+    });
+  });
+  return { periods, undated };
+}
+
+function periodText(period, long) {
+  if (activityView.group === "day") {
+    return dayLabel(period.start, long ? { weekday: "short", month: "short", day: "numeric" } : { weekday: "short", day: "numeric" });
+  }
+  const start = dayLabel(period.start, { month: "short", day: "numeric" });
+  if (!long) return start;
+  return period.end === period.start ? start : `${start} – ${dayLabel(period.end, { month: "short", day: "numeric" })}`;
+}
+
+// One grouped column chart: a learned bar and a practiced bar for every day
+// or week, on one shared scale. Values sit on the caps when there's room;
+// each group has a hover/focus tooltip listing both, and the table below
+// lists everything.
+const ACTIVITY_SERIES = [
+  { key: "learned", name: "Learned", color: "var(--series-learned)", value: p => p.learned },
+  { key: "practiced", name: "Practiced", color: "var(--series-practiced)", value: p => p.practiced.size }
+];
+
+function activityChartHtml(periods) {
+  const max = Math.max(1, ...periods.flatMap(p => ACTIVITY_SERIES.map(s => s.value(p))));
+  const labelEvery = Math.ceil(periods.length / 10);
+  const showValues = periods.length <= 14;
+  const groups = periods.map((period, i) => {
+    const bars = ACTIVITY_SERIES.map(s => {
+      const v = s.value(period);
+      const height = v ? Math.max(2, Math.round((v / max) * 100)) : 0;
+      return `
+          <div class="act-bar-slot">
+            ${showValues && v ? `<span class="act-value">${v}</span>` : ""}
+            <div class="act-bar" style="height:${height}%;background:${s.color}"></div>
+          </div>`;
+    }).join("");
+    const tip = `${period.learned}|${period.practiced.size}|${period.attempts}|${period.correct}|${period.wrong}`;
+    return `
+      <div class="act-col" tabindex="0" data-tip="${tip}" data-tip-label="${escapeHtml(periodText(period, true))}">
+        <div class="act-bar-area">${bars}</div>
+        <span class="act-x">${i % labelEvery === 0 ? escapeHtml(periodText(period, false)) : ""}</span>
+      </div>`;
+  }).join("");
+  const legend = ACTIVITY_SERIES.map(s =>
+    `<span class="act-legend-item"><span class="act-swatch" style="background:${s.color}"></span>${s.name}</span>`).join("");
+  return `
+    <div class="act-chart">
+      <div class="act-chart-head">
+        <span class="act-chart-title">Words per ${activityView.group === "day" ? "day" : "week"}</span>
+        <span class="act-legend">${legend}</span>
+      </div>
+      <div class="act-plot" role="img" aria-label="Words learned and practiced per ${activityView.group}; the table below lists every value">${groups}</div>
+    </div>`;
+}
+
+function activitySectionHtml(list) {
+  const { periods, undated } = activityPeriods(list);
+  const { from, to } = activityRange();
+  const learned = periods.reduce((n, p) => n + p.learned, 0);
+  const practicedWords = new Set(periods.flatMap(p => [...p.practiced])).size;
+  const attempts = periods.reduce((n, p) => n + p.attempts, 0);
+  const correct = periods.reduce((n, p) => n + p.correct, 0);
+  const wrong = periods.reduce((n, p) => n + p.wrong, 0);
+  const unit = activityView.group === "day" ? "Day" : "Week";
+
+  const rangeOptions = [["1", "Today"], ["7", "Last 7 days"], ["14", "Last 14 days"], ["30", "Last 30 days"], ["84", "Last 12 weeks"], ["custom", "Custom dates…"]]
+    .map(([v, t]) => `<option value="${v}"${activityView.range === v ? " selected" : ""}>${t}</option>`).join("");
+  const rows = periods.slice().reverse().map(p => `
+    <tr>
+      <th scope="row">${escapeHtml(periodText(p, true))}</th>
+      <td>${p.learned}</td><td>${p.practiced.size}</td><td>${p.attempts}</td><td>${p.correct}</td><td>${p.wrong}</td>
+    </tr>`).join("");
+  const startText = dayLabel(dayFromInput(TRACKING_START), { month: "short", day: "numeric", year: "numeric" });
+  const note = undated.learned || undated.attempts
+    ? `<p class="act-note">Dates are recorded from ${startText}. ${undated.learned} word${undated.learned === 1 ? "" : "s"} learned and ${undated.attempts} practice attempt${undated.attempts === 1 ? "" : "s"} from before then aren't shown by ${unit.toLowerCase()}.</p>`
+    : "";
+
+  return `
+    <section class="stat-section activity-section" aria-label="Activity">
+      <h3>📅 Activity by ${unit.toLowerCase()}</h3>
+      <div class="act-controls">
+        <div class="act-toggle" role="group" aria-label="Group by">
+          <button type="button" data-group="day" aria-pressed="${activityView.group === "day"}">Daily</button>
+          <button type="button" data-group="week" aria-pressed="${activityView.group === "week"}">Weekly</button>
+        </div>
+        <select class="act-select" id="activityRange" aria-label="Date range">${rangeOptions}</select>
+        <div class="act-custom"${activityView.range === "custom" ? "" : " hidden"}>
+          <input type="date" id="activityFrom" aria-label="From" value="${dayToInput(from)}" max="${dayToInput(dayNumber())}" />
+          <span>to</span>
+          <input type="date" id="activityTo" aria-label="To" value="${dayToInput(to)}" max="${dayToInput(dayNumber())}" />
+        </div>
+      </div>
+      <div class="act-range-text">${escapeHtml(dayLabel(from, { month: "short", day: "numeric", year: "numeric" }))}${from === to ? "" : ` – ${escapeHtml(dayLabel(to, { month: "short", day: "numeric", year: "numeric" }))}`}</div>
+      <div class="stat-grid act-tiles">
+        ${statTile("📖 Words learned", learned)}
+        ${statTile("✍️ Words practiced", practicedWords)}
+        ${statTile("Attempts", attempts)}
+        ${statTile("🎯 Accuracy", attempts ? `${Math.round((correct / attempts) * 100)}%` : "—")}
+      </div>
+      ${activityChartHtml(periods)}
+      <details class="act-table-wrap">
+        <summary>Show as a table</summary>
+        <table class="act-table">
+          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th><th scope="col">Attempts</th><th scope="col">✅</th><th scope="col">❌</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </details>
+      ${note}
+    </section>`;
+}
+
+function wireActivity(container) {
+  container.querySelectorAll(".act-toggle button").forEach(btn =>
+    btn.addEventListener("click", () => { activityView.group = btn.dataset.group; renderStats(); }));
+  container.querySelector("#activityRange").addEventListener("change", event => {
+    const { from, to } = activityRange();
+    activityView.range = event.target.value;
+    if (activityView.range === "custom" && !activityView.from) {
+      activityView.from = dayToInput(from);
+      activityView.to = dayToInput(to);
+    }
+    renderStats();
+  });
+  ["activityFrom", "activityTo"].forEach(id => container.querySelector(`#${id}`).addEventListener("change", event => {
+    if (!event.target.value) return;
+    activityView[id === "activityFrom" ? "from" : "to"] = event.target.value;
+    renderStats();
+  }));
+
+  // One shared tooltip: value first, then the period
+  let tip = document.getElementById("actTip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.id = "actTip";
+    tip.className = "act-tip";
+    tip.hidden = true;
+    document.body.appendChild(tip);
+  }
+  const show = col => {
+    // Values lead, the period follows; a short colour key marks each series
+    const [learned, practiced, attempts, correct, wrong] = col.dataset.tip.split("|");
+    tip.replaceChildren();
+    const label = document.createElement("div");
+    label.className = "act-tip-label";
+    label.textContent = col.dataset.tipLabel;
+    const row = (series, value, detail) => {
+      const line = document.createElement("div");
+      line.className = "act-tip-row";
+      const key = document.createElement("span");
+      key.className = "act-tip-key";
+      key.style.background = series.color;
+      const strong = document.createElement("strong");
+      strong.textContent = value;
+      line.append(key, strong, document.createTextNode(` ${series.name.toLowerCase()}${detail}`));
+      return line;
+    };
+    tip.append(
+      row(ACTIVITY_SERIES[0], learned, ""),
+      row(ACTIVITY_SERIES[1], practiced, ` · ${attempts} attempt${attempts === "1" ? "" : "s"}, ${correct} ✅ ${wrong} ❌`),
+      label
+    );
+    tip.hidden = false;
+    const r = col.getBoundingClientRect();
+    const left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2));
+    tip.style.left = `${left + window.scrollX}px`;
+    tip.style.top = `${r.top + window.scrollY - tip.offsetHeight - 6}px`;
+  };
+  container.querySelectorAll(".act-col").forEach(col => {
+    col.addEventListener("pointerenter", () => show(col));
+    col.addEventListener("focus", () => show(col));
+    col.addEventListener("pointerleave", () => (tip.hidden = true));
+    col.addEventListener("blur", () => (tip.hidden = true));
+  });
+}
+
+/* ---------------------------
    Reset
 --------------------------- */
 async function confirmReset() {
@@ -1621,6 +1880,7 @@ async function resetSelection() {
 
   words.forEach(w => {
     w.covered = false;
+    w.coveredAt = null;
     w.markedForCorrection = false;
     w.correctionNote = "";
     w.practice = emptyPractice();

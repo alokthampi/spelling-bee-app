@@ -28,6 +28,10 @@
       --danger-soft: rgba(248, 113, 113, 0.16);
       --covered: #60a5fa;
       --covered-soft: rgba(96, 165, 250, 0.12);
+      /* Stats > Activity chart series: blue / orange, validated for colour-blind
+         separation and contrast on the dark surface */
+      --series-learned: #3987e5;
+      --series-practiced: #d95926;
       --warning: #fbbf24;
       --radius-lg: 14px;
       --radius-md: 10px;
@@ -1314,6 +1318,56 @@
     .timer.paused .timer-text { color: var(--text-tertiary); }
 
     /* ---------- Stats (built by renderStats) ---------- */
+    /* Stats: activity by day or week */
+    .act-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .act-toggle { display: inline-flex; background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px; }
+    .act-toggle button {
+      font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      background: none; border: none; border-radius: 6px; padding: 8px 14px; min-height: 36px; cursor: pointer;
+    }
+    .act-toggle button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+    .act-select, .act-custom input {
+      font-family: inherit; font-size: 16px; color: var(--text); background: var(--bg-inset);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; min-height: 42px;
+      color-scheme: dark;
+    }
+    .act-custom { display: flex; align-items: center; gap: 6px; color: var(--text-tertiary); font-size: 13px; flex-wrap: wrap; }
+    .act-range-text { font-size: 13px; color: var(--text-tertiary); margin-bottom: 12px; }
+    .act-tiles { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 700px) { .act-tiles { grid-template-columns: repeat(4, 1fr); } }
+    .act-chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; margin-bottom: 8px; }
+    .act-chart-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .act-legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-secondary); }
+    .act-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .act-swatch { width: 10px; height: 10px; border-radius: 2px; }
+    .act-plot {
+      display: flex; align-items: stretch; gap: 6px; height: 190px; overflow-x: auto;
+      border-bottom: 1px solid var(--border-strong); padding-top: 18px;
+    }
+    .act-col { flex: 1 1 0; min-width: 18px; display: flex; flex-direction: column; align-items: center; outline: none; cursor: default; }
+    .act-bar-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 2px; }
+    .act-bar-slot { flex: 0 1 20px; height: 100%; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+    .act-bar { width: 100%; border-radius: 4px 4px 0 0; }
+    .act-col:hover .act-bar, .act-col:focus-visible .act-bar { filter: brightness(1.2); }
+    .act-col:hover, .act-col:focus-visible { background: var(--bg-inset); border-radius: 4px 4px 0 0; }
+    .act-value { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 3px; }
+    .act-x { height: 18px; margin-top: 4px; font-size: 10px; color: var(--text-tertiary); white-space: nowrap; }
+    .act-tip {
+      position: absolute; z-index: 50; pointer-events: none; padding: 6px 10px; font-size: 12px;
+      color: var(--text-secondary); background: var(--bg-inset); border: 1px solid var(--border-strong);
+      border-radius: 6px; box-shadow: var(--shadow-md); white-space: nowrap;
+    }
+    .act-tip strong { color: var(--text); font-size: 13px; }
+    .act-tip-row { display: flex; align-items: center; gap: 6px; }
+    .act-tip-key { width: 10px; height: 2px; border-radius: 1px; }
+    .act-tip-label { margin-top: 4px; color: var(--text-tertiary); }
+    .act-table-wrap { margin-top: 14px; }
+    .act-table-wrap summary { cursor: pointer; font-size: 13px; color: var(--accent-hover); font-weight: 600; }
+    .act-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .act-table th, .act-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; }
+    .act-table th:first-child { text-align: left; font-weight: 500; color: var(--text); }
+    .act-table thead th { color: var(--text-tertiary); font-weight: 700; font-size: 11px; text-transform: uppercase; }
+    .act-note { margin: 12px 0 0; font-size: 12px; color: var(--text-tertiary); }
     .stats-scope { font-size: 13px; color: var(--text-tertiary); margin-bottom: 4px; }
     .stats-heading { font-size: 18px; font-weight: 800; margin: 18px 0 10px; }
     .stack-seg.seg-covered { background: var(--covered); }
@@ -1980,7 +2034,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026101104"></script>
-<script src="practice.js?v=2026101101"></script>
+<script src="app.js?v=2026101106"></script>
+<script src="practice.js?v=2026101102"></script>
 </body>
 </html>
