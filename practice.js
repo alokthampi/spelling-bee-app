@@ -230,6 +230,7 @@ function startPractice(items, mode, label) {
     difficulty: difficultySummary("practiceDifficultyFilter"),
     letters: [...practiceLetters].sort(),
     origins: filterSelectValues("practiceOriginFilter"),
+    showPictures: practiceEl("practiceShowPictures").checked,
     saved: false
   };
   showQuestion(0, true);
@@ -254,6 +255,7 @@ function practiceSnapshot() {
     difficulty: practice.difficulty,
     letters: practice.letters,
     origins: practice.origins,
+    showPictures: practice.showPictures,
     index: practice.index,
     timeLeft,
     entries: practice.entries.map(e => ({
@@ -309,6 +311,7 @@ function resumeSavedPractice(id) {
     difficulty: saved.difficulty,
     letters: saved.letters || [],
     origins: saved.origins || [],
+    showPictures: saved.showPictures !== false, // tests saved before this option showed none, but on is the default
     savedId: id,
     saved: false
   };
@@ -508,6 +511,7 @@ function showQuestion(index, autoplay) {
   practiceEl("practiceOriginBtn").disabled = !entry.item.origin;
   practiceEl("practicePosBtn").disabled = !entry.item.part_of_speech;
   clearPracticeInfo();
+  renderPracticePicture(entry.item);
 
   if (isAnswered(entry)) {
     // Reviewing a word that was already answered
@@ -530,6 +534,20 @@ function showQuestion(index, autoplay) {
   // focus() must run inside the tap/keypress for iOS to raise the keyboard
   input.focus({ preventScroll: true });
   if (autoplay) playPracticeWord();
+}
+
+// The word's picture, when the test was started with "Show pictures" and the
+// word has one that wasn't hidden on the Learning card
+function renderPracticePicture(item) {
+  const frame = practiceEl("practicePictureFrame");
+  const img = practiceEl("practicePicture");
+  frame.hidden = !(practice.showPictures && item.image_url && !item.imageHidden);
+  if (frame.hidden) {
+    img.removeAttribute("src");
+    return;
+  }
+  img.onerror = () => { if (currentEntry()?.item === item) frame.hidden = true; };
+  img.src = item.image_url;
 }
 
 // Accents don't count, so "pinata" matches "piñata" (spoken bees never spell them)

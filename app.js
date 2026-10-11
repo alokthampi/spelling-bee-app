@@ -167,8 +167,8 @@ async function resetCloudProgress() {
 // filter by scope in memory, and share the same word objects.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026100704",
-  regional: "word_list_regional.json?v=2026100704"
+  school: "word_list_school.json?v=2026101101",
+  regional: "word_list_regional.json?v=2026101101"
 };
 
 function emptyPractice() {
@@ -186,6 +186,7 @@ function applySavedProgress(item, saved) {
     : Boolean(typeof saved === "string" ? saved : obj.result);
   item.markedForCorrection = obj.markedForCorrection === true;
   item.correctionNote = obj.correctionNote || "";
+  item.imageHidden = obj.imageHidden === true;
   item.practice = { ...emptyPractice(), ...(obj.practice || {}) };
 }
 
@@ -214,6 +215,7 @@ async function loadWords() {
         covered: false,
         markedForCorrection: false,
         correctionNote: "",
+        imageHidden: false,
         practice: emptyPractice()
       }));
     })
@@ -910,6 +912,7 @@ function selectWord(index, autoplay = true) {
   renderPronunciations(currentItem);
   renderSourceBadge("definitionSource", currentItem.definition, currentItem.definition_source);
   renderSourceBadge("sentenceSource", currentItem.sentence, currentItem.sentence_source);
+  renderPicture(currentItem);
   document.getElementById("correctionCheckbox").checked = currentItem.markedForCorrection;
   document.getElementById("correctionNote").value = currentItem.correctionNote;
   updateCorrectionNoteState(currentItem);
@@ -935,6 +938,38 @@ function renderSourceBadge(id, text, source) {
   badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
   badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
 }
+
+// The word's picture, if the word file has one. A picture can be hidden (a wrong
+// or unhelpful match); that's saved with the word and can be undone.
+function renderPicture(item) {
+  const section = document.getElementById("pictureSection");
+  section.hidden = !item?.image_url;
+  if (section.hidden) return;
+
+  const img = document.getElementById("wordPicture");
+  const source = document.getElementById("pictureSource");
+  const isMW = item.image_source === "merriam_webster";
+  document.getElementById("pictureFrame").hidden = item.imageHidden;
+  document.getElementById("pictureHiddenNote").hidden = !item.imageHidden;
+  document.getElementById("togglePictureBtn").textContent =
+    item.imageHidden ? "Show picture" : "Wrong or unhelpful picture? Hide it";
+  source.textContent = isMW ? "📖 Merriam-Webster" : "🌐 Wikipedia";
+  source.href = item.image_link || item.image_url;
+  source.title = item.image_credit || "";
+  img.alt = `Picture of ${item.word}`;
+  // A picture that no longer loads is left out instead of showing a broken image
+  img.onerror = () => { if (currentItem === item) section.hidden = true; };
+  if (img.getAttribute("src") !== item.image_url) img.src = item.image_url;
+}
+
+function togglePicture() {
+  if (!currentItem) return;
+  currentItem.imageHidden = !currentItem.imageHidden;
+  saveWord(currentItem, { imageHidden: currentItem.imageHidden });
+  renderPicture(currentItem);
+}
+
+document.getElementById("togglePictureBtn").addEventListener("click", togglePicture);
 
 // The big word at the top of the card; null shows the "Select a word" placeholder
 function showCardWord(word) {
@@ -1489,8 +1524,11 @@ async function resetSelection() {
   renderPronunciations(null);
   renderSourceBadge("definitionSource", null);
   renderSourceBadge("sentenceSource", null);
+  renderPicture(null);
   renderWordCardStatus();
   await resetCloudProgress();
+  // Hidden pictures aren't progress: keep them hidden after the reset
+  words.filter(w => w.imageHidden).forEach(w => saveWord(w, { imageHidden: true }));
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
 }

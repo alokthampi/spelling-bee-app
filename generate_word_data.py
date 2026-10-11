@@ -18,6 +18,10 @@ MW_API_KEY = os.environ.get("MW_API_KEY", "")
 MW_BASE_URL = "https://www.dictionaryapi.com/api/v3/references/collegiate/json"
 MW_AUDIO_BASE = "https://media.merriam-webster.com/audio/prons/en/us/mp3"
 TATOEBA_SENTENCES_URL = "https://api.tatoeba.org/v1/sentences"
+MW_ART_BASE = "https://www.merriam-webster.com/assets/mw/static/art/dict"
+WIKI_API_URL = "https://en.wikipedia.org/w/api.php"
+# Wikipedia asks API callers to identify themselves
+WIKI_HEADERS = {"User-Agent": "spelling-bee-practice/1.0 (family study app; python-requests)"}
 
 INPUT_WORD_FILE = "input_words.txt"
 OUTPUT_WORD_FILE = "words_new.json"
@@ -401,6 +405,156 @@ def fetch_tatoeba_sentence(word: str) -> Optional[Dict[str, str]]:
 
 
 # ============================================================
+# Pictures
+# ============================================================
+# Wikipedia's picture is only used for things a picture can show: nouns and
+# places. Abstract words, verbs and adjectives get no picture rather than a
+# misleading one.
+IMAGE_PARTS_OF_SPEECH = {"noun", "geographical name"}
+# A Wikipedia page about a person, a work or a company named after the word,
+# or about illness, the body's fluids or politics (pictures not meant for a
+# kid). Checked against the page's title and its short description.
+WIKI_SKIP_DESCRIPTION_RE = re.compile(
+    r"\b(?:born|died|band|album|film|song|singer|rapper|musician|actor|actress|"
+    r"politician|corporation|novel|video game|television|tv series|"
+    r"footballer|surname|given name|record label|brand|wrestler|fictional|character|"
+    r"magazine|newspaper|software|play by|opera by|painting by|"
+    r"diseases?|disorders?|infections?|syndromes?|medical|symptoms?|illness\w*|"
+    r"mucus|wounds?|injur\w*|death|ideolog\w*|political|war|weapons?)\b|\(\d{4}",
+    re.IGNORECASE,
+)
+# Words whose Wikipedia picture is known to be unsuitable or misleading
+WIKI_SKIP_WORDS = {
+    "fascism", "hypothermia", "cataract", "prejudice", "arsonist", "bigotry", "contusion",
+    "foible", "minutia", "diddly-squat", "liege", "lanai", "musings",
+}
+
+
+def wikipedia_title_matches(word: str, title: str) -> bool:
+    """False when Wikipedia's page is about something more specific that only
+    contains the word ("reluctance" -> "Magnetic reluctance", "incident" ->
+    "Incident Command System", "Caesar" -> "Julius Caesar") or is one of
+    several meanings ("Affinity (medieval)"). A different name for the same
+    thing ("bunny" -> "Rabbit", "vibrissae" -> "Whiskers") is fine."""
+    if "(" in title or title.lower().startswith(("glossary of", "list of", "outline of")):
+        return False
+    stem = word.lower()[:5]
+    title_words = title.lower().split()
+    return not (len(title_words) > len(word.split())
+                and any(w.startswith(stem) for w in title_words))
+
+
+def find_mw_art(data: list, word: str, part_of_speech: str = "",
+                definition: str = "") -> Optional[Dict]:
+    """MW's illustration for the word's own entry, if it has one. Only entries
+    spelled exactly like the word are used, the one matching the word list's
+    definition or part of speech first."""
+    entries = [e for e in data if isinstance(e, dict)]
+    candidates = [e for e in entries if headword(e).lower() == word.lower()]
+    candidates.sort(key=lambda e: (
+        not (definition and definition in e.get("shortdef", [])),
+        not (part_of_speech and e.get("fl") == part_of_speech),
+    ))
+    for entry in candidates:
+        art = entry.get("art") or {}
+        if art.get("artid"):
+            return {
+                "image_url": f"{MW_ART_BASE}/{art['artid']}.gif",
+                "image_source": "merriam_webster",
+                "image_credit": "Merriam-Webster",
+                "image_link": f"https://www.merriam-webster.com/dictionary/{word}",
+            }
+    return None
+
+
+WIKI_BATCH_SIZE = 50  # the most titles Wikipedia answers in one request
+
+
+def wikipedia_page_image(word: str, page: dict) -> Dict:
+    """The picture for one Wikipedia page in a query result, or {}."""
+    thumbnail = page.get("thumbnail", {}).get("source")
+    if (page.get("missing") or not thumbnail
+            or "disambiguation" in page.get("pageprops", {})
+            or word.lower() in WIKI_SKIP_WORDS
+            or not wikipedia_title_matches(word, page["title"])
+            or WIKI_SKIP_DESCRIPTION_RE.search(f"{page['title']} {page.get('description', '')}")):
+        return {}
+    title = page["title"]
+    return {
+        "image_url": thumbnail,
+        "image_source": "wikipedia",
+        "image_credit": f"Wikipedia: {title}",
+        "image_link": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
+    }
+
+
+def fetch_wikipedia_images(words: List[str]) -> Dict[str, Optional[Dict]]:
+    """The freely licensed lead picture of each word's Wikipedia article, asked
+    for 50 words at a time (Wikipedia rate-limits many small requests).
+    {} = no usable picture; None = the request failed, so it can be tried again."""
+    results: Dict[str, Optional[Dict]] = {}
+    for start in range(0, len(words), WIKI_BATCH_SIZE):
+        batch = words[start:start + WIKI_BATCH_SIZE]
+        query = None
+        for attempt in range(5):
+            try:
+                response = requests.get(WIKI_API_URL, headers=WIKI_HEADERS, timeout=30, params={
+                    "action": "query", "format": "json", "formatversion": 2,
+                    "titles": "|".join(batch), "redirects": 1,
+                    "prop": "pageimages|pageprops|description",
+                    "piprop": "thumbnail", "pithumbsize": 480, "pilicense": "free",
+                    "pilimit": WIKI_BATCH_SIZE, "ppprop": "disambiguation",
+                })
+            except Exception:
+                time.sleep(5)
+                continue
+            if response.status_code == 429:
+                time.sleep(int(response.headers.get("retry-after", "15")) + 1)
+                continue
+            if response.status_code == 200:
+                query = response.json().get("query", {})
+            break
+
+        if query is None:
+            results.update({word: None for word in batch})
+        else:
+            # Follow Wikipedia's renames: "apple" -> "Apple", "beans" -> "Bean"
+            renamed = {}
+            for step in query.get("normalized", []) + query.get("redirects", []):
+                renamed[step["from"]] = step["to"]
+            pages = {page["title"]: page for page in query.get("pages", [])}
+            for word in batch:
+                title = word
+                for _ in range(3):
+                    title = renamed.get(title, title)
+                results[word] = wikipedia_page_image(word, pages.get(title, {"title": title}))
+        print(f"Wikipedia: asked about {min(start + WIKI_BATCH_SIZE, len(words))} of "
+              f"{len(words)} words", flush=True)
+        time.sleep(1)
+    return results
+
+
+def wants_wikipedia_image(part_of_speech: str) -> bool:
+    return part_of_speech in IMAGE_PARTS_OF_SPEECH
+
+
+def find_image(data: Optional[list], word: str, part_of_speech: str = "",
+               definition: str = "") -> Optional[Dict]:
+    """MW's illustration first, then Wikipedia's picture for nouns and places.
+    {} = no picture; None = a lookup failed (try again later)."""
+    if data:
+        art = find_mw_art(data, word, part_of_speech, definition)
+        if art:
+            return art
+    if not wants_wikipedia_image(part_of_speech):
+        return {}
+    return fetch_wikipedia_images([word])[word]
+
+
+IMAGE_FIELDS = ("image_url", "image_source", "image_credit", "image_link")
+
+
+# ============================================================
 # Fetch a single word
 # ============================================================
 def fetch_word(word: str, difficulty: str = "three") -> Dict:
@@ -479,6 +633,7 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
         data, word, result["part_of_speech"], result["definition"]
     )
     result["audio_url"] = default_audio_url(result["pronunciations"])
+    result.update(find_image(data, word, result["part_of_speech"], result["definition"]) or {})
 
     # Prefer a separately sourced, complete practice sentence when MW does
     # not provide one. Tatoeba attribution is retained for CC BY compliance.
@@ -566,6 +721,65 @@ def update_pronunciations(path: str) -> None:
           + (f": {', '.join(failed)}" if failed else ""))
 
 
+def update_images(path: str) -> None:
+    """Add or refresh pictures in an existing word file, leaving every other
+    field untouched. MW is asked first (only with MW_API_KEY; without it a word
+    that already has an MW picture keeps it), then Wikipedia for the nouns and
+    places still without one. A word whose lookup fails keeps what it had, so
+    the run can simply be repeated."""
+    with open(path, "r", encoding="utf-8") as f:
+        items = json.load(f)
+
+    # None = lookup failed, {} = no picture, else the picture's fields
+    images: Dict[int, Optional[Dict]] = {}
+
+    if MW_API_KEY:
+        def mw_lookup(item: Dict) -> Optional[Dict]:
+            data = fetch_mw(item["word"])
+            if data is None:
+                return None
+            return find_mw_art(data, item["word"], item.get("part_of_speech", ""),
+                               item.get("definition", "")) or {}
+
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            futures = {executor.submit(mw_lookup, item): i for i, item in enumerate(items)}
+            for completed, future in enumerate(as_completed(futures), 1):
+                images[futures[future]] = future.result()
+                if completed % 50 == 0 or completed == len(items):
+                    print(f"Merriam-Webster: asked about {completed} of {len(items)} words", flush=True)
+    else:
+        for i, item in enumerate(items):
+            if item.get("image_source") == "merriam_webster":
+                images[i] = {k: item[k] for k in IMAGE_FIELDS if k in item}
+
+    wiki = [i for i, item in enumerate(items)
+            if not images.get(i) and images.get(i, {}) is not None
+            and wants_wikipedia_image(item.get("part_of_speech", ""))]
+    found_wiki = fetch_wikipedia_images([items[i]["word"] for i in wiki])
+    for i in wiki:
+        images[i] = found_wiki[items[i]["word"]]
+
+    failed, found = [], {"merriam_webster": 0, "wikipedia": 0}
+    for i, item in enumerate(items):
+        image = images.get(i, {})
+        if image is None:
+            failed.append(item["word"])
+            continue
+        for key in IMAGE_FIELDS:
+            item.pop(key, None)
+        item.update(image)
+        if image:
+            found[image["image_source"]] += 1
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(items, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+    print(f"{path}: pictures from {found['merriam_webster']} Merriam-Webster, {found['wikipedia']} Wikipedia, "
+          f"{len(items) - sum(found.values()) - len(failed)} none; {len(failed)} lookups failed"
+          + (f": {', '.join(failed)}" if failed else ""), flush=True)
+
+
 # ============================================================
 # Main
 # ============================================================
@@ -580,7 +794,16 @@ def main() -> None:
     parser.add_argument("--pronunciations-only", action="store_true",
                         help="Treat --input as an existing word JSON file and refresh only its "
                              "pronunciations and audio_url, in place.")
+    parser.add_argument("--images-only", action="store_true",
+                        help="Treat --input as an existing word JSON file and add or refresh only "
+                             "its pictures, in place. Works without MW_API_KEY (Wikipedia only).")
     args = parser.parse_args()
+
+    if args.images_only:
+        if not MW_API_KEY:
+            print("MW_API_KEY is not set: only Wikipedia pictures will be looked up.", flush=True)
+        update_images(args.input)
+        return
 
     if not MW_API_KEY:
         raise SystemExit("MW_API_KEY is not set. Run this from the 'Generate word data' "
@@ -620,8 +843,8 @@ def main() -> None:
         {key: item[key] for key in (
             "word", "difficulty", "origin", "part_of_speech", "definition",
             "definition_source", "sentence", "sentence_source", "audio_url",
-            "pronunciations"
-        )}
+            "pronunciations", *IMAGE_FIELDS
+        ) if key in item}
         for item in results
     ]
 

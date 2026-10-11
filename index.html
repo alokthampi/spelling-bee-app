@@ -743,6 +743,40 @@
     .source-badge.source-mw { background: var(--success-soft); color: var(--success); }
     .source-badge.source-generated { background: rgba(251, 191, 36, 0.14); color: var(--warning); }
 
+    /* Picture of the word (MW illustration or Wikipedia photo). White behind it:
+       MW's drawings are black line art on a transparent background. */
+    .source-badge.source-picture { background: var(--accent-soft); color: var(--accent); text-decoration: none; }
+    .word-picture {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+    }
+    .word-picture img {
+      display: block;
+      max-width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .practice-picture { margin-top: 10px; }
+    .practice-picture img { max-height: 200px; }
+    .picture-hidden-note { margin: 0; font-size: 13px; color: var(--text-secondary); }
+    .picture-toggle {
+      margin-top: 6px;
+      padding: 4px 0;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      background: none;
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
     /* Every MW pronunciation of the word, MW's preferred one first */
     .pronunciation-list {
       display: flex;
@@ -1569,6 +1603,15 @@
       <div class="label">Definition <span id="definitionSource" class="source-badge" hidden></span></div>
       <div id="definition">—</div>
 
+      <div id="pictureSection" hidden>
+        <div class="label">Picture <a id="pictureSource" class="source-badge source-picture" target="_blank" rel="noopener"></a></div>
+        <figure class="word-picture" id="pictureFrame">
+          <img id="wordPicture" alt="" loading="lazy" referrerpolicy="no-referrer" />
+        </figure>
+        <p class="picture-hidden-note" id="pictureHiddenNote" hidden>Picture hidden for this word.</p>
+        <button type="button" id="togglePictureBtn" class="picture-toggle"></button>
+      </div>
+
       <div class="label">Sentence <span id="sentenceSource" class="source-badge" hidden></span></div>
       <div id="sentence">—</div>
 
@@ -1710,6 +1753,10 @@
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>
           </label>
+          <label class="correction-toggle" for="practiceShowPictures">
+            <input id="practiceShowPictures" type="checkbox" checked />
+            <span>Show pictures</span>
+          </label>
           <button class="primary-btn" id="practiceStartBtn">▶️ Start practice</button>
           <p class="practice-hint">
             Pick the Scope, Difficulty and letters above, choose which words, then press Start.
@@ -1751,6 +1798,10 @@
             <button id="practicePosBtn">🏷️ Part of speech</button>
           </div>
           <div id="practiceInfo" class="practice-info" hidden aria-live="polite"></div>
+          <!-- No caption or credit here: the Wikipedia title would give away the spelling -->
+          <figure class="word-picture practice-picture" id="practicePictureFrame" hidden>
+            <img id="practicePicture" alt="Picture hint" referrerpolicy="no-referrer" />
+          </figure>
 
           <form id="practiceForm" class="practice-form" autocomplete="off">
             <input
@@ -1909,7 +1960,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026100816"></script>
-<script src="practice.js?v=2026100818"></script>
+<script src="app.js?v=2026101101"></script>
+<script src="practice.js?v=2026101101"></script>
 </body>
 </html>
