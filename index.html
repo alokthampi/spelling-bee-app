@@ -58,6 +58,25 @@
       -webkit-text-size-adjust: 100%;
     }
 
+    /* Dev-only banner (see #devBanner): striped so it can't be mistaken for the live app */
+    .dev-banner {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      margin: calc(-1 * max(16px, env(safe-area-inset-top))) calc(-1 * max(16px, env(safe-area-inset-right))) 16px calc(-1 * max(16px, env(safe-area-inset-left)));
+      padding: max(8px, env(safe-area-inset-top)) 16px 8px;
+      color: #111;
+      background: repeating-linear-gradient(135deg, #f97316 0 18px, #fb923c 18px 36px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    }
+    .dev-banner-title { font-size: 26px; font-weight: 800; letter-spacing: 0.3em; }
+    .dev-banner-text { font-size: 13px; font-weight: 600; }
+
     .container {
       max-width: 1180px;
       margin: auto;
@@ -1503,6 +1522,19 @@
 </head>
 
 <body>
+<!-- DEV banner: everywhere except the live GitHub Pages site (localhost, the
+     Wi-Fi server, opening the file), i.e. whenever the app uses the dev
+     Firebase project. Same hostname check as the Firebase setup at the bottom. -->
+<div id="devBanner" class="dev-banner" role="status" hidden>
+  <span class="dev-banner-title">DEV</span>
+  <span class="dev-banner-text">Dev Firebase project · not the real progress</span>
+</div>
+<script>
+  if (location.hostname !== "alokthampi.github.io") {
+    document.getElementById("devBanner").hidden = false;
+    document.title = "DEV · " + document.title;
+  }
+</script>
 <div class="container">
   <h1 class="app-title">
     <svg class="title-mark" viewBox="0 0 46 52" aria-hidden="true">
