@@ -238,6 +238,8 @@ async function loadWords() {
   }
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
+  // A refresh on Stats opened it before the words arrived: draw it with them now
+  if (activeTab === "stats") renderStats();
 }
 
 /* ---------------------------
@@ -360,12 +362,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   loadWords();
+  // After practice.js has wired itself up too (its DOMContentLoaded runs after this one)
+  setTimeout(restoreTab, 0);
 });
 
 /* ---------------------------
    Tabs
 --------------------------- */
 let activeTab = "learning";
+// The open tab is remembered for this browser tab, so a refresh comes back to it
+const TAB_KEY = "spellingBeeActiveTab";
+
+function restoreTab() {
+  let tab = null;
+  try { tab = sessionStorage.getItem(TAB_KEY); } catch {}
+  if (tab && tab !== activeTab && document.getElementById(`${tab}Tab`)) switchTab(tab);
+}
 
 function switchTab(tab) {
   document.querySelectorAll(".tab-btn").forEach(btn =>
@@ -377,6 +389,7 @@ function switchTab(tab) {
 
   const leaving = activeTab;
   activeTab = tab;
+  try { sessionStorage.setItem(TAB_KEY, tab); } catch {}
   stopAllAudio();
   if (leaving === "practice" && tab !== "practice" && typeof leavePractice === "function") leavePractice();
   if (tab === "stats") renderStats();
