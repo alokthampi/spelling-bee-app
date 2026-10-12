@@ -190,7 +190,7 @@ function showPracticeStart() {
   document.querySelectorAll(".mode-option").forEach(option => {
     const input = option.querySelector("input");
     option.classList.toggle("selected", input.checked);
-    option.classList.toggle("disabled", !counts[input.value]);
+    option.classList.toggle("disabled", input.disabled || !counts[input.value]);
   });
 
   const modes = selectedModes();
@@ -813,6 +813,29 @@ function renderPracticeList() {
   }
 }
 
+// "Not attempted" is locked so words are learned before they're tested;
+// tapping it gets a (hopefully funny) nudge back to the Learning card
+const LEARN_FIRST_JOKES = [
+  ["🐝", "Whoa there, speedy bee! You can't test words you haven't met yet. Go say hello to them on the Learning card first."],
+  ["🦉", "Even the wisest owl reads the book before the quiz. Hoo-hoo-hop over to Learning!"],
+  ["🍪", "Testing words you haven't learned is like eating cookies before they're baked. Gooey. Learn them first!"],
+  ["🐢", "Slow and steady wins the spelling bee. Learn the words, then come back and crush the test."],
+  ["🧙", "Even wizards practice their spells before casting them. Off to Learning, young speller!"],
+  ["🦖", "A T. rex once tried a test without learning. Now it's extinct. Coincidence? Learn first!"]
+];
+let lastJoke = -1;
+
+function showLearnFirst(event) {
+  event.preventDefault();
+  let pick;
+  do { pick = Math.floor(Math.random() * LEARN_FIRST_JOKES.length); } while (pick === lastJoke);
+  lastJoke = pick;
+  practiceEl("learnFirstDialog").returnValue = "";
+  practiceEl("learnFirstEmoji").textContent = LEARN_FIRST_JOKES[pick][0];
+  practiceEl("learnFirstText").textContent = LEARN_FIRST_JOKES[pick][1];
+  practiceEl("learnFirstDialog").showModal();
+}
+
 /* ---------------------------
    Wiring
 --------------------------- */
@@ -828,6 +851,20 @@ document.addEventListener("DOMContentLoaded", () => {
   practiceEl("clearPracticeFilters").addEventListener("click", clearPracticeFilters);
   document.querySelectorAll('input[name="practiceMode"]').forEach(input => {
     input.addEventListener("change", showPracticeStart);
+  });
+  document.querySelector(".mode-option.mode-pending").addEventListener("click", showLearnFirst);
+  // A tap outside the pop-up (on the dimmed backdrop) closes it too. Backdrop
+  // taps report the dialog itself as the target, so check they're outside its box
+  practiceEl("learnFirstDialog").addEventListener("click", event => {
+    const dialog = event.currentTarget;
+    if (event.target !== dialog) return;
+    const box = dialog.getBoundingClientRect();
+    const inside = event.clientX >= box.left && event.clientX <= box.right &&
+                   event.clientY >= box.top && event.clientY <= box.bottom;
+    if (!inside) dialog.close();
+  });
+  practiceEl("learnFirstDialog").addEventListener("close", event => {
+    if (event.target.returnValue === "learn") switchTab("learning");
   });
 
   practiceEl("practiceRestartBtn").addEventListener("click", () => {

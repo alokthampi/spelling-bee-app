@@ -1321,6 +1321,22 @@
     .mode-hint { margin-top: -4px; }
     .mode-option.disabled { opacity: 0.45; cursor: not-allowed; }
 
+    /* "Finish the learning first" pop-up for the locked Not attempted tile */
+    .learn-first-dialog {
+      max-width: min(340px, calc(100vw - 32px));
+      padding: 24px 20px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+      color: var(--text);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .learn-first-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+    .learn-first-emoji { font-size: 48px; line-height: 1; }
+    .learn-first-dialog h3 { margin: 12px 0 6px; font-size: 20px; }
+    .learn-first-dialog p { margin: 0 0 18px; color: var(--text-secondary); line-height: 1.45; }
+
     .timer { display: flex; align-items: center; gap: 10px; }
     .timer-track {
       flex: 1;
@@ -1836,8 +1852,9 @@
               <span class="mode-name">❌ Wrong</span>
               <span class="mode-count" id="modeCountWrong"></span>
             </label>
-            <label class="mode-option mode-pending">
-              <input type="checkbox" name="practiceMode" value="pending" />
+            <!-- Locked: words must be learned before they're tested (tapping it explains why) -->
+            <label class="mode-option mode-pending disabled" title="Finish the learning first">
+              <input type="checkbox" name="practiceMode" value="pending" disabled />
               <span class="mode-check" aria-hidden="true"></span>
               <span class="mode-name">⏳ Not attempted</span>
               <span class="mode-count" id="modeCountPending"></span>
@@ -1855,6 +1872,12 @@
               <span class="mode-count" id="modeCountEverWrong"></span>
             </label>
           </div>
+          <dialog id="learnFirstDialog" class="learn-first-dialog" aria-labelledby="learnFirstTitle">
+            <div class="learn-first-emoji" id="learnFirstEmoji" aria-hidden="true">🐝</div>
+            <h3 id="learnFirstTitle">Finish the learning first!</h3>
+            <p id="learnFirstText"></p>
+            <form method="dialog"><button class="primary-btn" value="learn">📘 OK, back to learning</button></form>
+          </dialog>
           <p class="practice-hint mode-hint">Tap to include or leave out a group. Completed in Learning = opened on the Learning card and not practiced yet. Ever spelled wrong = wrong in any attempt, even if right since.</p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
@@ -2068,7 +2091,7 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026101106"></script>
-<script src="practice.js?v=2026101202"></script>
+<script src="app.js?v=2026101201"></script>
+<script src="practice.js?v=2026101204"></script>
 </body>
 </html>
