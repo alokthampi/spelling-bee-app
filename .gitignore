@@ -6,3 +6,6 @@ serviceAccountKey.json
 # Python cache
 __pycache__/
 *.pyc
+
+# Dev contents saved by sync_prod_to_dev.py before each sync
+dev_backup_*.json

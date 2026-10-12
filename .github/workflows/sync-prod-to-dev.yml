@@ -1,0 +1,61 @@
+# Makes the dev Firestore an exact copy of prod every night at 11:45 PM US
+# Eastern (after the 11:30 PM progress backup), and on demand from the Actions
+# tab ("Run workflow"). Prod is only read. The admin keys come from the
+# FIREBASE_SERVICE_ACCOUNT (prod) and FIREBASE_SERVICE_ACCOUNT_DEV (dev)
+# repository secrets.
+name: Sync prod to dev
+
+on:
+  schedule:
+    # GitHub schedules are in UTC, and 11:45 PM Eastern is a different UTC time
+    # in summer and winter, so both are scheduled and the first step lets only
+    # the one matching today's Eastern time go ahead.
+    - cron: "45 3 * * *"   # 11:45 PM EDT (summer, UTC-4)
+    - cron: "45 4 * * *"   # 11:45 PM EST (winter, UTC-5)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only go ahead at 11:45 PM US Eastern
+        id: when
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          offset=$(TZ=America/New_York date +%z)   # -0400 in summer (EDT), -0500 in winter (EST)
+          if [ -z "$SCHEDULE" ]; then
+            run=true   # started by hand from the Actions tab
+          elif [ "$SCHEDULE" = "45 3 * * *" ] && [ "$offset" = "-0400" ]; then
+            run=true
+          elif [ "$SCHEDULE" = "45 4 * * *" ] && [ "$offset" = "-0500" ]; then
+            run=true
+          else
+            run=false
+            echo "Not 11:45 PM Eastern right now (UTC offset $offset); the other schedule will run"
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.when.outputs.run == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.when.outputs.run == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Install Firebase Admin SDK
+        if: steps.when.outputs.run == 'true'
+        run: pip install firebase-admin
+
+      # The dev backup the script saves stays on the runner and is discarded:
+      # dev is a copy of prod, and prod has its own nightly backup.
+      - name: Copy prod to dev
+        if: steps.when.outputs.run == 'true'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_SERVICE_ACCOUNT_DEV: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+        run: python sync_prod_to_dev.py
