@@ -140,6 +140,7 @@ function practiceFiltersChanged() {
 /* Called by switchTab() whenever the Practice tab is opened */
 function openPractice() {
   if (practice && practice.index >= 0) {
+    startActiveClock();
     renderPracticeList();
     const entry = currentEntry();
     if (entry && !isAnswered(entry)) resumeTimer();
@@ -152,6 +153,7 @@ function openPractice() {
 /* Called by switchTab() when leaving the Practice tab */
 function leavePractice() {
   pauseTimer();
+  pauseActiveClock();
   cancelAutoNext();
 }
 
@@ -231,9 +233,28 @@ function startPractice(items, mode, label) {
     letters: [...practiceLetters].sort(),
     origins: filterSelectValues("practiceOriginFilter"),
     showPictures: practiceEl("practiceShowPictures").checked,
+    activeMs: 0,
+    activeSince: Date.now(),
     saved: false
   };
   showQuestion(0, true);
+}
+
+/* Active time: only the time the test is actually on screen counts. The clock
+   stops while the test is saved for later, the app is in the background, or
+   another tab is open, so a test resumed days later doesn't count the gap. */
+function startActiveClock() {
+  if (practice && practice.index >= 0 && !practice.activeSince) practice.activeSince = Date.now();
+}
+
+function pauseActiveClock() {
+  if (!practice?.activeSince) return;
+  practice.activeMs += Date.now() - practice.activeSince;
+  practice.activeSince = null;
+}
+
+function activeTimeMs() {
+  return practice.activeMs + (practice.activeSince ? Date.now() - practice.activeSince : 0);
 }
 
 /* ---------------------------
@@ -249,6 +270,7 @@ function practiceSnapshot() {
   return {
     savedAt: new Date().toISOString(),
     startedAt: practice.startedAt,
+    activeMs: activeTimeMs(),
     label: practice.label,
     mode: practice.mode,
     scope: practice.scope,
@@ -280,6 +302,7 @@ function savePracticeForLater() {
     return;
   }
   pauseTimer();
+  pauseActiveClock();
   cancelAutoNext();
   stopAllAudio();
   practice.savedId = practice.savedId || `t${Date.now().toString(36)}`;
@@ -307,6 +330,11 @@ function resumeSavedPractice(id) {
     mode: saved.mode,
     label: saved.label,
     startedAt: saved.startedAt,
+    // Tests saved before active time was tracked: best guess is start-to-save
+    activeMs: typeof saved.activeMs === "number"
+      ? saved.activeMs
+      : Math.max(0, (new Date(saved.savedAt) - new Date(saved.startedAt)) || 0),
+    activeSince: Date.now(),
     scope: saved.scope,
     difficulty: saved.difficulty,
     letters: saved.letters || [],
@@ -449,7 +477,9 @@ function timeUp() {
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     pauseTimer();
+    pauseActiveClock();
   } else if (activeTab === "practice" && practice && practice.index >= 0) {
+    startActiveClock();
     const entry = currentEntry();
     if (entry && !isAnswered(entry) && !practiceEl("practiceQuestion").hidden) resumeTimer();
   }
@@ -654,6 +684,7 @@ function nextPracticeWord() {
 
 function finishPractice() {
   stopTimer();
+  pauseActiveClock();
   cancelAutoNext();
   stopAllAudio();
   // Ending or finishing a saved test removes it from Saved tests
@@ -683,6 +714,7 @@ function finishPractice() {
     savePracticeSession({
       at: new Date().toISOString(), // when the test ended
       startedAt: practice.startedAt,
+      activeMs: practice.activeMs, // time actually spent on the test (pauses left out)
       scope: practice.scope,
       difficulty: practice.difficulty,
       letters: practice.letters,

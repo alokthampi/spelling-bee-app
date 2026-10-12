@@ -1348,7 +1348,9 @@ function formatSessionTimes(session) {
   if (isNaN(start)) {
     parts.push(`ended ${time(end)}`, "start time not recorded");
   } else {
-    const minutes = Math.round((end - start) / 60000);
+    // Time actually spent on the test; older tests only have start and end
+    const ms = typeof session.activeMs === "number" ? session.activeMs : end - start;
+    const minutes = Math.round(ms / 60000);
     parts.push(`${time(start)} – ${time(end)}`, minutes < 1 ? "under 1 min" : `${minutes} min`);
   }
   return parts.join(" · ");
