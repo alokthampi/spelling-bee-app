@@ -821,6 +821,13 @@ function renderWordList() {
     const label = document.createElement("span");
     label.className = "wi-word";
     label.textContent = `${index + 1}. ${item.word}`;
+    if (item.image_url) {
+      const pic = document.createElement("span");
+      pic.className = "wi-pic" + (item.imageHidden ? " hidden-pic" : "");
+      pic.textContent = "🖼️";
+      pic.title = item.imageHidden ? "Has a picture (hidden)" : "Has a picture";
+      label.appendChild(pic);
+    }
     div.appendChild(label);
 
     const p = item.practice;
@@ -1089,6 +1096,7 @@ function togglePicture() {
   currentItem.imageHidden = !currentItem.imageHidden;
   saveWord(currentItem, { imageHidden: currentItem.imageHidden });
   renderPicture(currentItem);
+  renderWordList();
 }
 
 document.getElementById("togglePictureBtn").addEventListener("click", togglePicture);
