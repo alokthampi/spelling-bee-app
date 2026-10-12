@@ -550,7 +550,9 @@ function renderPracticePicture(item) {
   img.src = item.image_url;
 }
 
-// Accents don't count, so "pinata" matches "piñata" (spoken bees never spell them)
+// Accents don't count, so "pinata" matches "piñata" (spoken bees never spell
+// them), and neither do spaces or hyphens: "acapella" and "a capella" match,
+// as do "selfsufficient", "self sufficient" and "self-sufficient"
 function normalizeSpelling(text) {
   return (text || "")
     .trim()
@@ -559,7 +561,7 @@ function normalizeSpelling(text) {
     .replace(/[̀-ͯ]/g, "")
     .replace(/[‘’]/g, "'")
     .replace(/[‐-—]/g, "-")
-    .replace(/\s+/g, " ");
+    .replace(/[\s-]+/g, "");
 }
 
 function checkPracticeAnswer() {
@@ -732,11 +734,12 @@ function showPracticeInfo(key, label, value) {
   box.hidden = false;
 }
 
+// Like the Learning card: every recorded pronunciation, MW's preferred one
+// first, then the device's American voice
 function playPracticeWord() {
   const item = currentEntry()?.item;
   if (!item) return;
-  if (item.audio_url) playMWAudio(item.audio_url);
-  else speakAmerican(item.word);
+  playMWSequence(recordedPronunciations(item), item.word);
 }
 
 /* ---------------------------
