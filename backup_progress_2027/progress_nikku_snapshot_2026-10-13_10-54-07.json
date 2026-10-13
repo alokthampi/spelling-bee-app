@@ -1,0 +1,6930 @@
+{
+  "regional": {
+    "adage": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:11:55.934Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "anarchic": {
+      "coveredAt": null,
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:33:15.965Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "riffraff": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:36:01.353Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "pending": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "abject": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:03.497Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "abolish": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:07.111Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "hollywoodize": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:28:22.717Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "engineer": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:14.639Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "omission": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:53.531Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "googly": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:30:30.491Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "amiably": {
+      "coveredAt": "2026-10-13T00:03:02.026Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:07.777Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "assertion": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:19.817Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "tariff": {
+      "covered": false
+    },
+    "aforesaid": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:06:09.477Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "composite": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "abolitionists": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:18.384Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "accomplice": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:46.973Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "donatee": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "abashed": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:03:55.617Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "redemption": {
+      "coveredAt": "2026-10-12T20:06:44.431Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:11.063Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "absurdity": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:29.752Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "atrophy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:36:24.418Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "agility": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:06:24.821Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "applicable": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:13.219Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "felonious": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:36:13.482Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "alienate": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:30.107Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "olympiad": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:37:46.174Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "scabbard": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "mummified": {
+      "covered": false
+    },
+    "addle": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:54.773Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "liege": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:40:20.669Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "specificity": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "avalanche": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "enterprising": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "forecast": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:30:04.909Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "logical": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:30:46.822Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "amendment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:02.828Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "aboriginal": {
+      "coveredAt": "2026-10-13T00:03:00.413Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:24.541Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "overtures": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "arithmetic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:35.889Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "ante": {
+      "coveredAt": "2026-10-13T00:02:59.245Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:02.044Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "boogie-woogie": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "vault": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:35:23.470Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "amass": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:07:57.333Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "breakthrough": {
+      "coveredAt": null,
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:28:11.687Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "manifests": {
+      "coveredAt": "2026-10-13T00:03:02.419Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:33:03.936Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "sternum": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "amusement": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:34.120Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "nuggets": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:40.821Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "sheaves": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "spiteful": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:17.736Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "airborne": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:12:23.796Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "afroth": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:12:17.618Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "aloof": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:07:25.920Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "alms": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:06:56.181Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "extraordinaire": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:40:45.787Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "advection": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:06:02.958Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "frock": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:37:30.032Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "muddle": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "acceptance": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:36.786Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "anthropology": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:09:29.790Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "policy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:33:59.174Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "abaft": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:03:51.158Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "petunia": {
+      "coveredAt": "2026-10-13T00:02:59.076Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:35:29.731Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "trounce": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:28.416Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "singe": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "contested": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "privy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:33:24.025Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "apparently": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:09:59.804Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "downcast": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "furiously": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "riviera": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "cymbals": {
+      "covered": false
+    },
+    "accolade": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:34:28.260Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "antiseptic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:09:48.757Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "bailiff": {
+      "coveredAt": "2026-10-13T00:02:58.527Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:30:24.488Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "anniversary": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:49.673Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      },
+      "imageHidden": true
+    },
+    "vendetta": {
+      "coveredAt": "2026-10-13T00:03:02.209Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:34:11.804Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "anklet": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:44.592Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "lobster": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "fundamental": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "toilsome": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "astronaut": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:11:48.113Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "excursion": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:36:32.149Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "collaboration": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:35:06.556Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "heraldic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:44.121Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "altercation": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:07:51.995Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "mercury": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:57.162Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "ravenous": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:37:39.759Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "carnation": {
+      "covered": false
+    },
+    "dualism": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "accountable": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:53.785Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "acrostic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:05:02.295Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "constraints": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "creed": {
+      "coveredAt": "2026-10-12T20:07:12.527Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:34:55.244Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "atonement": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "apprehensive": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:30.188Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "grapple": {
+      "coveredAt": "2026-10-12T21:56:32.182Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:39:07.975Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "hatchet": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "anime": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:41.237Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "liturgy": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "addition": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:05:21.311Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      },
+      "imageHidden": true
+    },
+    "acquit": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:57.945Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "appealing": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:07.639Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "explode": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:37:35.492Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "sprite": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:47.526Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "Caribbean": {
+      "covered": false
+    },
+    "adjudicate": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:05:31.842Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "annotate": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:36.178Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "kazoo": {
+      "coveredAt": "2026-10-12T20:07:28.663Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:28:34.437Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "adsum": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:12:13.168Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "amulet": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:29.948Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "collision": {
+      "coveredAt": "2026-10-12T20:07:23.271Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:40.062Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "casualty": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:28:04.019Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "digression": {
+      "coveredAt": "2026-10-13T00:02:57.894Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:31:09.313Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "august": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "auditorium": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:34:06.502Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "retriever": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "scrimmage": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "matrimony": {
+      "coveredAt": "2026-10-12T20:06:58.815Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:34.827Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      },
+      "imageHidden": true
+    },
+    "agitation": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:06:29.723Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "amputate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:22.829Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "Amish": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:11.019Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "urgency": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:59.924Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "detail": {
+      "covered": false
+    },
+    "context": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:27.668Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "Bengal": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:53.348Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "boarders": {
+      "coveredAt": "2026-10-12T21:56:35.804Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:39:36.909Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "touted": {
+      "coveredAt": "2026-10-12T21:56:23.444Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:40:14.106Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "restive": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:34.983Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "adjacent": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:05:27.310Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "astounding": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:55.201Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "adnate": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:12:05.532Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "admonition": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:26.342Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "anticlimactic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:09:42.712Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "appraisal": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:13:41.377Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "extradition": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "corkscrew": {
+      "coveredAt": "2026-10-12T20:07:19.462Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:31:16.284Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "previous": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "stipend": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "gardenesque": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "scrounge": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "wanness": {
+      "coveredAt": "2026-10-12T21:56:48.237Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "days": [
+          20738,
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:40:28.440Z",
+        "last": "correct",
+        "history": "wwc",
+        "attempts": 3
+      }
+    },
+    "condor": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "addendum": {
+      "coveredAt": "2026-10-13T00:03:02.693Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:05:17.267Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "regiment": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "Arthurian": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:10:42.702Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "wastrel": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "amnesty": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:16.685Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "repatriation": {
+      "coveredAt": "2026-10-12T20:07:08.239Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:30:55.865Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "scenario": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "baleful": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "sanction": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "gateway": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:33:09.863Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "elixir": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:29:03.003Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "acclaim": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:04:42.482Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "Godspeed": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "alpaca": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:07:47.496Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "hectic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:27:22.493Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "gossip": {
+      "coveredAt": "2026-10-12T20:07:38.151Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:32:46.822Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "anoint": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-13T00:12:58.252Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "pervasive": {
+      "coveredAt": "2026-10-12T21:56:28.048Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "days": [
+          20738,
+          20738
+        ],
+        "lastAt": "2026-10-12T17:38:34.841Z",
+        "last": "correct",
+        "history": "wc",
+        "attempts": 2
+      }
+    },
+    "vapid": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:35:34.649Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "contrite": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:37:52.025Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "apparel": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:09:54.837Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "ancho": {
+      "coveredAt": "2026-10-13T00:02:58.380Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-13T00:08:38.243Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    },
+    "whey": {
+      "coveredAt": null,
+      "covered": false
+    },
+    "suffused": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "days": [
+          20738
+        ],
+        "lastAt": "2026-10-12T17:35:17.317Z",
+        "last": "correct",
+        "attempts": 1,
+        "wrong": 0
+      }
+    }
+  },
+  "school": {
+    "company": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:11.535Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "wrong": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:13.766Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "down": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:36.052Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "irascibility": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 2,
+        "attempts": 4,
+        "lastAt": "2026-10-09T00:36:06.226Z",
+        "last": "correct",
+        "history": "wcwc"
+      }
+    },
+    "tortillas": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:23.900Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "a cappella": {
+      "coveredAt": "2026-10-11T23:33:38.558Z",
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:33:58.520Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "swift": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:26:47.343Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "burlap": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:23:05.906Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "initiation": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:55.714Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "clever": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:01.925Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "vibrometer": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:30:29.937Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "battalion": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:51.769Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "December": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:29:32.669Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "schnauzer": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:05:01.455Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hypothermia": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:43.269Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "granola": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:06.745Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sharp": {
+      "coveredAt": "2026-10-12T00:41:14.730Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:18.873Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "puffy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:43.146Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "increments": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:10:33.137Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "sentinels": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:42:34.512Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "alleviate": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:34:54.884Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "invite": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:40.187Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pump": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:29:05.215Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "jovial": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:36.897Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "truth": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:05.766Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "incident": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:20:58.740Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "appetizing": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:04:16.681Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "investment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:06.542Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "salicylic acid": {
+      "coveredAt": "2026-10-11T23:34:58.189Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:51:09.031Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "mustard": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:44.539Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "charming": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:37.743Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "predecessor": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:41:32.652Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "dive": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:31.386Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "crocheted": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:29:22.583Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cliffs": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T15:30:09.389Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "seventy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:23.661Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bifocals": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:20:27.108Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Bildungsroman": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:06:36.737Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "opposite": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T20:21:47.180Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Presbyterian": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:46:32.947Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "stars": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:16.223Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sweater": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:36.635Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "riddle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:57.570Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "arachnid": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-09T00:34:32.316Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "electrolytes": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:01:53.931Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "market": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:04.266Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "feed": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:26:42.486Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "winter": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:46.262Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pamphlet": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:26.542Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "parade": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:55.874Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cosmodrome": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:53.789Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "salamanders": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:26.057Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "generosity": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:00:05.719Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "beans": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:06.951Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cerulean": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:03:32.873Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "beneath": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:43.795Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "influenza": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:00:35.339Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "quizzically": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:00:41.463Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "still": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:16.119Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "procession": {
+      "coveredAt": "2026-10-11T23:34:52.319Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:55:12.587Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "propeller": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:02:04.196Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "sputnik": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:09:03.017Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "fierce": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:40:23.956Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Sierra Leone": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:08:47.165Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "inside": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:48.605Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bogong moth": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:11:13.253Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "hurt": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:26:31.904Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "organism": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:31.198Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fertilizer": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:29:50.901Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "earth": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:22.120Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "civilian": {
+      "coveredAt": "2026-10-11T23:32:56.823Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:08:56.515Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "shift": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:09.213Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "kelp": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:11:43.525Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "protectorate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:45:50.790Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "imperial": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:07:20.005Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "enigmatic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:31:29.283Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "laughter": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:30.159Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pathologically": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:33:35.442Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "panoramic": {
+      "coveredAt": "2026-10-11T23:34:50.473Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:53:58.462Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "Senegal": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:40:14.691Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "body": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:42.317Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bush": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:32.113Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "leprosy": {
+      "coveredAt": "2026-10-11T23:34:47.986Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:56:44.238Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "bratwurst": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:26.358Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "perpendicular": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:01:45.616Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "cloak": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:26:34.675Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "exploratory": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:11:55.160Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "indigo": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:32:57.722Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sound": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:30.806Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "spiders": {
+      "coveredAt": "2026-10-12T00:40:36.431Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:28.573Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "compliment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:28:58.056Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "materialize": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:40:39.372Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "frequency": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:49:53.996Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "basement": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:56.896Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "dominion": {
+      "coveredAt": "2026-10-11T23:34:13.740Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:56:51.703Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "auditory": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:09:59.827Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fire": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:06.051Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "canter": {
+      "coveredAt": "2026-10-11T23:33:54.099Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:25.019Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "megahertz": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:59.197Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "entire": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:25.149Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "juniper": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:45:13.509Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "remember": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:25.347Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bioluminescence": {
+      "coveredAt": "2026-10-11T23:33:46.944Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-09T00:34:16.885Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "thirsty": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:57.245Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "insurrection": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:12.046Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "glycerin": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:42:42.636Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Pennsylvania": {
+      "coveredAt": "2026-10-12T00:40:35.087Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:41:00.182Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "glamorous": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:27.477Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "arugula": {
+      "coveredAt": "2026-10-11T23:33:42.656Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-09T00:35:01.281Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "innocuous": {
+      "coveredAt": "2026-10-11T23:34:35.001Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:39.954Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "soared": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:15:37.777Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "most": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:22:46.474Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sick": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:33.621Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "censers": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:13:07.295Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hiking": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:22:40.287Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sputum": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:04:27.485Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "guide": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:19.530Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "business": {
+      "coveredAt": "2026-10-11T23:32:48.571Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:23:00.744Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "salary": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:11:40.644Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "adrenaline": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:29.314Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "custody": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:05.239Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "money": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:25.490Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "torrential": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:53:14.164Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "arsonist": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:04:46.476Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "despondent": {
+      "coveredAt": "2026-10-11T23:34:11.781Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:55:31.342Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "foliage": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:28:53.094Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "quail": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:34:31.065Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bunny": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:29:15.004Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "eponymous": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-11T20:57:13.610Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "half": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:25:02.496Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "prejudice": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:03.969Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "territory": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:16.560Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Gloucester": {
+      "coveredAt": "2026-10-11T23:34:22.688Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:52:53.663Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "Krio": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:03:07.742Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "Addis Ababa": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:16:47.844Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "truant": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:09.029Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "saxophone": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:09:31.577Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "collateral": {
+      "coveredAt": "2026-10-11T23:32:59.358Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:41:25.054Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "cataract": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T23:59:33.787Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fickle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:39:51.391Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sloth": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:15.080Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "truck": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:45.915Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "desperate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:21:52.835Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "breeze": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:19.376Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "arthritis": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:12:23.197Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "shar-pei": {
+      "coveredAt": "2026-10-11T23:35:05.686Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:52:38.023Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "seal": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:36.754Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "atmosphere": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:35:30.044Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "arnica": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:57.621Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "relax": {
+      "coveredAt": "2026-10-12T00:40:58.948Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:22:43.973Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fine": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:33.794Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "modish": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:12:48.161Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "fear": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:25:24.516Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "peer": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:34.506Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "persistent": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:45:43.014Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cartridge": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:38.986Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Delaware": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:49:49.218Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "barge": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:36.882Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cuisine": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:31:17.869Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "inaugurate": {
+      "practice": {
+        "correct": 1,
+        "wrong": 3,
+        "attempts": 4,
+        "lastAt": "2026-10-11T20:57:48.701Z",
+        "last": "correct",
+        "history": "wwwc"
+      }
+    },
+    "shoot": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:55.414Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cutlery": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:12:18.106Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "piteously": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:41:17.236Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "decisively": {
+      "coveredAt": "2026-10-11T23:34:10.094Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:55:24.864Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "grumpily": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:33.889Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "path": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:26:37.172Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "smoothly": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:22.999Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "rigid": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:19:22.083Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "embodiment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:00:19.239Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "curriculum": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:07:10.726Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lapels": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:05:58.227Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "geologist": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:27.069Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "butterflies": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:46.702Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "chickadee": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:46:43.930Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lunar": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:24.035Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "singularity": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:21:19.517Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "burnished": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:50:02.102Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "ginger": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:23.427Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "magnesium": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:28.896Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "elliptical": {
+      "coveredAt": "2026-10-11T23:33:02.519Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:14.465Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "suspension": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:28.833Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tallest": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:25:17.524Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "trouble": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:15:46.947Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "whale": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:48.616Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "friend": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:42.666Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "drink": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:29:57.366Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "ototoxic": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:02:18.447Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "heart": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:15.909Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "acolyte": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 3,
+        "attempts": 5,
+        "lastAt": "2026-10-09T00:35:06.251Z",
+        "last": "correct",
+        "history": "wwwcc"
+      }
+    },
+    "awning": {
+      "coveredAt": "2026-10-11T23:32:43.267Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:41:39.569Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "Eritrea": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:28:25.475Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "butane": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:36:31.504Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "gentle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:11.184Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "rod": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:55.636Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "eureka": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:16:10.647Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "speak": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:33.928Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "carve": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:01.167Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "paper": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:22:37.243Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "solidarity": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:19.907Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "darkness": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:15:24.192Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "stout": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:37.473Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sorceress": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:06.488Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Caesar": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:12:03.090Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "inanimate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:34:02.005Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pearls": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:15:11.908Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "dangle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:43.525Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "persnickety": {
+      "coveredAt": "2026-10-11T23:33:15.530Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:08:21.703Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "blithely": {
+      "coveredAt": "2026-10-11T23:33:50.937Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:13.662Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "conspicuous": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:06:18.225Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "finesse": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:02:34.094Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "assemblage": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:16:27.594Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "compromise": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:41.730Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "shell": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:59.302Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "diplomatically": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:48:55.313Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "meticulous": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:20:52.431Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cul-de-sac": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:15:57.365Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "palazzo": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:10:22.309Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "holiday": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:31.228Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "interruption": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:12:49.875Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "authority": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:08:16.185Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "apprentice": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:52.197Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mewling": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:39:50.703Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "grandfather": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:16.443Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "comprehensible": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:28:19.217Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sniffling": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:32:00.941Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "suggested": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:19.271Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "wings": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:07.588Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fundraiser": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:34.548Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "nurse": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:19.904Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "reinstate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:58.884Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lactobacillus": {
+      "coveredAt": "2026-10-11T23:32:39.586Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-11T20:57:34.578Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "consulate": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 2,
+        "attempts": 4,
+        "lastAt": "2026-10-09T00:35:34.105Z",
+        "last": "correct",
+        "history": "wwcc"
+      }
+    },
+    "house": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:59.416Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mossy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:27.790Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "integrity": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:15.506Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "self-sufficient": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:04:09.638Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "reassurance": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:50:42.298Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "irrelevant": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:37:34.108Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "carrion": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:00.951Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Oregon": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:19:37.741Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "convertible": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:06:39.304Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "chisel": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:20.726Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "cabin": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:13.785Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "silly": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:33.839Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "romerillo": {
+      "coveredAt": "2026-10-11T23:32:31.565Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-10T23:43:09.631Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "doberman": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:00:32.617Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mortar": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:29:27.209Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lullaby": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:35:51.726Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "finish": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:07.868Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "vibrissae": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:53:04.409Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "cottage": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:40.096Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "precedent": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:08:37.410Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "rebuttal": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:08:28.288Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "cuddle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:51.968Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "seminal": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:00:48.861Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "groan": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:09.993Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mysticetes": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 2,
+        "attempts": 4,
+        "lastAt": "2026-10-09T00:33:50.742Z",
+        "last": "correct",
+        "history": "wwcc"
+      }
+    },
+    "return": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:14.883Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Cappadocia": {
+      "coveredAt": "2026-10-11T23:33:57.034Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:55:37.064Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "frankincense": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:09:43.542Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "whistle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:12.224Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hemisphere": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:02:54.593Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "tenuous": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:48:34.203Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "warrior": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:31.285Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hopped": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:17.154Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "settee": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:01:17.929Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "frazzled": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T15:30:06.168Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "chimpanzees": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:11:36.191Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "neurological": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:15:39.652Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "lead": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:22.094Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fictitious": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:53.162Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "asymmetric": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:06:16.805Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "shadows": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:28.738Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "afraid": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:20.404Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "credenza": {
+      "markedForCorrection": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:34:06.566Z",
+        "last": "correct",
+        "wrong": 0
+      },
+      "covered": false,
+      "correctionNote": ""
+    },
+    "duende": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:34:36.148Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tusk": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:51.810Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "phenomenon": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:08:33.116Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "éclair": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:37:42.651Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "staccato": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:31.046Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "stragglers": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:25.054Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "peach": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:22.867Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "always": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:41.384Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "gauntlets": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:31:38.848Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "subscription": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:43:04.268Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "crunch": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:20.644Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "result": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:39.828Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sauntered": {
+      "coveredAt": "2026-10-11T23:35:00.859Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:56:38.135Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "trenchant": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:03:57.454Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hypothesis": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:04:17.119Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "dictionary": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:22.283Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "knit": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:55.758Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mist": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:44.934Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "dirt": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:25.614Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "distance": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:46.200Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "echolocation": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:05:30.116Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "approximation": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-09T00:04:27.880Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "brazier": {
+      "coveredAt": "2026-10-12T12:54:53.860Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-11T20:57:40.639Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "cemetery": {
+      "coveredAt": "2026-10-11T23:32:52.346Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:20.089Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "unrelenting": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:29:17.495Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "beware": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:05.353Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "solenodon": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-11T20:57:05.959Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "quiche": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:04:38.167Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "thimble": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:31:41.743Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pulmonary": {
+      "coveredAt": "2026-10-11T23:34:55.838Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:21.391Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "Polaroid": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:39:02.480Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "steps": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:29.210Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "molten": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:20.565Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mouth": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:45.119Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "dachshund": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:40:57.423Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "hospital": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:43.347Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "segregation": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:15.230Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "reluctance": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:28:57.974Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "endothermy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:37:18.167Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "forsythia": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:05:12.366Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "voice": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:38.536Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "porpoises": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:04:52.250Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Halloween": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:23.316Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hurdler": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:07.571Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "carefully": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:03.851Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "disappear": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:21.819Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lizard": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:45.054Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "generator": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:42:56.663Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "unconscious": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:10:49.922Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "humble": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:39.398Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "easy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:56.696Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "hello": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:46.961Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "fascism": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:34.482Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "phantasmal": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:00:55.986Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "footprints": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:41.909Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "legation": {
+      "coveredAt": "2026-10-11T23:34:43.273Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:05.307Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "apologetic": {
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:34:44.166Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "newt": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:32:55.837Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sprout": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:52.255Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "shine": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:19.509Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "chips": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:57.195Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "thermotaxis": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:45:32.570Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "frozen": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:29.289Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "embankment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:38:22.325Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "ampulla": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 3,
+        "attempts": 5,
+        "lastAt": "2026-10-09T00:36:13.425Z",
+        "last": "correct",
+        "history": "wwcwc"
+      }
+    },
+    "Japanese": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:31:25.945Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "wetlands": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:42.729Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lemmings": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:03:24.472Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "lovely": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:27.361Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "optometrist": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:16.580Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "even": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:33.694Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "boycotting": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:34:26.083Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "conflagration": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:47:18.038Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sparkle": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:53.635Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "trichobothria": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:51:37.193Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "total": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:10.148Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "prospective": {
+      "coveredAt": "2026-10-11T23:34:54.233Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:51:20.934Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "Amharic": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T23:58:13.442Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Tripoli": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:37:47.339Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "shivering": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:26.108Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "calibrate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:43:21.865Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "chitinous": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T23:59:45.852Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "affinities": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T23:57:40.561Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "rendezvous": {
+      "practice": {
+        "correct": 1,
+        "wrong": 2,
+        "attempts": 3,
+        "lastAt": "2026-10-10T23:43:03.197Z",
+        "last": "correct",
+        "history": "wwc"
+      }
+    },
+    "proclaim": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:40:31.607Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "indoors": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:43.850Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tractor": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:35:20.909Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "spray": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:22.318Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "library": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:59.524Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "reservoir": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:13:43.824Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pheasants": {
+      "coveredAt": "2026-10-11T23:33:17.706Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:08:50.710Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "helium": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:36:11.407Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mascara": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:21:02.631Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "relief": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:13.842Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "inferior": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:14:35.738Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "undulating": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:29:02.682Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Aeolus": {
+      "coveredAt": "2026-10-11T23:32:44.311Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:22:38.957Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "monorail": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:40:04.892Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "yellow": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:01.392Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "iridium": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:33:33.371Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "duration": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:03:59.947Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "leg": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:04.210Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "conscious": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:19:00.589Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "illness": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:51.982Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "prosciutto": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:41:13.572Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "come": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T20:31:00.459Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "disappointment": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:13:05.013Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "permit": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:21:12.149Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "snarkiness": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:46.700Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "psychological": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:15:08.401Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "shy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:41.628Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pentathlete": {
+      "coveredAt": "2026-10-11T23:33:09.434Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:42:46.699Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "odorant": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:30:24.021Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "glaucoma": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:37:36.953Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pancake": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:20:13.560Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "flock": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:03.259Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "property": {
+      "coveredAt": "2026-10-12T00:41:24.785Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:29:43.434Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "regolith": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:41.749Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "piñata": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:46.595Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "crack": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:56.986Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "claws": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:24:06.535Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "annelids": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:35:52.861Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "kerosene": {
+      "coveredAt": "2026-10-11T23:34:39.152Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:54:30.781Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "stomatopods": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:00:47.152Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "spes phthisica": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 2,
+        "attempts": 4,
+        "lastAt": "2026-10-09T00:35:47.328Z",
+        "last": "correct",
+        "history": "wwcc"
+      }
+    },
+    "wind": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:14:30.126Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "versus": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:14.549Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "wallowing": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:32:48.685Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "alabaster": {
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:34:24.017Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "foolish": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:53.843Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bamboo": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T02:39:55.329Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "sensilla": {
+      "covered": true,
+      "practice": {
+        "correct": 2,
+        "wrong": 1,
+        "attempts": 3,
+        "lastAt": "2026-10-09T00:34:49.266Z",
+        "last": "correct",
+        "history": "wcc"
+      }
+    },
+    "apple": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:13:47.724Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "good": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:29:59.701Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "narrow": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:30.449Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "matrilineal": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:12:35.224Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "medium": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:16:49.340Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "preconception": {
+      "practice": {
+        "correct": 1,
+        "wrong": 0,
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:09:09.362Z",
+        "last": "correct",
+        "history": "c"
+      }
+    },
+    "alive": {
+      "covered": false,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:17.281Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "examine": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:31:47.109Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "synthetic": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:51.439Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "thrummed": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-07T00:11:35.284Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "haddock": {
+      "coveredAt": "2026-10-12T00:41:05.533Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:18.923Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "buttons": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:04:54.072Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "ran": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:23:04.031Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tangy": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:12:24.152Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "morning": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:06.826Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tiptoed": {
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-10T23:42:52.398Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "perimeter": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:33:05.504Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "pennies": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:17.370Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "concentrate": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:17:46.147Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "source": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:19:49.385Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "marlin": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:38:18.799Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "euphemism": {
+      "coveredAt": "2026-10-11T23:34:15.412Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "wrong": 1,
+        "attempts": 2,
+        "lastAt": "2026-10-11T20:50:59.045Z",
+        "last": "correct",
+        "history": "wc"
+      }
+    },
+    "albino": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:39:42.525Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "annoyance": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:07:31.763Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "tissues": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:31:54.393Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "yakuza": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:32:22.579Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "lounge": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:30:09.397Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "beasts": {
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T02:39:48.247Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "safety": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:17:39.537Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "calico": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:06:56.917Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "elite": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-10T23:30:02.550Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "Aphrodite": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-08T23:58:32.474Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "bellowed": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:35.090Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "rabbit": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:21:40.637Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "rich": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:28:18.669Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "late": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:18:50.350Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "diffidence": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:29:57.712Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "yarn": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:25:38.212Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "year": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T15:27:00.664Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "mayonnaise": {
+      "coveredAt": "2026-10-12T00:40:52.719Z",
+      "covered": true,
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:36:42.505Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "woven": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:16:38.277Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "ridiculous": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:02:21.361Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    },
+    "alphabetical": {
+      "practice": {
+        "correct": 1,
+        "history": "c",
+        "attempts": 1,
+        "lastAt": "2026-10-11T20:15:14.080Z",
+        "last": "correct",
+        "wrong": 0
+      }
+    }
+  },
+  "_settings": {
+    "defaultScopes": [
+      "regional"
+    ]
+  },
+  "_savedPracticeTests": {},
+  "_practiceSessions": [
+    {
+      "total": 5,
+      "timedOut": 0,
+      "at": "2026-10-07T20:21:37.451Z",
+      "wrong": 1,
+      "origins": [],
+      "correct": 0,
+      "label": "School · All Bees · O · Wrong + Not attempted",
+      "letters": [
+        "O"
+      ],
+      "mode": "wrong+pending",
+      "scope": "School",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-07T20:16:29.036Z"
+    },
+    {
+      "total": 1,
+      "timedOut": 0,
+      "at": "2026-10-07T20:21:49.167Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 1,
+      "label": "School · All Bees · O · Wrong + Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-07T20:21:42.454Z"
+    },
+    {
+      "total": 7,
+      "timedOut": 0,
+      "at": "2026-10-08T02:39:56.968Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 2,
+      "label": "School · One Bee 🐝 · B · Completed in Learning + Wrong",
+      "letters": [
+        "B"
+      ],
+      "mode": "learned+wrong",
+      "scope": "School",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-08T02:39:23.041Z"
+    },
+    {
+      "total": 99,
+      "timedOut": 0,
+      "at": "2026-10-08T23:58:45.058Z",
+      "wrong": 4,
+      "origins": [],
+      "correct": 3,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-08T23:56:51.600Z"
+    },
+    {
+      "total": 4,
+      "timedOut": 0,
+      "at": "2026-10-08T23:59:16.402Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 4,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-08T23:58:47.855Z"
+    },
+    {
+      "total": 8,
+      "timedOut": 0,
+      "at": "2026-10-09T00:02:57.702Z",
+      "wrong": 5,
+      "origins": [],
+      "correct": 3,
+      "label": "School · Three Bee 🐝🐝🐝 · Wrong",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-09T00:01:58.326Z"
+    },
+    {
+      "total": 5,
+      "timedOut": 0,
+      "at": "2026-10-09T00:03:49.249Z",
+      "wrong": 1,
+      "origins": [],
+      "correct": 4,
+      "label": "School · Three Bee 🐝🐝🐝 · Wrong · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-09T00:02:59.935Z"
+    },
+    {
+      "total": 1,
+      "timedOut": 0,
+      "at": "2026-10-09T00:03:54.798Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 1,
+      "label": "School · Three Bee 🐝🐝🐝 · Wrong · Retry · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-09T00:03:50.615Z"
+    },
+    {
+      "total": 83,
+      "timedOut": 0,
+      "at": "2026-10-09T00:19:26.076Z",
+      "wrong": 3,
+      "origins": [],
+      "correct": 5,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-09T00:04:10.139Z"
+    },
+    {
+      "total": 10,
+      "timedOut": 0,
+      "at": "2026-10-09T00:19:35.026Z",
+      "wrong": 3,
+      "origins": [],
+      "correct": 6,
+      "label": "School · Three Bee 🐝🐝🐝 · Completed in Learning",
+      "letters": [],
+      "mode": "learned",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-08T23:59:28.861Z"
+    },
+    {
+      "total": 15,
+      "timedOut": 0,
+      "at": "2026-10-09T00:35:53.610Z",
+      "wrong": 2,
+      "origins": [],
+      "correct": 13,
+      "label": "School · All Bees · Ever spelled wrong",
+      "letters": [],
+      "mode": "everWrong",
+      "scope": "School",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-09T00:33:37.608Z"
+    },
+    {
+      "total": 2,
+      "timedOut": 0,
+      "at": "2026-10-09T00:36:15.108Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 2,
+      "label": "School · All Bees · Ever spelled wrong · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-09T00:35:55.559Z"
+    },
+    {
+      "total": 149,
+      "timedOut": 0,
+      "at": "2026-10-10T23:40:45.739Z",
+      "wrong": 9,
+      "origins": [],
+      "correct": 43,
+      "label": "School · Two Bee 🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-10T23:28:38.452Z"
+    },
+    {
+      "total": 9,
+      "timedOut": 0,
+      "at": "2026-10-10T23:42:53.296Z",
+      "wrong": 2,
+      "origins": [],
+      "correct": 7,
+      "label": "School · Two Bee 🐝🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-10T23:40:49.438Z"
+    },
+    {
+      "total": 2,
+      "timedOut": 0,
+      "at": "2026-10-10T23:43:10.578Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 2,
+      "label": "School · Two Bee 🐝🐝 · Not attempted · Retry · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-10T23:42:57.245Z"
+    },
+    {
+      "total": 147,
+      "timedOut": 0,
+      "at": "2026-10-11T15:30:00.788Z",
+      "wrong": 2,
+      "origins": [],
+      "correct": 145,
+      "label": "School · One Bee 🐝 · Completed in Learning + Wrong + Not attempted",
+      "letters": [],
+      "mode": "learned+wrong+pending",
+      "scope": "School",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-11T15:11:52.581Z"
+    },
+    {
+      "total": 2,
+      "timedOut": 0,
+      "at": "2026-10-11T15:30:09.747Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 2,
+      "label": "School · One Bee 🐝 · Completed in Learning + Wrong + Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-11T15:30:03.065Z"
+    },
+    {
+      "total": 97,
+      "timedOut": 0,
+      "at": "2026-10-11T20:08:01.416Z",
+      "wrong": 6,
+      "origins": [],
+      "correct": 29,
+      "label": "School · Two Bee 🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-11T20:01:50.847Z"
+    },
+    {
+      "total": 6,
+      "timedOut": 0,
+      "at": "2026-10-11T20:09:03.623Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 6,
+      "label": "School · Two Bee 🐝🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-11T20:08:11.731Z"
+    },
+    {
+      "total": 62,
+      "timedOut": 0,
+      "at": "2026-10-11T20:21:53.300Z",
+      "wrong": 8,
+      "origins": [],
+      "correct": 54,
+      "label": "School · Two Bee 🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-11T20:11:30.433Z"
+    },
+    {
+      "total": 8,
+      "timedOut": 0,
+      "at": "2026-10-11T20:23:06.578Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 8,
+      "label": "School · Two Bee 🐝🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Two Bee 🐝🐝",
+      "startedAt": "2026-10-11T20:22:09.521Z"
+    },
+    {
+      "total": 75,
+      "timedOut": 0,
+      "at": "2026-10-11T20:50:42.738Z",
+      "wrong": 27,
+      "origins": [],
+      "correct": 48,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-11T20:28:12.321Z"
+    },
+    {
+      "total": 27,
+      "timedOut": 0,
+      "at": "2026-10-11T20:56:53.018Z",
+      "wrong": 5,
+      "origins": [],
+      "correct": 22,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-11T20:50:48.932Z"
+    },
+    {
+      "total": 5,
+      "timedOut": 0,
+      "at": "2026-10-11T20:57:41.073Z",
+      "wrong": 1,
+      "origins": [],
+      "correct": 4,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted · Retry · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-11T20:56:55.593Z"
+    },
+    {
+      "total": 1,
+      "timedOut": 0,
+      "at": "2026-10-11T20:57:49.179Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 1,
+      "label": "School · Three Bee 🐝🐝🐝 · Not attempted · Retry · Retry · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "School",
+      "difficulty": "Three Bee 🐝🐝🐝",
+      "startedAt": "2026-10-11T20:57:42.961Z"
+    },
+    {
+      "total": 7,
+      "timedOut": 0,
+      "at": "2026-10-12T17:40:16.079Z",
+      "wrong": 3,
+      "origins": [],
+      "correct": 4,
+      "label": "Regional · All Bees · Completed in Learning + Ever spelled wrong",
+      "letters": [],
+      "mode": "learned+everWrong",
+      "scope": "Regional",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-12T17:38:29.590Z"
+    },
+    {
+      "total": 3,
+      "timedOut": 0,
+      "at": "2026-10-12T17:40:47.256Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 3,
+      "label": "Regional · All Bees · Completed in Learning + Ever spelled wrong · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "Regional",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-12T17:40:17.222Z"
+    },
+    {
+      "total": 973,
+      "timedOut": 0,
+      "at": "2026-10-12T19:03:12.749Z",
+      "wrong": 4,
+      "origins": [],
+      "correct": 29,
+      "label": "Regional · All Bees · Completed in Learning + Not attempted",
+      "letters": [],
+      "mode": "learned+pending",
+      "scope": "Regional",
+      "difficulty": "All Bees",
+      "startedAt": "2026-10-12T17:31:34.316Z"
+    },
+    {
+      "total": 940,
+      "timedOut": 0,
+      "at": "2026-10-13T00:11:49.789Z",
+      "wrong": 12,
+      "origins": [],
+      "correct": 49,
+      "label": "Regional · One Bee 🐝 · Not attempted",
+      "letters": [],
+      "mode": "pending",
+      "scope": "Regional",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-13T00:03:47.204Z"
+    },
+    {
+      "total": 12,
+      "timedOut": 0,
+      "at": "2026-10-13T00:13:20.677Z",
+      "wrong": 4,
+      "origins": [],
+      "correct": 8,
+      "label": "Regional · One Bee 🐝 · Not attempted · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "Regional",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-13T00:11:51.333Z"
+    },
+    {
+      "total": 4,
+      "timedOut": 0,
+      "at": "2026-10-13T00:13:41.975Z",
+      "wrong": 0,
+      "origins": [],
+      "correct": 4,
+      "label": "Regional · One Bee 🐝 · Not attempted · Retry · Retry",
+      "letters": [],
+      "mode": "wrong",
+      "scope": "Regional",
+      "difficulty": "One Bee 🐝",
+      "startedAt": "2026-10-13T00:13:21.425Z"
+    }
+  ]
+}
