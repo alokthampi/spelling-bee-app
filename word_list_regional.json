@@ -128,7 +128,7 @@
   {
     "word": "acceptance",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the quality or state of being accepted or acceptable",
     "definition_source": "merriam_webster",
@@ -166,7 +166,7 @@
   {
     "word": "accolade",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, Occitan, French",
     "part_of_speech": "noun",
     "definition": "a mark of acknowledgment : award",
     "definition_source": "merriam_webster",
@@ -191,7 +191,7 @@
   {
     "word": "accomplice",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "one associated with another especially in wrongdoing",
     "definition_source": "merriam_webster",
@@ -212,7 +212,7 @@
   {
     "word": "accountable",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "subject to giving an account : answerable",
     "definition_source": "merriam_webster",
@@ -229,7 +229,7 @@
   {
     "word": "acquit",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to declare not guilty of a crime or accusation",
     "definition_source": "generated",
@@ -570,7 +570,7 @@
   {
     "word": "aloof",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Dutch",
     "part_of_speech": "adjective",
     "definition": "removed or distant either physically or emotionally",
     "definition_source": "merriam_webster",
@@ -587,7 +587,7 @@
   {
     "word": "alpaca",
     "difficulty": "one",
-    "origin": "Spanish",
+    "origin": "Aymara, Spanish",
     "part_of_speech": "noun",
     "definition": "a domesticated mammal (Vicugna pacos synonym Lama pacos) especially of Peru that is probably descended from the vicuña",
     "definition_source": "merriam_webster",
@@ -625,7 +625,7 @@
   {
     "word": "amass",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "verb",
     "definition": "to collect for oneself : accumulate",
     "definition_source": "merriam_webster",
@@ -773,7 +773,7 @@
   {
     "word": "anarchic",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "adjective",
     "definition": "without order or control : lawless",
     "definition_source": "generated",
@@ -996,7 +996,7 @@
   {
     "word": "apparel",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "personal attire : clothing of a particular kind —used chiefly in U.S. English to refer to clothing that is being sold in stores",
     "definition_source": "merriam_webster",
@@ -1021,7 +1021,7 @@
   {
     "word": "apparently",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adverb",
     "definition": "it seems apparent —used to describe something that appears to be true based on what is known",
     "definition_source": "merriam_webster",
@@ -1081,7 +1081,7 @@
   {
     "word": "appraisal",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "an act or instance of appraising something or someone; especially : a valuation of property by the estimate of an authorized person",
     "definition_source": "merriam_webster",
@@ -1237,7 +1237,7 @@
   {
     "word": "atonement",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Old English",
     "part_of_speech": "noun",
     "definition": "reparation for an offense or injury : satisfaction",
     "definition_source": "merriam_webster",
@@ -1498,7 +1498,7 @@
   {
     "word": "azure",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Persian, Arabic, Latin, French",
     "part_of_speech": "noun",
     "definition": "the blue color of the clear sky",
     "definition_source": "merriam_webster",
@@ -1553,7 +1553,7 @@
   {
     "word": "ballad",
     "difficulty": "one",
-    "origin": "Occitan, French",
+    "origin": "Greek, Latin, Occitan, French",
     "part_of_speech": "noun",
     "definition": "a narrative composition in rhythmic verse suitable for singing",
     "definition_source": "merriam_webster",
@@ -1869,7 +1869,7 @@
   {
     "word": "blarney",
     "difficulty": "one",
-    "origin": "Irish",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "skillful flattery : blandishment",
     "definition_source": "merriam_webster",
@@ -2148,7 +2148,7 @@
   {
     "word": "brace",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "verb",
     "definition": "to get ready for something difficult or unpleasant",
     "definition_source": "generated",
@@ -2343,7 +2343,7 @@
   {
     "word": "bumblebee",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Imitative, Old English",
     "part_of_speech": "noun",
     "definition": "any of numerous large robust hairy social bees (genus Bombus)",
     "definition_source": "merriam_webster",
@@ -2477,7 +2477,7 @@
   {
     "word": "cadence",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Latin, Italian",
     "part_of_speech": "noun",
     "definition": "the beat, time, or measure of rhythmical motion or activity",
     "definition_source": "merriam_webster",
@@ -2612,7 +2612,7 @@
   {
     "word": "capitalist",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a person who has capital especially invested in business; broadly : a person of wealth : plutocrat",
     "definition_source": "merriam_webster",
@@ -2717,7 +2717,7 @@
   {
     "word": "carriage",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a wheeled vehicle; especially : a horse-drawn vehicle designed for private use and comfort",
     "definition_source": "merriam_webster",
@@ -2742,7 +2742,7 @@
   {
     "word": "casserole",
     "difficulty": "one",
-    "origin": "Occitan, French",
+    "origin": "Greek, Latin, Occitan, French",
     "part_of_speech": "noun",
     "definition": "a dish in which food may be baked and served",
     "definition_source": "merriam_webster",
@@ -2986,7 +2986,7 @@
   {
     "word": "chastise",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to censure severely : castigate",
     "definition_source": "merriam_webster",
@@ -3007,7 +3007,7 @@
   {
     "word": "cheddar",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a hard white, yellow, or orange smooth-textured cheese with a flavor that ranges from mild to strong as the cheese matures —called also cheddar cheese",
     "definition_source": "merriam_webster",
@@ -3075,7 +3075,7 @@
   {
     "word": "cinderella",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a person or thing that suddenly goes from being unknown or overlooked to being successful",
     "definition_source": "generated",
@@ -3134,7 +3134,7 @@
   {
     "word": "clarinet",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a single-reed woodwind instrument having a cylindrical tube with a moderately flared bell and a usual range from D below middle C upward for 3½ octaves",
     "definition_source": "merriam_webster",
@@ -3289,7 +3289,7 @@
   {
     "word": "coach",
     "difficulty": "one",
-    "origin": "German, French",
+    "origin": "Hungarian, German, French",
     "part_of_speech": "noun",
     "definition": "a large usually closed four-wheeled horse-drawn carriage having doors in the sides and an elevated seat in front for the driver",
     "definition_source": "merriam_webster",
@@ -3361,7 +3361,7 @@
   {
     "word": "cockles",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "the innermost feelings —used in the phrase warm the cockles of one's heart",
     "definition_source": "generated",
@@ -3589,7 +3589,7 @@
   {
     "word": "complementary",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "serving to fill out or complete",
     "definition_source": "merriam_webster",
@@ -3732,7 +3732,7 @@
   {
     "word": "condor",
     "difficulty": "one",
-    "origin": "Spanish",
+    "origin": "Quechua, Spanish",
     "part_of_speech": "noun",
     "definition": "a very large American vulture (Vultur gryphus) of the high Andes having the head and neck bare and the plumage dull black with a downy white neck ruff and white patches on the wings —called also Andean condor",
     "definition_source": "merriam_webster",
@@ -3900,7 +3900,7 @@
   {
     "word": "constraints",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "limits or restrictions",
     "definition_source": "generated",
@@ -4422,7 +4422,7 @@
   {
     "word": "curtail",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to make less by or as if by cutting off or away some part",
     "definition_source": "merriam_webster",
@@ -4629,7 +4629,7 @@
   {
     "word": "demand",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "an act of demanding or asking especially with authority",
     "definition_source": "merriam_webster",
@@ -4724,7 +4724,7 @@
   {
     "word": "deployment",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the act or movement of deploying or the state of being deployed: such as",
     "definition_source": "merriam_webster",
@@ -4784,7 +4784,7 @@
   {
     "word": "detail",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "extended treatment of or attention to particular items",
     "definition_source": "merriam_webster",
@@ -4843,7 +4843,7 @@
   {
     "word": "dicey",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "risky, unpredictable",
     "definition_source": "merriam_webster",
@@ -4923,7 +4923,7 @@
   {
     "word": "disaster",
     "difficulty": "one",
-    "origin": "Italian, French",
+    "origin": "Greek, Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "a sudden calamitous event bringing great damage, loss, or destruction",
     "definition_source": "merriam_webster",
@@ -4944,7 +4944,7 @@
   {
     "word": "disco",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "a style of popular dance music of the 1970s with a strong beat",
     "definition_source": "generated",
@@ -5395,7 +5395,7 @@
   {
     "word": "dynamite",
     "difficulty": "one",
-    "origin": "Greek",
+    "origin": "Greek, Swedish",
     "part_of_speech": "noun",
     "definition": "an explosive that is made of nitroglycerin absorbed in a porous material and that often contains ammonium nitrate or cellulose nitrate; also : an explosive (such as a mixture of ammonium nitrate and nitrocellulose) that contains no nitroglycerin",
     "definition_source": "merriam_webster",
@@ -5660,7 +5660,7 @@
   {
     "word": "elixir",
     "difficulty": "one",
-    "origin": "Arabic, Latin",
+    "origin": "Greek, Arabic, Latin",
     "part_of_speech": "noun",
     "definition": "a magical or medicinal liquid believed to cure illness or give long life",
     "definition_source": "generated",
@@ -5945,7 +5945,7 @@
   {
     "word": "engineer",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a person who designs and builds machines, structures, or systems",
     "definition_source": "generated",
@@ -6008,7 +6008,7 @@
   {
     "word": "entreat",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to plead with especially in order to persuade : ask urgently",
     "definition_source": "merriam_webster",
@@ -6182,7 +6182,7 @@
   {
     "word": "evaluate",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to determine or fix the value of",
     "definition_source": "merriam_webster",
@@ -6554,7 +6554,7 @@
   {
     "word": "facade",
     "difficulty": "one",
-    "origin": "Italian, French",
+    "origin": "Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "the front of a building; also : any face of a building given special architectural treatment",
     "definition_source": "merriam_webster",
@@ -7385,7 +7385,7 @@
   {
     "word": "freakishly",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Unknown",
     "part_of_speech": "adverb",
     "definition": "in a very strange or unusual way",
     "definition_source": "generated",
@@ -7515,7 +7515,7 @@
   {
     "word": "frontier",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a region at the edge of settled land",
     "definition_source": "generated",
@@ -8246,7 +8246,7 @@
   {
     "word": "grandeur",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the quality or state of being grand : magnificence",
     "definition_source": "merriam_webster",
@@ -8275,7 +8275,7 @@
   {
     "word": "grandomania",
     "difficulty": "one",
-    "origin": "Latin, French, Greek",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "an excessive desire for greatness or grandeur",
     "definition_source": "generated",
@@ -8287,7 +8287,7 @@
   {
     "word": "grapple",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Germanic, French",
     "part_of_speech": "verb",
     "definition": "to struggle or wrestle",
     "definition_source": "generated",
@@ -8375,7 +8375,7 @@
   {
     "word": "grotto",
     "difficulty": "one",
-    "origin": "Latin, Italian",
+    "origin": "Greek, Latin, Italian",
     "part_of_speech": "noun",
     "definition": "a small cave",
     "definition_source": "generated",
@@ -8577,7 +8577,7 @@
   {
     "word": "hatchet",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Germanic, French",
     "part_of_speech": "noun",
     "definition": "a short-handled ax often with a hammerhead to be used with one hand",
     "definition_source": "merriam_webster",
@@ -8874,7 +8874,7 @@
   {
     "word": "hollywoodize",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "verb",
     "definition": "to give a glamorous or exaggerated style like that of Hollywood movies",
     "definition_source": "generated",
@@ -10008,7 +10008,7 @@
   {
     "word": "league",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "a group of sports teams or clubs that play against each other",
     "definition_source": "generated",
@@ -10295,7 +10295,7 @@
   {
     "word": "lobster",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Latin, Old English",
     "part_of_speech": "noun",
     "definition": "any of a family (Nephropidae and especially Homarus americanus) of large edible marine decapod crustaceans that have stalked eyes, a pair of large claws, and a long abdomen and that include species from coasts on both sides of the North Atlantic and from the Cape of Good Hope",
     "definition_source": "merriam_webster",
@@ -10425,7 +10425,7 @@
   {
     "word": "madrigal",
     "difficulty": "one",
-    "origin": "Italian",
+    "origin": "Latin, Italian",
     "part_of_speech": "noun",
     "definition": "a song for several voices, usually sung without instruments",
     "definition_source": "generated",
@@ -10446,7 +10446,7 @@
   {
     "word": "magus",
     "difficulty": "one",
-    "origin": "Greek, Latin",
+    "origin": "Persian, Greek, Latin",
     "part_of_speech": "noun",
     "definition": "a wise man or magician; especially : one of the wise men from the East who brought gifts to the infant Jesus",
     "definition_source": "generated",
@@ -10500,7 +10500,7 @@
   {
     "word": "maize",
     "difficulty": "one",
-    "origin": "Spanish",
+    "origin": "Taino, Spanish",
     "part_of_speech": "noun",
     "definition": "a tall annual cereal grass (Zea mays) originally domesticated in Mexico and widely grown for its large elongated ears of starchy seeds : corn",
     "definition_source": "merriam_webster",
@@ -10715,7 +10715,7 @@
   {
     "word": "marathon",
     "difficulty": "one",
-    "origin": "Greek",
+    "origin": "Greek, Eponym",
     "part_of_speech": "noun",
     "definition": "a footrace run on an open course usually of 26 miles 385 yards (42.2 kilometers); broadly : a long-distance race",
     "definition_source": "merriam_webster",
@@ -11012,7 +11012,7 @@
   {
     "word": "mentor",
     "difficulty": "one",
-    "origin": "Greek, Latin",
+    "origin": "Greek, Eponym",
     "part_of_speech": "noun",
     "definition": "a person who gives help and advice to a less experienced and often younger person especially in a professional or academic context",
     "definition_source": "merriam_webster",
@@ -11037,7 +11037,7 @@
   {
     "word": "menu",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a list of the dishes that may be ordered (as in a restaurant) or that are to be served (as at a banquet)",
     "definition_source": "merriam_webster",
@@ -11062,7 +11062,7 @@
   {
     "word": "merchandise",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the commodities or goods that are bought and sold in business : wares",
     "definition_source": "merriam_webster",
@@ -11255,7 +11255,7 @@
   {
     "word": "millionaire",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "a person whose wealth is estimated at a million or more (as of dollars or pounds)",
     "definition_source": "merriam_webster",
@@ -11339,7 +11339,7 @@
   {
     "word": "mischief",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "playful behavior that causes trouble or annoyance",
     "definition_source": "generated",
@@ -11386,7 +11386,7 @@
   {
     "word": "missive",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a written communication : letter",
     "definition_source": "merriam_webster",
@@ -11735,7 +11735,7 @@
   {
     "word": "mythical",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "adjective",
     "definition": "based on or described in a myth especially as contrasted with history",
     "definition_source": "merriam_webster",
@@ -12035,7 +12035,7 @@
   {
     "word": "novelties",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "small, unusual items such as toys or trinkets",
     "definition_source": "generated",
@@ -12398,7 +12398,7 @@
   {
     "word": "oregano",
     "difficulty": "one",
-    "origin": "Latin, Spanish",
+    "origin": "Greek, Latin, Spanish",
     "part_of_speech": "noun",
     "definition": "a bushy perennial mint (Origanum vulgare) with leaves that are used as a seasoning and a source of aromatic oil —called also origanum, wild marjoram",
     "definition_source": "merriam_webster",
@@ -12419,7 +12419,7 @@
   {
     "word": "ouster",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the act of forcing someone out of a position",
     "definition_source": "generated",
@@ -12662,7 +12662,7 @@
   {
     "word": "parley",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "verb",
     "definition": "to speak with another : confer; specifically : to discuss terms with an enemy",
     "definition_source": "merriam_webster",
@@ -12881,7 +12881,7 @@
   {
     "word": "pending",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "not yet decided or finished",
     "definition_source": "generated",
@@ -12965,7 +12965,7 @@
   {
     "word": "petunia",
     "difficulty": "one",
-    "origin": "French, Latin",
+    "origin": "Guarani, French, Latin",
     "part_of_speech": "noun",
     "definition": "any of a genus (Petunia) of tropical South American herbs of the nightshade family that are commonly grown as annuals for their fragrant, colorful, trumpet-shaped flowers",
     "definition_source": "merriam_webster",
@@ -13011,7 +13011,7 @@
   {
     "word": "physical",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "adjective",
     "definition": "of or relating to the body",
     "definition_source": "generated",
@@ -13095,7 +13095,7 @@
   {
     "word": "pliant",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "easily bent : flexible",
     "definition_source": "generated",
@@ -13137,7 +13137,7 @@
   {
     "word": "plummet",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to fall straight down quickly",
     "definition_source": "generated",
@@ -13217,7 +13217,7 @@
   {
     "word": "portrait",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "picture; especially : a pictorial representation of a person usually showing the face",
     "definition_source": "merriam_webster",
@@ -13263,7 +13263,7 @@
   {
     "word": "praise",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to express a favorable judgment of : commend",
     "definition_source": "merriam_webster",
@@ -13437,7 +13437,7 @@
   {
     "word": "primrose",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "any of a genus (Primula of the family Primulaceae, the primrose family) of perennial herbs with large tufted basal leaves and showy variously colored flowers",
     "definition_source": "merriam_webster",
@@ -13505,7 +13505,7 @@
   {
     "word": "procedure",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a particular way of accomplishing something or of acting",
     "definition_source": "merriam_webster",
@@ -14131,7 +14131,7 @@
   {
     "word": "ramen",
     "difficulty": "one",
-    "origin": "Japanese",
+    "origin": "Chinese, Japanese",
     "part_of_speech": "noun",
     "definition": "quick-cooking egg noodles usually served in a broth with bits of meat and vegetables",
     "definition_source": "merriam_webster",
@@ -14424,7 +14424,7 @@
   {
     "word": "rejuvenate",
     "difficulty": "one",
-    "origin": "French, Latin",
+    "origin": "Latin",
     "part_of_speech": "verb",
     "definition": "to make young or youthful again : give new vigor to",
     "definition_source": "merriam_webster",
@@ -14458,7 +14458,7 @@
   {
     "word": "remnants",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "small parts or traces that are left over",
     "definition_source": "generated",
@@ -14545,7 +14545,7 @@
   {
     "word": "resemble",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to be like or similar to",
     "definition_source": "merriam_webster",
@@ -14610,7 +14610,7 @@
   {
     "word": "restive",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "restless and hard to control",
     "definition_source": "generated",
@@ -14698,7 +14698,7 @@
   {
     "word": "riddance",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Old Norse",
     "part_of_speech": "noun",
     "definition": "an act of ridding",
     "definition_source": "merriam_webster",
@@ -14871,7 +14871,7 @@
   {
     "word": "rugby",
     "difficulty": "one",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a football game in which play is continuous without time-outs or substitutions, interference and forward passing are not permitted, and kicking, dribbling, lateral passing, and tackling are featured",
     "definition_source": "merriam_webster",
@@ -15083,7 +15083,7 @@
   {
     "word": "scenario",
     "difficulty": "one",
-    "origin": "Latin, Italian",
+    "origin": "Greek, Latin, Italian",
     "part_of_speech": "noun",
     "definition": "a description of a possible series of events",
     "definition_source": "generated",
@@ -15105,7 +15105,7 @@
   {
     "word": "scholarship",
     "difficulty": "one",
-    "origin": "Latin, Old English",
+    "origin": "Greek, Latin, Old English",
     "part_of_speech": "noun",
     "definition": "a grant-in-aid to a student (as by a college or foundation)",
     "definition_source": "merriam_webster",
@@ -15852,7 +15852,7 @@
   {
     "word": "skirmish",
     "difficulty": "one",
-    "origin": "Germanic",
+    "origin": "Germanic, French",
     "part_of_speech": "noun",
     "definition": "a minor fight in war usually incidental to larger movements",
     "definition_source": "merriam_webster",
@@ -16168,7 +16168,7 @@
   {
     "word": "sorbet",
     "difficulty": "one",
-    "origin": "Turkish, Italian, French",
+    "origin": "Arabic, Turkish, Italian, French",
     "part_of_speech": "noun",
     "definition": "a usually fruit-flavored ice served as a dessert or between courses as a palate refresher",
     "definition_source": "merriam_webster",
@@ -16223,7 +16223,7 @@
   {
     "word": "spatula",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "a flat thin implement used especially for spreading or mixing soft substances, scooping, or lifting",
     "definition_source": "merriam_webster",
@@ -16307,7 +16307,7 @@
   {
     "word": "sprite",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "an elf or fairy",
     "definition_source": "generated",
@@ -17155,7 +17155,7 @@
   {
     "word": "tariff",
     "difficulty": "one",
-    "origin": "Arabic, Italian",
+    "origin": "Arabic, Turkish, Italian",
     "part_of_speech": "noun",
     "definition": "a tax on goods coming into or going out of a country",
     "definition_source": "generated",
@@ -17357,7 +17357,7 @@
   {
     "word": "thespian",
     "difficulty": "one",
-    "origin": "Eponym",
+    "origin": "Greek, Eponym",
     "part_of_speech": "noun",
     "definition": "actor",
     "definition_source": "merriam_webster",
@@ -17513,7 +17513,7 @@
   {
     "word": "treasury",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "a place in which stores of wealth are kept",
     "definition_source": "merriam_webster",
@@ -17564,7 +17564,7 @@
   {
     "word": "trespass",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to commit a trespass; especially : to enter unlawfully upon the land of another",
     "definition_source": "merriam_webster",
@@ -17736,7 +17736,7 @@
   {
     "word": "tunnel",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a covered passageway; specifically : a horizontal passageway through or under an obstruction",
     "definition_source": "merriam_webster",
@@ -17837,7 +17837,7 @@
   {
     "word": "undercroft",
     "difficulty": "one",
-    "origin": "Latin, Dutch",
+    "origin": "Greek, Latin, Dutch",
     "part_of_speech": "noun",
     "definition": "a subterranean room; especially : a vaulted chamber under a church",
     "definition_source": "merriam_webster",
@@ -18212,7 +18212,7 @@
   {
     "word": "vendors",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "people who sell things",
     "definition_source": "generated",
@@ -18319,7 +18319,7 @@
   {
     "word": "vinegar",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a sour liquid obtained by fermentation of dilute alcoholic liquids and used as a condiment or preservative",
     "definition_source": "merriam_webster",
@@ -18565,7 +18565,7 @@
   {
     "word": "waterloo",
     "difficulty": "one",
-    "origin": "Dutch",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a decisive or final defeat or setback",
     "definition_source": "merriam_webster",

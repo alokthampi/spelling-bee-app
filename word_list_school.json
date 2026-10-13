@@ -413,7 +413,7 @@
   {
     "word": "cottage",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Old English, French",
     "part_of_speech": "noun",
     "definition": "the dwelling of a farm laborer or small farmer",
     "definition_source": "merriam_webster",
@@ -1046,7 +1046,7 @@
   {
     "word": "hello",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "English",
     "part_of_speech": "noun",
     "definition": "an expression or gesture of greeting —used interjectionally in greeting, in answering the telephone, or to express surprise",
     "definition_source": "merriam_webster",
@@ -1421,7 +1421,7 @@
   {
     "word": "market",
     "difficulty": "one",
-    "origin": "Latin, Germanic",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a gathering together of people for making private purchases and sales",
     "definition_source": "merriam_webster",
@@ -1674,7 +1674,7 @@
   {
     "word": "parade",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, Spanish, French",
     "part_of_speech": "noun",
     "definition": "a public procession usually to mark a holiday or event; especially : one involving many different people or groups who travel down a street usually on foot or in vehicles (such as floats)",
     "definition_source": "merriam_webster",
@@ -1892,7 +1892,7 @@
   {
     "word": "return",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to go back or come back again",
     "definition_source": "merriam_webster",
@@ -1964,7 +1964,7 @@
   {
     "word": "safety",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the condition of being safe from undergoing or causing hurt, injury, or loss",
     "definition_source": "merriam_webster",
@@ -1985,7 +1985,7 @@
   {
     "word": "seal",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to close or secure tightly",
     "definition_source": "merriam_webster",
@@ -2338,7 +2338,7 @@
   {
     "word": "spray",
     "difficulty": "one",
-    "origin": "Old English",
+    "origin": "Dutch",
     "part_of_speech": "verb",
     "definition": "to scatter or disperse liquid in small drops",
     "definition_source": "merriam_webster",
@@ -2958,7 +2958,7 @@
   {
     "word": "atmosphere",
     "difficulty": "two",
-    "origin": "Latin, Greek",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "the gaseous envelope of a celestial body (such as a planet)",
     "definition_source": "merriam_webster",
@@ -3306,7 +3306,7 @@
   {
     "word": "cartridge",
     "difficulty": "two",
-    "origin": "French",
+    "origin": "Greek, Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "a case or container that holds a substance, device, or material which is difficult, troublesome, or awkward to handle and that usually can be easily changed: such as",
     "definition_source": "merriam_webster",
@@ -3450,7 +3450,7 @@
   {
     "word": "compliment",
     "difficulty": "two",
-    "origin": "Spanish, Italian, French",
+    "origin": "Latin, Spanish, Italian, French",
     "part_of_speech": "noun",
     "definition": "an expression of esteem, respect, affection, or admiration; especially : an admiring remark",
     "definition_source": "merriam_webster",
@@ -4020,7 +4020,7 @@
   {
     "word": "glamorous",
     "difficulty": "two",
-    "origin": "Greek, Latin, French",
+    "origin": "Greek, Latin, French, Scots",
     "part_of_speech": "adjective",
     "definition": "full of glamour : excitingly attractive",
     "definition_source": "merriam_webster",
@@ -4361,7 +4361,7 @@
   {
     "word": "iridium",
     "difficulty": "two",
-    "origin": "Latin, Greek",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "a rare silver-white hard brittle very heavy metallic element",
     "definition_source": "merriam_webster",
@@ -4635,7 +4635,7 @@
   {
     "word": "megahertz",
     "difficulty": "two",
-    "origin": "Greek, German",
+    "origin": "Greek, Eponym",
     "part_of_speech": "noun",
     "definition": "a unit of frequency equal to one million hertz —abbreviation MHz",
     "definition_source": "merriam_webster",
@@ -5161,7 +5161,7 @@
   {
     "word": "relief",
     "difficulty": "two",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a feeling of happiness or relaxation that follows the removal of worry or pain",
     "definition_source": "merriam_webster",
@@ -5732,7 +5732,7 @@
   {
     "word": "warrior",
     "difficulty": "two",
-    "origin": "French",
+    "origin": "Germanic, French",
     "part_of_speech": "noun",
     "definition": "a person engaged or experienced in warfare; broadly : a person engaged in some struggle or conflict",
     "definition_source": "merriam_webster",
@@ -5812,7 +5812,7 @@
   {
     "word": "acolyte",
     "difficulty": "three",
-    "origin": "Latin, French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "a person who assists a member of the clergy in a liturgical service by performing minor duties",
     "definition_source": "merriam_webster",
@@ -5912,7 +5912,7 @@
   {
     "word": "Amharic",
     "difficulty": "three",
-    "origin": "Amharic, Latin",
+    "origin": "Amharic",
     "part_of_speech": "noun",
     "definition": "a Semitic language that is an official language of Ethiopia",
     "definition_source": "merriam_webster",
@@ -6024,7 +6024,7 @@
   {
     "word": "appetizing",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "appealing to the appetite especially in appearance or aroma; also : appealing to one's taste",
     "definition_source": "merriam_webster",
@@ -6100,7 +6100,7 @@
   {
     "word": "arugula",
     "difficulty": "three",
-    "origin": "Italian",
+    "origin": "Latin, Italian",
     "part_of_speech": "noun",
     "definition": "a yellowish-flowered Mediterranean herb (Eruce sativa synonym E. vesicaria sativa) of the mustard family cultivated for its foliage which is used especially in salads —called also garden rocket, rocket, roquette, rugola",
     "definition_source": "merriam_webster",
@@ -6329,7 +6329,7 @@
   {
     "word": "calibrate",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Arabic, Italian, French",
     "part_of_speech": "verb",
     "definition": "to ascertain the caliber of (something)",
     "definition_source": "merriam_webster",
@@ -6764,7 +6764,7 @@
   {
     "word": "doberman",
     "difficulty": "three",
-    "origin": "German",
+    "origin": "German, Eponym",
     "part_of_speech": "noun",
     "definition": "any of a breed of short-haired medium-sized dogs of German origin —called also Doberman",
     "definition_source": "merriam_webster",
@@ -7020,7 +7020,7 @@
   {
     "word": "foliage",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "the aggregate of leaves of one or more plants",
     "definition_source": "merriam_webster",
@@ -7082,7 +7082,7 @@
   {
     "word": "frankincense",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a fragrant gum resin from trees of a genus (Boswellia of the family Burseraceae) of Somalia and southern coastal Arabia that is an important incense resin and has been used in religious rites, perfumery, and embalming",
     "definition_source": "merriam_webster",
@@ -8088,7 +8088,7 @@
   {
     "word": "quiche",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "German, French",
     "part_of_speech": "noun",
     "definition": "an unsweetened custard pie usually having a savory filling (such as spinach, mushrooms, or ham)",
     "definition_source": "merriam_webster",
@@ -8160,7 +8160,7 @@
   {
     "word": "salicylic acid",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a crystalline phenolic acid C7H6O3 that is used medicinally especially as a skin exfoliant and in the form of salts and other derivatives as an analgesic and antipyretic",
     "definition_source": "merriam_webster",
@@ -8193,7 +8193,7 @@
   {
     "word": "saxophone",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Eponym, Greek, French",
     "part_of_speech": "noun",
     "definition": "one of a group of single-reed woodwind instruments usually ranging from soprano to bass and characterized by a conical metal tube and finger keys",
     "definition_source": "merriam_webster",
@@ -8501,7 +8501,7 @@
   {
     "word": "trenchant",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "adjective",
     "definition": "keen, sharp",
     "definition_source": "merriam_webster",

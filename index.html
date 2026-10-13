@@ -1202,7 +1202,31 @@
     .practice-feedback.wrong { background: var(--danger-soft); color: #ffdcdc; border-left: 4px solid var(--danger); }
     .practice-feedback .fb-title { font-weight: 800; font-size: 17px; }
     .practice-feedback .fb-word { font-weight: 800; font-size: 20px; letter-spacing: 0.03em; }
-    .practice-feedback .fb-typed { text-decoration: line-through; opacity: 0.85; }
+    .practice-feedback .fb-typed { opacity: 0.9; }
+
+    /* Misspelling lined up with the right spelling (spelling-help.js) */
+    .sd-line { letter-spacing: 0.04em; }
+    .sd-fix { color: var(--success); background: var(--success-soft); border-radius: 3px; text-decoration: underline; text-underline-offset: 3px; }
+    .sd-bad { color: var(--danger); background: var(--danger-soft); border-radius: 3px; }
+    .sd-extra { text-decoration: line-through; }
+    .sd-gap { color: var(--danger); font-weight: 800; }
+    .sd-notes { margin: 6px 0 0; padding-left: 20px; font-size: 14px; font-weight: 600; }
+    .sd-notes:empty { display: none; }
+
+    /* Language-of-origin tips (Learning card, and after a wrong answer) */
+    .spelling-tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; line-height: 1.45; }
+    .spelling-tips:empty { display: none; }
+    .spelling-tips li { padding: 8px 10px; border-radius: var(--radius-sm); background: var(--bg-inset); color: var(--text); }
+    .spelling-tips .tip-lang { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent-hover); }
+    .spelling-tips .tip-letters { margin-right: 6px; padding: 0 5px; border-radius: 4px; background: var(--success-soft); color: var(--success); letter-spacing: 0.04em; }
+    .fb-tips { margin-top: 10px; }
+    .fb-tips::before { content: "💡 Spelling tips"; display: block; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+
+    .past-mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+    .past-mistakes li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+    .past-mistakes .sd-line { font-size: 16px; font-weight: 700; }
+    .past-mistakes .pm-note { color: var(--text-secondary); }
+    .past-mistakes .pm-when { color: var(--text-tertiary); font-size: 12px; }
 
     .practice-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .practice-actions > * { flex: 1; min-width: 140px; }
@@ -1722,6 +1746,11 @@
       <div class="label">Origin</div>
       <div id="origin">—</div>
 
+      <div id="spellingTipsSection" hidden>
+        <div class="label">Spelling tips</div>
+        <ul id="spellingTips" class="spelling-tips"></ul>
+      </div>
+
       <div class="label">Definition <span id="definitionSource" class="source-badge" hidden></span></div>
       <div id="definition">—</div>
 
@@ -1742,6 +1771,11 @@
 
       <div class="label">Practice history</div>
       <div id="practiceHistory" class="practice-history">—</div>
+
+      <div id="pastMistakesSection" hidden>
+        <div class="label">Past misspellings</div>
+        <ul id="pastMistakes" class="past-mistakes"></ul>
+      </div>
 
       <label class="correction-toggle" for="correctionCheckbox">
         <input id="correctionCheckbox" type="checkbox" />
@@ -2091,7 +2125,8 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="app.js?v=2026101203"></script>
-<script src="practice.js?v=2026101205"></script>
+<script src="spelling-help.js?v=2026101302"></script>
+<script src="app.js?v=2026101303"></script>
+<script src="practice.js?v=2026101301"></script>
 </body>
 </html>

@@ -167,8 +167,8 @@ async function resetCloudProgress() {
 // filter by scope in memory, and share the same word objects.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026101101",
-  regional: "word_list_regional.json?v=2026101101"
+  school: "word_list_school.json?v=2026101302",
+  regional: "word_list_regional.json?v=2026101302"
 };
 
 function emptyPractice() {
@@ -364,7 +364,66 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWords();
   // After practice.js has wired itself up too (its DOMContentLoaded runs after this one)
   setTimeout(restoreTab, 0);
+  watchForNewVersion();
 });
+
+/* ---------------------------
+   Auto-refresh when a new version is deployed
+   Nothing is checked on a timer. After GitHub Pages deploys main, the
+   "Announce new version" workflow writes the deployed script versions (the
+   ?v= on each script tag) to Firestore meta/version, and this page listens to
+   that doc live. If they differ from the versions running here, there's new
+   code. The page reloads only when nobody is mid-way through something: never
+   while a test or its results are open, and only while the app is in the
+   background, just reopened, or untouched for a minute (or since it loaded).
+--------------------------- */
+const UPDATE_IDLE_MS = 60 * 1000;
+const RELOADED_FOR_KEY = "spellingBeeReloadedFor";
+let updateWaiting = null;   // the newer versions, once announced
+let updateRetry = null;
+let lastInteraction = 0;    // 0 = not touched since the page loaded
+
+function scriptVersions() {
+  return [...document.querySelectorAll('script[src*="?v="]')].map(s => s.getAttribute("src")).join(" ");
+}
+
+function safeToReload(returning) {
+  const testOpen = typeof practice !== "undefined" && practice && activeTab === "practice";
+  const idle = Date.now() - lastInteraction >= UPDATE_IDLE_MS;
+  return !testOpen && (document.hidden || returning || idle);
+}
+
+function reloadIfSafe(returning = false) {
+  if (!updateWaiting || !safeToReload(returning)) return;
+  // A reload that still brings back the old copy (cached for a few minutes)
+  // must not reload again and again: one try per announced version
+  try { sessionStorage.setItem(RELOADED_FOR_KEY, updateWaiting); } catch {}
+  location.reload();
+}
+
+async function watchForNewVersion() {
+  if (!window.db) return;
+  try {
+    const { doc, onSnapshot } = await import(FIRESTORE_URL);
+    onSnapshot(doc(window.db, "meta", "version"), snap => {
+      const live = snap.data()?.scripts;
+      let triedAlready = false;
+      try { triedAlready = sessionStorage.getItem(RELOADED_FOR_KEY) === live; } catch {}
+      if (!live || live === scriptVersions() || triedAlready) return;
+      updateWaiting = live;
+      reloadIfSafe();
+      // Not a good moment: look again now and then (no network, just this page's state)
+      if (!updateRetry) updateRetry = setInterval(reloadIfSafe, 15 * 1000);
+    }, err => console.warn("Can't watch for new versions:", err));
+  } catch (err) {
+    console.warn("Can't watch for new versions:", err);
+  }
+}
+
+document.addEventListener("visibilitychange", () => reloadIfSafe(!document.hidden));
+["pointerdown", "keydown"].forEach(type =>
+  document.addEventListener(type, () => { lastInteraction = Date.now(); }, { passive: true })
+);
 
 /* ---------------------------
    Tabs
@@ -1055,6 +1114,7 @@ function selectWord(index, autoplay = true) {
   renderSourceBadge("definitionSource", currentItem.definition, currentItem.definition_source);
   renderSourceBadge("sentenceSource", currentItem.sentence, currentItem.sentence_source);
   renderPicture(currentItem);
+  renderCardTips(currentItem);
   document.getElementById("correctionCheckbox").checked = currentItem.markedForCorrection;
   document.getElementById("correctionNote").value = currentItem.correctionNote;
   updateCorrectionNoteState(currentItem);
@@ -1079,6 +1139,33 @@ function renderSourceBadge(id, text, source) {
   badge.textContent = isMW ? "📖 Merriam-Webster" : "🤖 Generated";
   badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
   badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
+}
+
+// Language-of-origin tips that fit this word (spelling-help.js)
+function renderCardTips(item) {
+  const tips = item ? spellingTips(item) : [];
+  document.getElementById("spellingTipsSection").hidden = !tips.length;
+  renderSpellingTips(document.getElementById("spellingTips"), tips);
+}
+
+// The last few misspellings from Practice, newest first, each lined up with
+// the right spelling: "dashund  Missing “ch”  · Oct 11"
+function renderPastMistakes(item) {
+  const mistakes = (item?.practice.misspellings || []).slice().reverse();
+  document.getElementById("pastMistakesSection").hidden = !mistakes.length;
+  document.getElementById("pastMistakes").replaceChildren(...mistakes.map(m => {
+    const steps = spellingDiff(item.word, m.typed);
+    const li = document.createElement("li");
+    const note = document.createElement("span");
+    note.className = "pm-note";
+    note.textContent = mistakeNotes(steps, 2).join(" · ");
+    const when = document.createElement("span");
+    when.className = "pm-when";
+    const date = new Date(m.at);
+    when.textContent = isNaN(date) ? "" : date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    li.append(renderSpellingDiff(steps, "got"), note, when);
+    return li;
+  }));
 }
 
 // The word's picture, if the word file has one. A picture can be hidden (a wrong
@@ -1150,6 +1237,7 @@ function renderWordCardStatus() {
   const clearBtn = document.getElementById("clearCoveredBtn");
   const history = document.getElementById("practiceHistory");
   clearBtn.hidden = !currentItem?.covered;
+  renderPastMistakes(currentItem);
   if (!currentItem) {
     history.textContent = "—";
     return;
@@ -1928,6 +2016,7 @@ async function resetSelection() {
   renderSourceBadge("definitionSource", null);
   renderSourceBadge("sentenceSource", null);
   renderPicture(null);
+  renderCardTips(null);
   renderWordCardStatus();
   await resetCloudProgress();
   // Hidden pictures and the default scope aren't progress: keep them after the reset

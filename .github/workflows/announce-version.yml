@@ -1,0 +1,36 @@
+# After GitHub Pages finishes deploying main, tells open copies of the app
+# that a new version is live, so they reload themselves (see announce_version.py).
+# Pushes that don't change the script versions (like the nightly backup) are
+# announced too, but pages only reload when the versions differ from theirs.
+# The Firebase admin key comes from the FIREBASE_SERVICE_ACCOUNT repository secret.
+name: Announce new version
+
+on:
+  workflow_run:
+    workflows: ["pages-build-deployment"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}   # exactly the code that was deployed
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Firebase Admin SDK
+        run: pip install firebase-admin
+
+      - name: Announce the deployed version
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DEPLOYED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: python announce_version.py
