@@ -4,6 +4,7 @@
 --------------------------- */
 const TIME_LIMIT_MS = 90 * 1000;
 const AUTO_NEXT_SECONDS = 4;        // after time runs out, move on by itself
+const MAX_MISSPELLINGS = 3;         // kept per word (the progress doc must stay under 1 MB)
 
 let practice = null;                // running/finished test: { entries, index, label, mode, saved }
 const practiceLetters = new Set();  // first letters picked on the Practice tab
@@ -633,11 +634,26 @@ function showAnswerState(entry) {
     feedback.innerHTML = `
       <div class="fb-title">${entry.timedOut ? "⏰ Time's up" : "❌ Not quite"}</div>
       <div>Correct spelling: <span class="fb-word"></span></div>
-      <div class="fb-typed-row">You typed: <span class="fb-typed"></span></div>`;
-    if (entry.typed) feedback.querySelector(".fb-typed").textContent = entry.typed;
-    else feedback.querySelector(".fb-typed-row").remove();
+      <div class="fb-typed-row">You typed: <span class="fb-typed"></span></div>
+      <ul class="sd-notes"></ul>
+      <ul class="spelling-tips fb-tips"></ul>`;
+    // Line the two spellings up so the wrong letters stand out
+    const steps = entry.typed ? spellingDiff(entry.item.word, entry.typed) : null;
+    if (steps) {
+      feedback.querySelector(".fb-word").append(renderSpellingDiff(steps, "want"));
+      feedback.querySelector(".fb-typed").append(renderSpellingDiff(steps, "got"));
+      feedback.querySelector(".sd-notes").replaceChildren(...mistakeNotes(steps).map(note => {
+        const li = document.createElement("li");
+        li.textContent = note;
+        return li;
+      }));
+    } else {
+      feedback.querySelector(".fb-word").textContent = entry.item.word;
+      feedback.querySelector(".fb-typed-row").remove();
+    }
+    renderSpellingTips(feedback.querySelector(".fb-tips"), spellingTips(entry.item, 2));
   }
-  feedback.querySelector(".fb-word").textContent = entry.item.word;
+  if (correct) feedback.querySelector(".fb-word").textContent = entry.item.word;
   feedback.hidden = false;
 
   practiceEl("practiceCheckBtn").hidden = true;
@@ -658,6 +674,11 @@ function recordPracticeResult(entry) {
   p.days = [...(p.days || []), dayNumber()];
   // Every attempt in order, oldest first: "c" = correct, "w" = wrong
   p.history = (p.history || "") + (entry.status === "correct" ? "c" : "w");
+  // The last few misspellings, shown on the Learning card. Not when time ran
+  // out: whatever was half-typed then isn't really an answer.
+  if (entry.status === "wrong" && !entry.timedOut && entry.typed) {
+    p.misspellings = [...(p.misspellings || []), { typed: entry.typed, at: p.lastAt }].slice(-MAX_MISSPELLINGS);
+  }
   saveWord(item, { practice: { ...p } });
   persistSavedTest();
 

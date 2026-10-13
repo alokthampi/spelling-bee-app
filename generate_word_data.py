@@ -292,6 +292,14 @@ ORIGIN_STOP_RE = re.compile(
 )
 ORIGIN_HEDGE_RE = re.compile(r"\b(?:perhaps|probably)\b")
 
+# Corrections checked by hand: { word: origin }, applied over the parsed origin
+ORIGIN_OVERRIDES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "origin_overrides.json")
+try:
+    with open(ORIGIN_OVERRIDES_FILE, encoding="utf-8") as f:
+        ORIGIN_OVERRIDES = {k: v for k, v in json.load(f).items() if not k.startswith("_")}
+except FileNotFoundError:
+    ORIGIN_OVERRIDES = {}
+
 
 def etymology_text(entry: dict) -> str:
     return " ".join(
@@ -605,6 +613,11 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
             result["origin"] = resolve_origin(entry)
             if result["origin"]:
                 break
+
+    # Hand-checked corrections win over the parsed etymology (wrong sense of
+    # the word, a missed root language, eponyms)
+    if word in ORIGIN_OVERRIDES:
+        result["origin"] = ORIGIN_OVERRIDES[word]
 
     # --------------------------------------------------------
     # Sentence priority logic
