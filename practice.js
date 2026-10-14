@@ -81,13 +81,16 @@ function renderPracticeLetters() {
   practiceEl("clearPracticeFilters").disabled =
     filterDropdownsAtDefault(PRACTICE_DROPDOWNS) && !practiceLetters.size;
 
+  // Bar colours: red = ever spelled wrong (even if right since), green =
+  // practiced and never wrong, grey = not attempted
+  const barGroup = w => (w.practice.wrong > 0 ? "wrong" : w.practice.attempts ? "correct" : "pending");
   const counts = {};
   const all = { correct: 0, wrong: 0, pending: 0 };
   practiceFilteredWords().forEach(w => {
     const letter = firstLetter(w.word);
     const c = counts[letter] || (counts[letter] = { correct: 0, wrong: 0, pending: 0 });
-    c[practiceStatus(w)]++;
-    all[practiceStatus(w)]++;
+    c[barGroup(w)]++;
+    all[barGroup(w)]++;
   });
 
   const makeButton = (text, c, active, onclick) => {
@@ -98,7 +101,7 @@ function renderPracticeLetters() {
     const total = c ? c.correct + c.wrong + c.pending : 0;
     btn.classList.toggle("no-words", !total);
     btn.title = total
-      ? `${text}: ${c.correct} right · ${c.wrong} wrong · ${c.pending} not attempted`
+      ? `${text}: ${c.correct} never wrong · ${c.wrong} ever spelled wrong · ${c.pending} not attempted`
       : `${text}: no words`;
     if (total) {
       const grade = document.createElement("span");
