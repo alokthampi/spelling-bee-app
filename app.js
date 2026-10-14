@@ -365,6 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // After practice.js has wired itself up too (its DOMContentLoaded runs after this one)
   setTimeout(restoreTab, 0);
   watchForNewVersion();
+  renderLearningLetters(); // plain letters until the words load
 });
 
 /* ---------------------------
@@ -676,7 +677,6 @@ function clearLearningFilters() {
   resetFilterDropdowns(LEARNING_DROPDOWNS);
   document.getElementById("searchInput").value = "";
   window.selectedLetters.clear();
-  document.querySelectorAll("#letterFilter .letter-btn.active").forEach(btn => btn.classList.remove("active"));
   applyFilter();
 }
 
@@ -859,7 +859,12 @@ function toggleShuffle() {
    Filtering
 --------------------------- */
 function applyFilter() {
-  filteredWords = wordsMatchingFilters(LEARNING_FILTERS);
+  // The letter buttons count every filter except the letters themselves
+  const pool = wordsMatchingFilters(LEARNING_FILTERS, { ignoreLetters: true });
+  const letters = window.selectedLetters;
+  filteredWords = letters.size ? pool.filter(w => letters.has(firstLetter(w.word))) : pool;
+  letterPool = pool;
+  renderLearningLetters(pool);
   if (filterSelectValues(LEARNING_FILTERS.results).includes("practice-ever-wrong")) {
     // Most misspelled first, even while Shuffle is on; ties keep their usual order
     filteredWords.sort((a, b) => b.practice.wrong - a.practice.wrong);
@@ -877,6 +882,52 @@ function applyFilter() {
 }
 
 window.applyFilters = applyFilter;
+
+/* Learning letter buttons: each has a bar of completed (blue) vs not started
+   (grey) words, like the Practice tab's letters.
+   Letters combine; adding one jumps the word list to that letter's words. */
+let letterPool = []; // the words the buttons were last counted from
+
+function renderLearningLetters(pool = letterPool) {
+  const container = document.getElementById("letterFilter");
+  const counts = {};
+  pool.forEach(w => {
+    const c = counts[firstLetter(w.word)] || (counts[firstLetter(w.word)] = { total: 0, completed: 0 });
+    c.total++;
+    if (isCompleted(w)) c.completed++;
+  });
+  const loaded = words.length > 0; // before the word lists arrive, plain letters
+
+  container.replaceChildren(..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(letter => {
+    const c = counts[letter] || { total: 0, completed: 0 };
+    const btn = document.createElement("button");
+    btn.className = "letter-btn graded";
+    btn.classList.toggle("active", window.selectedLetters.has(letter));
+    btn.classList.toggle("no-words", loaded && !c.total);
+    btn.append(letter);
+    if (loaded) {
+      btn.title = c.total
+        ? `${letter}: ${c.total} word${c.total === 1 ? "" : "s"} · ${c.completed} completed · ${c.total - c.completed} not started`
+        : `${letter}: no words`;
+    }
+    if (c.total) {
+      const pct = (c.completed / c.total) * 100;
+      const grade = document.createElement("span");
+      grade.className = "letter-grade";
+      grade.style.background =
+        `linear-gradient(to right, var(--covered) 0 ${pct}%, var(--border-strong) ${pct}% 100%)`;
+      btn.append(grade);
+    }
+    btn.onclick = () => {
+      const adding = !window.selectedLetters.has(letter);
+      if (adding) window.selectedLetters.add(letter);
+      else window.selectedLetters.delete(letter);
+      applyFilter();
+      if (adding) showLetterInWordList(letter);
+    };
+    return btn;
+  }));
+}
 
 /* ---------------------------
    Render list
@@ -1359,6 +1410,7 @@ function readSentence() {
    Progress
 --------------------------- */
 function updateProgress() {
+  renderLearningLetters(); // a word just completed (or cleared) moves its letter's bar
   const total = filteredWords.length;
   const completed = filteredWords.filter(isCompleted).length;
 
@@ -1540,10 +1592,7 @@ function copyStatsFiltersToLearning() {
   });
   if (window.selectedLetters) {
     window.selectedLetters.clear();
-    statsLetters.forEach(letter => window.selectedLetters.add(letter));
-    document.querySelectorAll("#letterFilter .letter-btn").forEach(btn => {
-      btn.classList.toggle("active", statsLetters.has(btn.textContent));
-    });
+    statsLetters.forEach(letter => window.selectedLetters.add(letter)); // buttons redraw in applyFilter
   }
   document.getElementById("searchInput").value = "";
 }
@@ -2003,12 +2052,7 @@ async function resetSelection() {
   setFilterSelect("originFilter", []);
   document.getElementById("searchInput").value = "";
 
-  if (window.selectedLetters) {
-    window.selectedLetters.clear();
-    document
-      .querySelectorAll("#letterFilter .letter-btn.active")
-      .forEach(b => b.classList.remove("active"));
-  }
+  if (window.selectedLetters) window.selectedLetters.clear(); // buttons redraw in applyFilter
 
   stopAllAudio();
   showCardWord(null);
