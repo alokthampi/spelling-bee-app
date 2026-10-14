@@ -1290,7 +1290,6 @@
       pointer-events: none;
     }
     .letter-btn.active .letter-grade { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
-
     .mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .mode-option.mode-learned { grid-column: 1 / -1; }
     @media (min-width: 480px) {
@@ -2051,35 +2050,9 @@
   </div>
 </div>
 
-<!-- 🔤 Multi-letter logic -->
+<!-- 🔤 Letters picked on the Learning tab (buttons drawn by renderLearningLetters in app.js) -->
 <script>
   window.selectedLetters = new Set();
-
-  function renderLetterFilter() {
-    const container = document.getElementById("letterFilter");
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(letter => {
-      const btn = document.createElement("button");
-      btn.textContent = letter;
-      btn.className = "letter-btn";
-
-      // Letters combine; adding one jumps the word list to that letter's words
-      btn.onclick = () => {
-        btn.classList.toggle("active");
-        if (window.selectedLetters.has(letter)) {
-          window.selectedLetters.delete(letter);
-          applyFilters();
-        } else {
-          window.selectedLetters.add(letter);
-          applyFilters();
-          showLetterInWordList(letter);
-        }
-      };
-
-      container.appendChild(btn);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", renderLetterFilter);
 </script>
 
 <!-- Firebase -->
@@ -2126,7 +2099,7 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026101303"></script>
+<script src="app.js?v=2026101402"></script>
 <script src="practice.js?v=2026101301"></script>
 </body>
 </html>
