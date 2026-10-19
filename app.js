@@ -1049,17 +1049,58 @@ let audioQueue = [];
 let audioQueueTimer = null;
 const PRONUNCIATION_GAP_MS = 600; // pause between one pronunciation and the next
 
+// A recording that hasn't started playing this long after being asked for is
+// treated as stuck and asked for again
+const AUDIO_START_TIMEOUT_MS = 3000;
+let audioWatchdog = null;
+let audioRequest = null; // { url, retry } of the recording being loaded/played
+
 function stopAllAudio() {
   if (synth) synth.cancel();
   audioQueue = [];
   clearTimeout(audioQueueTimer);
+  releaseAudio();
+}
+
+// Pausing alone leaves a half-loaded recording's request open, and the browser
+// makes the next request for the same file wait behind it. That left MW audio
+// silent, even when tapped, for a minute or two until the request timed out.
+function releaseAudio() {
+  clearTimeout(audioWatchdog);
+  audioRequest = null;
   audioPlayer.pause();
+  if (audioPlayer.hasAttribute("src")) {
+    audioPlayer.removeAttribute("src");
+    audioPlayer.load();
+  }
+}
+
+// Plays one recording on the shared element. If it hasn't started in time or
+// fails to load, it's asked for once more under a fresh URL (so it can't queue
+// behind a stuck request); if that fails too it's skipped.
+function startAudio(url, retry = false) {
+  releaseAudio();
+  const request = audioRequest = { url, retry };
+  audioPlayer.src = retry ? `${url}${url.includes("?") ? "&" : "?"}r=${Date.now()}` : url;
+  audioPlayer.play().catch(err => {
+    // Blocked without a tap: retrying won't help
+    if (err.name === "NotAllowedError" && audioRequest === request) clearTimeout(audioWatchdog);
+  });
+  audioWatchdog = setTimeout(() => audioStalled(request), AUDIO_START_TIMEOUT_MS);
+}
+
+function audioStalled(request) {
+  if (audioRequest !== request) return;
+  if (!request.retry) startAudio(request.url, true);
+  else {
+    releaseAudio();
+    playNextQueued();
+  }
 }
 
 function playMWAudio(url) {
   stopAllAudio();
-  audioPlayer.src = url;
-  audioPlayer.play().catch(() => {});
+  startAudio(url);
 }
 
 // Plays the recordings one after another, then says `speakText` in the
@@ -1082,13 +1123,22 @@ function playNextQueued() {
       speakAmerican(next.speak);
       return;
     }
-    audioPlayer.src = next;
-    audioPlayer.play().catch(playNextQueued);
+    startAudio(next);
   }, PRONUNCIATION_GAP_MS);
 }
 
-audioPlayer.addEventListener("ended", playNextQueued);
-audioPlayer.addEventListener("error", playNextQueued);
+audioPlayer.addEventListener("playing", () => clearTimeout(audioWatchdog));
+audioPlayer.addEventListener("ended", () => {
+  audioRequest = null;
+  playNextQueued();
+});
+// Errors from releasing the element (no src) aren't failed recordings
+audioPlayer.addEventListener("error", () => {
+  if (audioRequest && audioPlayer.hasAttribute("src")) {
+    clearTimeout(audioWatchdog);
+    audioStalled(audioRequest);
+  }
+});
 
 // Recorded MW pronunciations of a word, the default (MW's preferred) first.
 // Older word files only have audio_url.
