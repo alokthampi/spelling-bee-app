@@ -938,6 +938,12 @@
       color: var(--text);
     }
 
+    .stat-note {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
     .stat-section {
       background: var(--bg-elevated);
       border: 1px solid var(--border);
@@ -1470,6 +1476,11 @@
     .missed-count { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
 
     .session-list { display: flex; flex-direction: column; gap: 12px; }
+    /* Past 30 days can be a long list: scroll inside the card */
+    .session-list.scrollable { max-height: 420px; overflow-y: auto; padding-right: 6px; overscroll-behavior: contain; }
+    .stat-section-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .stat-section .stat-section-head h3 { margin: 0; }
+    .session-summary { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
     .session-row { display: grid; grid-template-columns: minmax(0, 1fr) 28%; align-items: center; gap: 12px; }
     .session-score { font-weight: 800; font-size: 16px; }
     .session-pct { font-weight: 600; font-size: 13px; color: var(--text-secondary); margin-left: 4px; }
@@ -1646,9 +1657,8 @@
           <label class="multi-select-option"><input type="checkbox" value="not-started" />Not started</label>
           <label class="multi-select-option"><input type="checkbox" value="correction" />Marked for correction</label>
           <div class="select-group-label">Practice</div>
-          <label class="multi-select-option"><input type="checkbox" value="practice-wrong" />Spelled wrong</label>
           <label class="multi-select-option"><input type="checkbox" value="practice-ever-wrong" />Ever spelled wrong</label>
-          <label class="multi-select-option"><input type="checkbox" value="practice-correct" />Spelled right</label>
+          <label class="multi-select-option"><input type="checkbox" value="practice-always-right" />Always right</label>
           <label class="multi-select-option"><input type="checkbox" value="practice-pending" />Not practiced</label>
         </div>
       </details>
@@ -1837,7 +1847,7 @@
         <div class="collapse-body">
           <div class="letter-filter" id="practiceLetterFilter" aria-label="Filter by first letter"></div>
           <div class="list-legend letter-legend">
-            <span><i class="dot dot-correct"></i>Spelled right</span>
+            <span><i class="dot dot-correct"></i>Always right</span>
             <span><i class="dot dot-wrong"></i>Ever spelled wrong</span>
             <span><i class="dot dot-pending"></i>Not attempted</span>
           </div>
@@ -1892,11 +1902,11 @@
               <span class="mode-name">⏳ Not attempted</span>
               <span class="mode-count" id="modeCountPending"></span>
             </label>
-            <label class="mode-option mode-correct">
-              <input type="checkbox" name="practiceMode" value="correct" />
+            <label class="mode-option mode-correct" title="Practiced and never spelled wrong">
+              <input type="checkbox" name="practiceMode" value="alwaysRight" />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">✅ Spelled right</span>
-              <span class="mode-count" id="modeCountCorrect"></span>
+              <span class="mode-name">✅ Always right</span>
+              <span class="mode-count" id="modeCountAlwaysRight"></span>
             </label>
             <label class="mode-option mode-ever-wrong" title="Spelled wrong in at least one attempt, even if right since">
               <input type="checkbox" name="practiceMode" value="everWrong" />
@@ -2099,7 +2109,7 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026101402"></script>
-<script src="practice.js?v=2026101401"></script>
+<script src="app.js?v=2026102604"></script>
+<script src="practice.js?v=2026102601"></script>
 </body>
 </html>

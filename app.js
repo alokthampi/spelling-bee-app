@@ -290,6 +290,14 @@ function practiceStatus(item) {
   return item.practice.last || "pending";
 }
 
+// Every word is in exactly one of these: "everWrong" = wrong in any attempt,
+// even if right since; "alwaysRight" = practiced and never wrong; "pending" =
+// never practiced
+function practiceGroup(item) {
+  if (item.practice.wrong > 0) return "everWrong";
+  return item.practice.attempts > 0 ? "alwaysRight" : "pending";
+}
+
 /* ---------------------------
    Init
 --------------------------- */
@@ -715,11 +723,9 @@ function matchesResultFilter(w, filter) {
   switch (filter) {
     case "completed": return isCompleted(w);
     case "not-started": return !isCompleted(w);
-    case "practice-wrong": return practiceStatus(w) === "wrong";
-    // Wrong in any attempt, even if spelled right since
-    case "practice-ever-wrong": return w.practice.wrong > 0;
-    case "practice-correct": return practiceStatus(w) === "correct";
-    case "practice-pending": return practiceStatus(w) === "pending";
+    case "practice-ever-wrong": return practiceGroup(w) === "everWrong";
+    case "practice-always-right": return practiceGroup(w) === "alwaysRight";
+    case "practice-pending": return practiceGroup(w) === "pending";
     case "correction": return w.markedForCorrection;
     default: return true;
   }
@@ -729,7 +735,7 @@ function matchesResultFilter(w, filter) {
 // picks in different groups narrow it (Completed AND Spelled wrong)
 const RESULT_GROUPS = [
   ["completed", "not-started", "correction"],
-  ["practice-wrong", "practice-ever-wrong", "practice-correct", "practice-pending"]
+  ["practice-ever-wrong", "practice-always-right", "practice-pending"]
 ];
 
 function matchesResults(w, picked) {
@@ -1500,16 +1506,41 @@ function learningCounts(list) {
   };
 }
 
+// "c" / "w" for the word's first attempt, or null if never practiced or it
+// can't be told (mixed results from before history was kept)
+function firstAttemptResult(p) {
+  if (!p.attempts) return null;
+  if (!p.wrong) return "c";
+  if (!p.correct) return "w";
+  return (p.history || "").length === p.attempts ? p.history[0] : null;
+}
+
 function practiceCounts(list) {
-  const counts = { total: list.length, correct: 0, wrong: 0, pending: 0, everWrong: 0, attempts: 0, correctAttempts: 0, wrongAttempts: 0 };
+  const counts = {
+    total: list.length, alwaysRight: 0, everWrong: 0, pending: 0, // practiceGroup
+    stillWrong: 0, // ever wrong and wrong on the latest attempt
+    attempts: 0, correctAttempts: 0, wrongAttempts: 0,
+    firstTried: 0, firstTryCorrect: 0 // words whose first attempt is known
+  };
   list.forEach(w => {
-    counts[practiceStatus(w)]++;
-    if (w.practice.wrong > 0) counts.everWrong++; // wrong in any attempt, even if right since
-    counts.attempts += w.practice.attempts;
-    counts.correctAttempts += w.practice.correct;
-    counts.wrongAttempts += w.practice.wrong;
+    const p = w.practice;
+    counts[practiceGroup(w)]++;
+    if (practiceStatus(w) === "wrong") counts.stillWrong++;
+    counts.attempts += p.attempts;
+    counts.correctAttempts += p.correct;
+    counts.wrongAttempts += p.wrong;
+
+    const first = firstAttemptResult(p);
+    if (first) {
+      counts.firstTried++;
+      if (first === "c") counts.firstTryCorrect++;
+    }
   });
   return counts;
+}
+
+function percent(part, whole) {
+  return whole ? `${Math.round((part / whole) * 100)}%` : "—";
 }
 
 // segments: [{ count, cls, label }]
@@ -1522,7 +1553,7 @@ function stackBarHtml(segments, total, small) {
   return `<div class="${small ? "mini-bar-track" : "stack-bar"}">${segs}</div>`;
 }
 
-function statTile(label, value, color, filter, extraClass = "") {
+function statTile(label, value, color, filter, extraClass = "", note = "") {
   const attrs = filter
     ? ` stat-filter" data-filter="${filter}" role="button" tabindex="0" title="Show these words in Learning`
     : "";
@@ -1530,6 +1561,7 @@ function statTile(label, value, color, filter, extraClass = "") {
     <div class="stat-tile${extraClass ? ` ${extraClass}` : ""}${attrs}">
       <div class="stat-label">${label}</div>
       <div class="stat-value"${color ? ` style="color:${color}"` : ""}>${value}</div>
+      ${note ? `<div class="stat-note">${note}</div>` : ""}
     </div>`;
 }
 
@@ -1681,8 +1713,8 @@ function renderStats() {
   const pc = practiceCounts(scopeWords);
   const accuracy = pc.attempts ? Math.round((pc.correctAttempts / pc.attempts) * 100) : 0;
   const practiceSegments = c => [
-    { count: c.correct, cls: "seg-correct", label: "Correct" },
-    { count: c.wrong, cls: "seg-wrong", label: "Wrong" },
+    { count: c.alwaysRight, cls: "seg-correct", label: "Always right" },
+    { count: c.everWrong, cls: "seg-wrong", label: "Ever spelled wrong" },
     { count: c.pending, cls: "seg-empty", label: "Not attempted" }
   ];
   const practiceRows = levels.map(level => {
@@ -1692,7 +1724,7 @@ function renderStats() {
       <div class="mini-bar-row">
         <div class="mini-bar-row-header">
           <span class="mini-bar-title">${difficultyLabel(level)}</span>
-          <span class="mini-bar-caption">${c.correct} ✅ · ${c.wrong} ❌ · <span title="Ever spelled wrong">${c.everWrong} ⚠️</span> · ${c.pending} left</span>
+          <span class="mini-bar-caption"><span title="Always right">${c.alwaysRight} ✅</span> · <span title="Ever spelled wrong">${c.everWrong} ⚠️</span> · ${c.pending} left</span>
         </div>
         ${stackBarHtml(practiceSegments(c), c.total, true)}
       </div>`;
@@ -1710,7 +1742,14 @@ function renderStats() {
         </button>`).join("")
     : `<div class="stats-empty">No misspelled words yet.</div>`;
 
-  const sessions = practiceSessions().slice(-8).reverse();
+  const monthAgo = Date.now() - SESSIONS_MONTH_DAYS * DAY_MS;
+  const sessions = sessionsView === "month"
+    ? practiceSessions().filter(s => new Date(s.at) >= monthAgo).reverse()
+    : practiceSessions().slice(-RECENT_SESSIONS).reverse();
+  const sessionTotals = sessions.reduce((t, s) => ({ correct: t.correct + (s.correct || 0), wrong: t.wrong + (s.wrong || 0) }), { correct: 0, wrong: 0 });
+  const sessionsSummary = sessionsView === "month" && sessions.length
+    ? `<div class="session-summary">${sessions.length} test${sessions.length === 1 ? "" : "s"} · ${sessionTotals.correct} / ${sessionTotals.correct + sessionTotals.wrong} right · ${percent(sessionTotals.correct, sessionTotals.correct + sessionTotals.wrong)}</div>`
+    : "";
   const sessionsHtml = sessions.length
     ? sessions.map(s => {
         const answered = (s.correct || 0) + (s.wrong || 0);
@@ -1728,7 +1767,7 @@ function renderStats() {
             ], answered, true)}
           </div>`;
       }).join("")
-    : `<div class="stats-empty">Finish a Practice test to see it here.</div>`;
+    : `<div class="stats-empty">${sessionsView === "month" ? `No tests in the past ${SESSIONS_MONTH_DAYS} days.` : "Finish a Practice test to see it here."}</div>`;
 
   container.innerHTML = `
     <div class="stats-scope">${lc.total} words · ${escapeHtml(scopeLabel)} · ${escapeHtml(difficultySummary("statsDifficultyFilter"))}${escapeHtml(lettersLabel)}</div>
@@ -1761,11 +1800,13 @@ function renderStats() {
       <section class="stats-col" aria-label="Practice">
         <div class="stats-col-header practice"><h2 class="stats-heading">✍️ Practice</h2></div>
         <div class="stat-grid">
-          ${statTile("✅ Spelled right", pc.correct, "var(--success)", "practice-correct")}
-          ${statTile("❌ Spelled wrong", pc.wrong, "var(--danger)", "practice-wrong")}
-          ${statTile("⚠️ Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong")}
+          ${statTile("✍️ Words practiced", pc.alwaysRight + pc.everWrong, null, null, "", `of ${pc.total} words`)}
           ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
-          ${statTile("🎯 Accuracy", `${accuracy}%`, null, null, "stat-wide")}
+          ${statTile("✅ Always right", pc.alwaysRight, "var(--success)", "practice-always-right", "", "never spelled wrong")}
+          ${statTile("⚠️ Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong", "",
+            pc.stillWrong ? `${pc.stillWrong} still wrong last time` : "")}
+          ${statTile("🎯 First-try accuracy", percent(pc.firstTryCorrect, pc.firstTried), null, null, "stat-wide",
+            pc.firstTried ? `${pc.firstTryCorrect} of ${pc.firstTried} words right first time` : "no words practiced yet")}
         </div>
         <div class="stat-section">
           <h3>Overall</h3>
@@ -1789,14 +1830,22 @@ function renderStats() {
           <div class="missed-list">${missedHtml}</div>
         </div>
         <div class="stat-section">
-          <h3>Recent tests</h3>
-          <div class="session-list">${sessionsHtml}</div>
+          <div class="stat-section-head">
+            <h3>Recent tests</h3>
+            <div class="act-toggle sessions-toggle" role="group" aria-label="Tests to show">
+              <button type="button" data-sessions="recent" aria-pressed="${sessionsView === "recent"}">Last ${RECENT_SESSIONS}</button>
+              <button type="button" data-sessions="month" aria-pressed="${sessionsView === "month"}">Past ${SESSIONS_MONTH_DAYS} days</button>
+            </div>
+          </div>
+          ${sessionsSummary}
+          <div class="session-list${sessionsView === "month" ? " scrollable" : ""}">${sessionsHtml}</div>
         </div>
       </section>
     </div>
   `;
 
   wireActivity(container);
+  wireSessionsToggle(container);
 
   container.querySelectorAll(".stat-filter").forEach(tile => {
     const open = () => {
@@ -2005,6 +2054,16 @@ function activitySectionHtml(list) {
       </details>
       ${note}
     </section>`;
+}
+
+// Recent tests on Stats: the last few, or every test from the past month
+const RECENT_SESSIONS = 8;
+const SESSIONS_MONTH_DAYS = 30;
+let sessionsView = "recent";
+
+function wireSessionsToggle(container) {
+  container.querySelectorAll(".sessions-toggle button").forEach(btn =>
+    btn.addEventListener("click", () => { sessionsView = btn.dataset.sessions; renderStats(); }));
 }
 
 function wireActivity(container) {
