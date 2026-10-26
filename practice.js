@@ -46,22 +46,23 @@ function practicePool() {
   );
 }
 
-const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", correct: "Spelled right", everWrong: "Ever spelled wrong", learned: "Completed in Learning" };
+const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", alwaysRight: "Always right", everWrong: "Ever spelled wrong", learned: "Completed in Learning" };
 
-// Which practice groups to test: any mix of "wrong", "pending", "correct"
+// Which practice groups to test: any mix of the MODE_NAMES keys
 function selectedModes() {
   return Array.from(document.querySelectorAll('input[name="practiceMode"]:checked'))
     .map(input => input.value);
 }
 
 // Groups combine: a word is in the test if it's in any picked group.
-// "everWrong" = spelled wrong in at least one attempt, even if right since.
-// "learned" = opened on the Learning card and not practiced yet: once it's
-// spelled in a test it moves to Spelled right or Wrong instead.
+// "wrong" = wrong on the latest attempt. "alwaysRight" / "everWrong" /
+// "pending" are practiceGroup (app.js). "learned" = opened on the Learning
+// card and not practiced yet: once it's spelled in a test it moves to
+// Always right or Ever spelled wrong instead.
 function wordsForModes(pool, modes) {
   return pool.filter(w =>
-    modes.includes(practiceStatus(w)) ||
-    (modes.includes("everWrong") && w.practice.wrong > 0) ||
+    modes.includes(practiceGroup(w)) ||
+    (modes.includes("wrong") && practiceStatus(w) === "wrong") ||
     (modes.includes("learned") && w.covered && !w.practice.attempts)
   );
 }
@@ -83,7 +84,7 @@ function renderPracticeLetters() {
 
   // Bar colours: red = ever spelled wrong (even if right since), green =
   // practiced and never wrong, grey = not attempted
-  const barGroup = w => (w.practice.wrong > 0 ? "wrong" : w.practice.attempts ? "correct" : "pending");
+  const barGroup = w => ({ everWrong: "wrong", alwaysRight: "correct", pending: "pending" })[practiceGroup(w)];
   const counts = {};
   const all = { correct: 0, wrong: 0, pending: 0 };
   practiceFilteredWords().forEach(w => {
@@ -101,7 +102,7 @@ function renderPracticeLetters() {
     const total = c ? c.correct + c.wrong + c.pending : 0;
     btn.classList.toggle("no-words", !total);
     btn.title = total
-      ? `${text}: ${c.correct} never wrong · ${c.wrong} ever spelled wrong · ${c.pending} not attempted`
+      ? `${text}: ${c.correct} always right · ${c.wrong} ever spelled wrong · ${c.pending} not attempted`
       : `${text}: no words`;
     if (total) {
       const grade = document.createElement("span");
@@ -173,7 +174,7 @@ function practiceSetLabel(modes) {
   const origins = filterSelectValues("practiceOriginFilter");
   const originText = origins.length ? ` · ${document.querySelector("#practiceOriginFilter .summary-text").textContent}` : "";
   const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
-  const everyWord = modes && ["wrong", "pending", "correct"].every(m => modes.includes(m));
+  const everyWord = modes && ["pending", "alwaysRight", "everWrong"].every(m => modes.includes(m));
   const modeText = modes && !everyWord ? ` · ${modes.map(m => MODE_NAMES[m]).join(" + ")}` : "";
   return `${scopes} · ${difficultySummary("practiceDifficultyFilter")}${originText}${letters}${modeText}`;
 }
@@ -183,13 +184,13 @@ function showPracticeStart() {
   const counts = {
     wrong: wordsForModes(pool, ["wrong"]).length,
     pending: wordsForModes(pool, ["pending"]).length,
-    correct: wordsForModes(pool, ["correct"]).length,
+    alwaysRight: wordsForModes(pool, ["alwaysRight"]).length,
     everWrong: wordsForModes(pool, ["everWrong"]).length,
     learned: wordsForModes(pool, ["learned"]).length
   };
   practiceEl("modeCountWrong").textContent = counts.wrong;
   practiceEl("modeCountPending").textContent = counts.pending;
-  practiceEl("modeCountCorrect").textContent = counts.correct;
+  practiceEl("modeCountAlwaysRight").textContent = counts.alwaysRight;
   practiceEl("modeCountEverWrong").textContent = counts.everWrong;
   practiceEl("modeCountLearned").textContent = counts.learned;
 
