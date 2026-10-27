@@ -28,10 +28,12 @@
       --danger-soft: rgba(248, 113, 113, 0.16);
       --covered: #60a5fa;
       --covered-soft: rgba(96, 165, 250, 0.12);
-      /* Stats > Activity chart series: blue / orange, validated for colour-blind
-         separation and contrast on the dark surface */
+      /* Stats > Activity chart series: learned is blue; the practiced bar is
+         stacked purple (new words) / orange (ever spelled wrong) / green (always right) */
       --series-learned: #3987e5;
-      --series-practiced: #d95926;
+      --series-new: #9a6fe0;
+      --series-missed: #d95926;
+      --series-solid: #2fa46f;
       --warning: #fbbf24;
       --radius-lg: 14px;
       --radius-md: 10px;
@@ -1414,6 +1416,8 @@
     .act-bar-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 2px; }
     .act-bar-slot { flex: 0 1 20px; height: 100%; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
     .act-bar { width: 100%; border-radius: 4px 4px 0 0; }
+    .act-stack { display: flex; flex-direction: column-reverse; gap: 1px; overflow: hidden; }
+    .act-stack > div { min-height: 2px; }
     .act-col:hover .act-bar, .act-col:focus-visible .act-bar { filter: brightness(1.2); }
     .act-col:hover, .act-col:focus-visible { background: var(--bg-inset); border-radius: 4px 4px 0 0; }
     .act-value { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 3px; }
@@ -1427,6 +1431,9 @@
     .act-tip-row { display: flex; align-items: center; gap: 6px; }
     .act-tip-key { width: 10px; height: 2px; border-radius: 1px; }
     .act-tip-label { margin-top: 4px; color: var(--text-tertiary); }
+    .act-tip-sub { padding-left: 12px; }
+    .act-tip-sub .act-tip-key { height: 8px; width: 8px; border-radius: 2px; }
+    .act-legend { flex-wrap: wrap; }
     .act-table-wrap { margin-top: 14px; }
     .act-table-wrap summary { cursor: pointer; font-size: 13px; color: var(--accent-hover); font-weight: 600; }
     .act-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }

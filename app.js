@@ -1909,7 +1909,14 @@ function activityRange() {
   return { from: today - Number(activityView.range) + 1, to: today };
 }
 
-// [{ start, end, learned, practiced: Set, attempts, correct, wrong }] oldest first
+// Practice counts as "new" when the word was learned this many days ago or
+// less, or had never been practiced before
+const NEW_WORD_DAYS = 7;
+
+// [{ start, end, learned, practiced: Set, fresh, missed, solid, attempts, correct, wrong }]
+// oldest first. fresh + missed + solid = practiced.size: each practiced word
+// is new, ever spelled wrong (spelled wrong at least once earlier), or always
+// right (practiced before, never wrong).
 function activityPeriods(list) {
   const { from, to } = activityRange();
   const periods = [];
@@ -1918,7 +1925,7 @@ function activityPeriods(list) {
     const start = activityView.group === "week" ? Math.max(weekStart(day), from) : day;
     let period = periods[periods.length - 1];
     if (!period || period.start !== start) {
-      period = { start, end: start, learned: 0, practiced: new Set(), attempts: 0, correct: 0, wrong: 0 };
+      period = { start, end: start, learned: 0, practiced: new Set(), fresh: 0, missed: 0, solid: 0, attempts: 0, correct: 0, wrong: 0 };
       periods.push(period);
     }
     period.end = day;
@@ -1935,15 +1942,34 @@ function activityPeriods(list) {
     const p = w.practice;
     const days = p.days || [];
     undated.attempts += Math.max(0, p.attempts - days.length);
-    // days lines up with the newest attempts in history
-    const results = days.length ? (p.history || "").slice(-days.length) : "";
+    // days lines up with the newest attempts in history. Walk the attempts in
+    // order, counting how many came before and how many of those were wrong
+    // (including ones from before history was kept), so each practiced word
+    // can be sorted by what it was like when first practiced in the period.
+    const history = p.history || "";
+    const offset = history.length - days.length;
+    let seen = Math.max(0, p.attempts - history.length);
+    let missed = Math.max(0, (p.wrong || 0) - [...history].filter(r => r === "w").length);
+    for (let i = 0; i < offset; i++) {
+      seen++;
+      if (history[i] === "w") missed++;
+    }
+    const learnedDay = w.covered && w.coveredAt ? dayNumber(new Date(w.coveredAt)) : null;
     days.forEach((day, i) => {
+      const result = history[offset + i];
       const period = byDay.get(day);
-      if (!period) return;
-      period.practiced.add(w);
-      period.attempts++;
-      if (results[i] === "c") period.correct++;
-      else if (results[i] === "w") period.wrong++;
+      if (period) {
+        if (!period.practiced.has(w)) {
+          const isNew = !seen || (learnedDay !== null && day - learnedDay < NEW_WORD_DAYS);
+          period[isNew ? "fresh" : missed ? "missed" : "solid"]++;
+        }
+        period.practiced.add(w);
+        period.attempts++;
+        if (result === "c") period.correct++;
+        else if (result === "w") period.wrong++;
+      }
+      seen++;
+      if (result === "w") missed++;
     });
   });
   return { periods, undated };
@@ -1959,12 +1985,18 @@ function periodText(period, long) {
 }
 
 // One grouped column chart: a learned bar and a practiced bar for every day
-// or week, on one shared scale. Values sit on the caps when there's room;
-// each group has a hover/focus tooltip listing both, and the table below
-// lists everything.
+// or week, on one shared scale. The practiced bar is stacked by kind of word
+// (new at the bottom, then ever spelled wrong, then always right). Values sit on
+// the caps when there's room; each group has a hover/focus tooltip listing
+// everything, and the table below does too.
 const ACTIVITY_SERIES = [
   { key: "learned", name: "Learned", color: "var(--series-learned)", value: p => p.learned },
-  { key: "practiced", name: "Practiced", color: "var(--series-practiced)", value: p => p.practiced.size }
+  { key: "practiced", name: "Practiced", color: "transparent", value: p => p.practiced.size }
+];
+const PRACTICE_KINDS = [
+  { key: "fresh", name: "New words", color: "var(--series-new)" },
+  { key: "missed", name: "Ever spelled wrong", color: "var(--series-missed)" },
+  { key: "solid", name: "Always right", color: "var(--series-solid)" }
 ];
 
 function activityChartHtml(periods) {
@@ -1975,20 +2007,25 @@ function activityChartHtml(periods) {
     const bars = ACTIVITY_SERIES.map(s => {
       const v = s.value(period);
       const height = v ? Math.max(2, Math.round((v / max) * 100)) : 0;
+      const bar = s.key === "practiced"
+        ? `<div class="act-bar act-stack" style="height:${height}%">${PRACTICE_KINDS.filter(k => period[k.key])
+            .map(k => `<div style="flex:${period[k.key]};background:${k.color}"></div>`).join("")}</div>`
+        : `<div class="act-bar" style="height:${height}%;background:${s.color}"></div>`;
       return `
           <div class="act-bar-slot">
             ${showValues && v ? `<span class="act-value">${v}</span>` : ""}
-            <div class="act-bar" style="height:${height}%;background:${s.color}"></div>
+            ${bar}
           </div>`;
     }).join("");
-    const tip = `${period.learned}|${period.practiced.size}|${period.attempts}|${period.correct}|${period.wrong}`;
+    const tip = [period.learned, period.practiced.size, period.attempts, period.correct, period.wrong,
+      ...PRACTICE_KINDS.map(k => period[k.key])].join("|");
     return `
       <div class="act-col" tabindex="0" data-tip="${tip}" data-tip-label="${escapeHtml(periodText(period, true))}">
         <div class="act-bar-area">${bars}</div>
         <span class="act-x">${i % labelEvery === 0 ? escapeHtml(periodText(period, false)) : ""}</span>
       </div>`;
   }).join("");
-  const legend = ACTIVITY_SERIES.map(s =>
+  const legend = [ACTIVITY_SERIES[0], ...PRACTICE_KINDS].map(s =>
     `<span class="act-legend-item"><span class="act-swatch" style="background:${s.color}"></span>${s.name}</span>`).join("");
   return `
     <div class="act-chart">
@@ -1996,7 +2033,7 @@ function activityChartHtml(periods) {
         <span class="act-chart-title">Words per ${activityView.group === "day" ? "day" : "week"}</span>
         <span class="act-legend">${legend}</span>
       </div>
-      <div class="act-plot" role="img" aria-label="Words learned and practiced per ${activityView.group}; the table below lists every value">${groups}</div>
+      <div class="act-plot" role="img" aria-label="Words learned and practiced per ${activityView.group}, with practiced split into new words, ever spelled wrong and always right; the table below lists every value">${groups}</div>
     </div>`;
 }
 
@@ -2015,7 +2052,7 @@ function activitySectionHtml(list) {
   const rows = periods.slice().reverse().map(p => `
     <tr>
       <th scope="row">${escapeHtml(periodText(p, true))}</th>
-      <td>${p.learned}</td><td>${p.practiced.size}</td><td>${p.attempts}</td><td>${p.correct}</td><td>${p.wrong}</td>
+      <td>${p.learned}</td><td>${p.practiced.size}</td>${PRACTICE_KINDS.map(k => `<td>${p[k.key]}</td>`).join("")}<td>${p.attempts}</td><td>${p.correct}</td><td>${p.wrong}</td>
     </tr>`).join("");
   const startText = dayLabel(dayFromInput(TRACKING_START), { month: "short", day: "numeric", year: "numeric" });
   const note = undated.learned || undated.attempts
@@ -2048,7 +2085,7 @@ function activitySectionHtml(list) {
       <details class="act-table-wrap">
         <summary>Show as a table</summary>
         <table class="act-table">
-          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th><th scope="col">Attempts</th><th scope="col">✅</th><th scope="col">❌</th></tr></thead>
+          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th>${PRACTICE_KINDS.map(k => `<th scope="col">${k.name}</th>`).join("")}<th scope="col">Attempts</th><th scope="col">✅</th><th scope="col">❌</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </details>
@@ -2095,7 +2132,7 @@ function wireActivity(container) {
   }
   const show = col => {
     // Values lead, the period follows; a short colour key marks each series
-    const [learned, practiced, attempts, correct, wrong] = col.dataset.tip.split("|");
+    const [learned, practiced, attempts, correct, wrong, ...kinds] = col.dataset.tip.split("|");
     tip.replaceChildren();
     const label = document.createElement("div");
     label.className = "act-tip-label";
@@ -2114,6 +2151,11 @@ function wireActivity(container) {
     tip.append(
       row(ACTIVITY_SERIES[0], learned, ""),
       row(ACTIVITY_SERIES[1], practiced, ` · ${attempts} attempt${attempts === "1" ? "" : "s"}, ${correct} ✅ ${wrong} ❌`),
+      ...PRACTICE_KINDS.map((k, i) => {
+        const line = row(k, kinds[i], "");
+        line.classList.add("act-tip-sub");
+        return line;
+      }),
       label
     );
     tip.hidden = false;
