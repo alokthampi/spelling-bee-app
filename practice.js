@@ -22,6 +22,11 @@ function showPracticeScreen(name) {
   practiceEl("practiceFilters").hidden = name === "practiceQuestion";
   // "Your Words" only appears once a test has started (questions and results)
   practiceEl("practiceListPanel").hidden = name === "practiceStart";
+  // No leaving mid-test: Save for later or End test brings the tabs back
+  document.querySelectorAll('.tab-btn:not([data-tab="practice"])').forEach(btn => {
+    btn.disabled = name === "practiceQuestion";
+    btn.title = btn.disabled ? "Finish, save or end your test first" : "";
+  });
 }
 
 /* ---------------------------
@@ -235,11 +240,13 @@ function showPracticeStart() {
 
   renderPracticeLetters();
   renderSavedPractice();
+  buddyHome();
   showPracticeScreen("practiceStart");
   renderPracticeList();
 }
 
 function startPractice(items, mode, label) {
+  endLearnSitting();
   const list = items.slice();
   if (practiceEl("practiceShuffle").checked) shuffleArray(list);
   practice = {
@@ -256,6 +263,7 @@ function startPractice(items, mode, label) {
     showPictures: practiceEl("practiceShowPictures").checked,
     activeMs: 0,
     activeSince: Date.now(),
+    sitting: newPracticeSitting(0),
     saved: false
   };
   showQuestion(0, true);
@@ -276,6 +284,18 @@ function pauseActiveClock() {
 
 function activeTimeMs() {
   return practice.activeMs + (practice.activeSince ? Date.now() - practice.activeSince : 0);
+}
+
+/* Time log: a test resumed from Saved tests is a new sitting, and only counts
+   the active time since it was resumed. Nothing answered, nothing logged. */
+function newPracticeSitting(baseMs) {
+  return { id: `p${Date.now().toString(36)}`, startedAt: new Date().toISOString(), baseMs, words: 0 };
+}
+
+function savePracticeSitting() {
+  const { id, startedAt, baseMs, words } = practice.sitting;
+  if (!words) return;
+  saveSitting(id, { kind: "practice", startedAt, endedAt: new Date().toISOString(), ms: activeTimeMs() - baseMs, words });
 }
 
 /* ---------------------------
@@ -328,6 +348,7 @@ function savePracticeForLater() {
   stopAllAudio();
   practice.savedId = practice.savedId || `t${Date.now().toString(36)}`;
   persistSavedTest();
+  savePracticeSitting();
   practice = null;
   showPracticeStart();
 }
@@ -335,6 +356,7 @@ function savePracticeForLater() {
 function resumeSavedPractice(id) {
   const saved = savedPracticeTests().find(test => test.id === id);
   if (!saved) return;
+  endLearnSitting();
   const byKey = new Map(words.map(w => [`${w._scope}|${w.word}`, w]));
   const entries = saved.entries
     .map(e => ({ ...e, item: byKey.get(`${e.scope}|${e.word}`) }))
@@ -345,17 +367,19 @@ function resumeSavedPractice(id) {
     return;
   }
 
+  // Tests saved before active time was tracked: best guess is start-to-save
+  const activeMs = typeof saved.activeMs === "number"
+    ? saved.activeMs
+    : Math.max(0, (new Date(saved.savedAt) - new Date(saved.startedAt)) || 0);
   practice = {
     entries,
     index: Math.min(saved.index || 0, entries.length - 1),
     mode: saved.mode,
     label: saved.label,
     startedAt: saved.startedAt,
-    // Tests saved before active time was tracked: best guess is start-to-save
-    activeMs: typeof saved.activeMs === "number"
-      ? saved.activeMs
-      : Math.max(0, (new Date(saved.savedAt) - new Date(saved.startedAt)) || 0),
+    activeMs,
     activeSince: Date.now(),
+    sitting: newPracticeSitting(activeMs),
     scope: saved.scope,
     difficulty: saved.difficulty,
     letters: saved.letters || [],
@@ -475,6 +499,7 @@ function tickTimer() {
   const elapsed = (TIME_LIMIT_MS - left) / 1000;
   timer.classList.toggle("warn", elapsed >= 30 && elapsed < 60);
   timer.classList.toggle("danger", elapsed >= 60);
+  buddyTimer(elapsed);
   if (left <= 0) {
     stopTimer();
     timeUp();
@@ -563,6 +588,7 @@ function showQuestion(index, autoplay) {
   practiceEl("practicePosBtn").disabled = !entry.item.part_of_speech;
   clearPracticeInfo();
   renderPracticePicture(entry.item);
+  buddyNewWord(isAnswered(entry));
 
   if (isAnswered(entry)) {
     // Reviewing a word that was already answered
@@ -701,6 +727,9 @@ function recordPracticeResult(entry) {
   }
   saveWord(item, { practice: { ...p } });
   persistSavedTest();
+  practice.sitting.words++;
+  savePracticeSitting();
+  buddyAnswer(entry);
 
   renderWordList();
   updateProgress();
@@ -728,6 +757,7 @@ function finishPractice() {
   pauseActiveClock();
   cancelAutoNext();
   stopAllAudio();
+  savePracticeSitting();
   // Ending or finishing a saved test removes it from Saved tests
   if (practice.savedId) storeSavedPracticeTest(practice.savedId, null);
   practice.savedId = null;
@@ -770,6 +800,7 @@ function finishPractice() {
   }
 
   practice.index = -1;
+  buddyResults(answered, pct);
   renderPracticeLetters();
   showPracticeScreen("practiceDone");
   renderPracticeList();

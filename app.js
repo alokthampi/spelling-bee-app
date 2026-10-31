@@ -152,6 +152,33 @@ async function storeSavedPracticeTest(id, test) {
   }
 }
 
+/* Time log: one entry per sitting, so several in a day stay separate. Stored as
+   { id: sitting } so a running sitting can be updated as it goes, and closing
+   the app loses at most the word on screen.
+   sitting = { kind: "learning" | "practice", startedAt, endedAt, ms, words } */
+const TIME_LOG_KEY = "_timeLog";
+
+function timeLog() {
+  return (progressData && progressData[TIME_LOG_KEY]) || {};
+}
+
+async function saveSitting(id, sitting) {
+  if (progressData) {
+    progressData[TIME_LOG_KEY] = { ...timeLog(), [id]: sitting };
+  }
+  if (!window.db) return;
+  try {
+    const { doc, setDoc } = await import(FIRESTORE_URL);
+    await setDoc(
+      doc(window.db, "progress", USER_ID),
+      { [TIME_LOG_KEY]: { [id]: sitting } },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn("Could not save the time log:", err);
+  }
+}
+
 async function resetCloudProgress() {
   try { localStorage.removeItem(SAVED_TESTS_LOCAL); } catch {}
   if (progressData) progressData = {};
@@ -435,6 +462,66 @@ document.addEventListener("visibilitychange", () => reloadIfSafe(!document.hidde
 );
 
 /* ---------------------------
+   Learning time: how long words stay on the card. The clock only runs on the
+   Learning tab with the app on screen. A sitting ends when a test starts or
+   after a long gap, and carries on through a short break.
+--------------------------- */
+const LEARN_IDLE_CAP_MS = 2 * 60 * 1000;     // most that counts between two taps, for a word left open
+const LEARN_SITTING_GAP_MS = 10 * 60 * 1000; // back within this long = same sitting
+
+let learnClock = null;   // word on the card: { item, since, ms }
+let learnSitting = null; // { id, startedAt, lastAt, ms, words: Set }
+
+function startLearnClock() {
+  if (learnClock || activeTab !== "learning" || !currentItem || document.hidden) return;
+  if (learnSitting && Date.now() - learnSitting.lastAt > LEARN_SITTING_GAP_MS) learnSitting = null;
+  learnClock = { item: currentItem, since: Date.now(), ms: 0 };
+}
+
+function tickLearnClock() {
+  if (!learnClock) return;
+  const now = Date.now();
+  learnClock.ms += Math.min(now - learnClock.since, LEARN_IDLE_CAP_MS);
+  learnClock.since = now;
+}
+
+function stopLearnClock() {
+  if (!learnClock) return;
+  tickLearnClock();
+  const { item, ms } = learnClock;
+  learnClock = null;
+  if (ms < 500) return; // flicking past a word
+
+  const now = Date.now();
+  if (!learnSitting) {
+    learnSitting = { id: `l${now.toString(36)}`, startedAt: new Date(now - ms).toISOString(), ms: 0, words: new Set() };
+  }
+  learnSitting.lastAt = now;
+  learnSitting.ms += ms;
+  learnSitting.words.add(item);
+  saveSitting(learnSitting.id, {
+    kind: "learning",
+    startedAt: learnSitting.startedAt,
+    endedAt: new Date(now).toISOString(),
+    ms: learnSitting.ms,
+    words: learnSitting.words.size
+  });
+}
+
+// A test between two stretches of learning makes them separate sittings
+function endLearnSitting() {
+  learnSitting = null;
+}
+
+["pointerdown", "keydown"].forEach(type =>
+  document.addEventListener(type, tickLearnClock, { passive: true })
+);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) stopLearnClock();
+  else startLearnClock();
+});
+
+/* ---------------------------
    Tabs
 --------------------------- */
 let activeTab = "learning";
@@ -456,10 +543,12 @@ function switchTab(tab) {
   );
 
   const leaving = activeTab;
+  if (leaving === "learning" && tab !== "learning") stopLearnClock();
   activeTab = tab;
   try { sessionStorage.setItem(TAB_KEY, tab); } catch {}
   stopAllAudio();
   if (leaving === "practice" && tab !== "practice" && typeof leavePractice === "function") leavePractice();
+  if (tab === "learning") startLearnClock();
   if (tab === "stats") renderStats();
   if (tab === "practice" && typeof openPractice === "function") openPractice();
 }
@@ -1201,8 +1290,10 @@ function speakAmerican(text) {
 --------------------------- */
 // autoplay: false shows the word without reading it out (used when picking a letter)
 function selectWord(index, autoplay = true) {
+  stopLearnClock();
   currentIndex = index;
   currentItem = filteredWords[index];
+  startLearnClock();
 
   if (!currentItem.covered) setCovered(currentItem, true);
 
@@ -1896,7 +1987,7 @@ function weekStart(day) {
   return day - ((new Date(day * DAY_MS).getUTCDay() + 6) % 7); // weeks start on Monday
 }
 
-const activityView = { group: "day", range: "7", from: null, to: null };
+const activityView = { chart: "words", group: "day", range: "7", from: null, to: null };
 
 function activityRange() {
   const today = dayNumber();
@@ -2017,8 +2108,11 @@ function activityChartHtml(periods) {
             ${bar}
           </div>`;
     }).join("");
+    const time = timeByDay(period.start, period.end);
+    const learningSeconds = time.reduce((n, d) => n + d.learning, 0);
+    const practiceSeconds = time.reduce((n, d) => n + d.practice, 0);
     const tip = [period.learned, period.practiced.size, period.attempts, period.correct, period.wrong,
-      ...PRACTICE_KINDS.map(k => period[k.key])].join("|");
+      learningSeconds, practiceSeconds, ...PRACTICE_KINDS.map(k => period[k.key])].join("|");
     return `
       <div class="act-col" tabindex="0" data-tip="${tip}" data-tip-label="${escapeHtml(periodText(period, true))}">
         <div class="act-bar-area">${bars}</div>
@@ -2063,6 +2157,10 @@ function activitySectionHtml(list) {
     <section class="stat-section activity-section" aria-label="Activity">
       <h3>📅 Activity by ${unit.toLowerCase()}</h3>
       <div class="act-controls">
+        <div class="act-toggle" role="group" aria-label="Show">
+          <button type="button" data-chart="words" aria-pressed="${activityView.chart === "words"}">Words</button>
+          <button type="button" data-chart="time" aria-pressed="${activityView.chart === "time"}">Time</button>
+        </div>
         <div class="act-toggle" role="group" aria-label="Group by">
           <button type="button" data-group="day" aria-pressed="${activityView.group === "day"}">Daily</button>
           <button type="button" data-group="week" aria-pressed="${activityView.group === "week"}">Weekly</button>
@@ -2075,6 +2173,7 @@ function activitySectionHtml(list) {
         </div>
       </div>
       <div class="act-range-text">${escapeHtml(dayLabel(from, { month: "short", day: "numeric", year: "numeric" }))}${from === to ? "" : ` – ${escapeHtml(dayLabel(to, { month: "short", day: "numeric", year: "numeric" }))}`}</div>
+      ${activityView.chart === "time" ? timeViewHtml(periods, unit) : `
       <div class="stat-grid act-tiles">
         ${statTile("📖 Words learned", learned)}
         ${statTile("✍️ Words practiced", practicedWords)}
@@ -2089,8 +2188,155 @@ function activitySectionHtml(list) {
           <tbody>${rows}</tbody>
         </table>
       </details>
-      ${note}
+      ${note}`}
     </section>`;
+}
+
+/* ---------------------------
+   Stats: the Time view of Activity. Comes from the time log, which covers
+   everything she did whatever the Stats filters say.
+--------------------------- */
+const SITTING_NAMES = { learning: "📖 Learning", practice: "✍️ Practice" };
+const TIME_SERIES = [
+  { key: "learning", name: "Learning", color: "var(--series-learned)" },
+  { key: "practice", name: "Practice", color: "var(--series-new)" }
+];
+
+// Whole seconds: totals add these up, so a day always equals its sittings
+function sittingSeconds(sitting) {
+  return Math.round(sitting.ms / 1000);
+}
+
+// "6 min 42 sec", "6 min" or "42 sec"
+function formatDuration(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  if (!minutes) return `${rest} sec`;
+  return rest ? `${minutes} min ${rest} sec` : `${minutes} min`;
+}
+
+// "📖 12 min 5 sec · ✍️ 25 min", leaving out whichever she didn't do
+function timeSplit(learning, practice) {
+  return [
+    learning && `📖 ${formatDuration(learning)}`,
+    practice && `✍️ ${formatDuration(practice)}`
+  ].filter(Boolean).join(" · ");
+}
+
+// Newest day first: [{ day, learning, practice, sittings }] with learning and
+// practice in seconds, sittings in order
+function timeByDay(from, to) {
+  const days = new Map();
+  Object.values(timeLog())
+    .sort((a, b) => String(a.startedAt).localeCompare(String(b.startedAt)))
+    .forEach(sitting => {
+      const day = dayNumber(new Date(sitting.startedAt));
+      if (day < from || day > to) return;
+      if (!days.has(day)) days.set(day, { day, learning: 0, practice: 0, sittings: [] });
+      const entry = days.get(day);
+      entry[sitting.kind] += sittingSeconds(sitting);
+      entry.sittings.push(sitting);
+    });
+  return [...days.values()].sort((a, b) => b.day - a.day);
+}
+
+// Learning and Practice seconds for one bar, plus its days
+function periodTime(period) {
+  const days = timeByDay(period.start, period.end);
+  return {
+    days,
+    learning: days.reduce((n, d) => n + d.learning, 0),
+    practice: days.reduce((n, d) => n + d.practice, 0),
+    sittings: days.reduce((n, d) => n + d.sittings.length, 0)
+  };
+}
+
+// Fits on a bar's cap: "45s", "12m"
+function shortDuration(seconds) {
+  return seconds < 60 ? `${seconds}s` : `${Math.round(seconds / 60)}m`;
+}
+
+// The Time view of the Activity chart: a Learning bar and a Practice bar for
+// every day or week, laid out like the words chart
+function timeChartHtml(periods) {
+  const times = periods.map(periodTime);
+  const max = Math.max(1, ...times.flatMap(t => TIME_SERIES.map(s => t[s.key])));
+  const labelEvery = Math.ceil(periods.length / 10);
+  const showValues = periods.length <= 14;
+  const groups = periods.map((period, i) => {
+    const bars = TIME_SERIES.map(s => {
+      const v = times[i][s.key];
+      const height = v ? Math.max(2, Math.round((v / max) * 100)) : 0;
+      return `
+          <div class="act-bar-slot">
+            ${showValues && v ? `<span class="act-value">${shortDuration(v)}</span>` : ""}
+            <div class="act-bar" style="height:${height}%;background:${s.color}"></div>
+          </div>`;
+    }).join("");
+    return `
+      <div class="act-col" tabindex="0" data-start="${period.start}" data-end="${period.end}" data-tip-label="${escapeHtml(periodText(period, true))}">
+        <div class="act-bar-area">${bars}</div>
+        <span class="act-x">${i % labelEvery === 0 ? escapeHtml(periodText(period, false)) : ""}</span>
+      </div>`;
+  }).join("");
+  const legend = TIME_SERIES.map(s =>
+    `<span class="act-legend-item"><span class="act-swatch" style="background:${s.color}"></span>${s.name}</span>`).join("");
+  return `
+    <div class="act-chart">
+      <div class="act-chart-head">
+        <span class="act-chart-title">Time per ${activityView.group === "day" ? "day" : "week"}</span>
+        <span class="act-legend">${legend}</span>
+      </div>
+      <div class="act-plot" role="img" aria-label="Time spent on learning and practice per ${activityView.group}; the table below lists every value">${groups}</div>
+    </div>`;
+}
+
+function timeViewHtml(periods, unit) {
+  const times = periods.map(periodTime);
+  const sum = key => times.reduce((n, t) => n + t[key], 0);
+  const learning = sum("learning");
+  const practice = sum("practice");
+  const duration = seconds => (seconds ? formatDuration(seconds) : "—");
+  const rows = periods.map((p, i) => `
+    <tr>
+      <th scope="row">${escapeHtml(periodText(p, true))}</th>
+      <td>${duration(times[i].learning + times[i].practice)}</td><td>${duration(times[i].learning)}</td><td>${duration(times[i].practice)}</td><td>${times[i].sittings}</td>
+    </tr>`).reverse().join("");
+  return `
+      <div class="stat-grid act-tiles">
+        ${statTile("⏱️ Total", duration(learning + practice))}
+        ${statTile("📖 Learning", duration(learning))}
+        ${statTile("✍️ Practice", duration(practice))}
+        ${statTile("Sittings", sum("sittings"))}
+      </div>
+      ${timeChartHtml(periods)}
+      <details class="act-table-wrap">
+        <summary>Show as a table</summary>
+        <table class="act-table">
+          <thead><tr><th scope="col">${unit}</th><th scope="col">Total</th><th scope="col">Learning</th><th scope="col">Practice</th><th scope="col">Sittings</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </details>`;
+}
+
+// Tooltip for a Time bar: the total, then every sitting of a single day, or
+// each day's total for a week
+function timeTipHtml(col) {
+  const period = { start: Number(col.dataset.start), end: Number(col.dataset.end) };
+  const { days, learning, practice } = periodTime(period);
+  const time = iso => new Date(iso).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  const lines = !days.length ? `<div class="act-tip-row">No time recorded</div>` : `
+    <div class="act-tip-row"><strong>${formatDuration(learning + practice)}</strong> ${timeSplit(learning, practice)}</div>
+    ${days.length > 1
+      ? days.map(d => `<div class="act-tip-row">${escapeHtml(dayLabel(d.day, { weekday: "short", month: "short", day: "numeric" }))} · ${formatDuration(d.learning + d.practice)}</div>`).join("")
+      : sittingLines(days[0].sittings, time)}`;
+  return `${lines}<div class="act-tip-label">${escapeHtml(col.dataset.tipLabel)}</div>`;
+}
+
+function sittingLines(sittings, time) {
+  const seen = { learning: 0, practice: 0 };
+  return sittings.map(s => `
+    <div class="act-tip-sitting">${SITTING_NAMES[s.kind]} ${++seen[s.kind]} · <strong>${formatDuration(sittingSeconds(s))}</strong> · ${time(s.startedAt)} – ${time(s.endedAt)} · ${s.words} word${s.words === 1 ? "" : "s"}</div>`).join("");
 }
 
 // Recent tests on Stats: the last few, or every test from the past month
@@ -2104,8 +2350,10 @@ function wireSessionsToggle(container) {
 }
 
 function wireActivity(container) {
-  container.querySelectorAll(".act-toggle button").forEach(btn =>
+  container.querySelectorAll(".act-toggle [data-group]").forEach(btn =>
     btn.addEventListener("click", () => { activityView.group = btn.dataset.group; renderStats(); }));
+  container.querySelectorAll(".act-toggle [data-chart]").forEach(btn =>
+    btn.addEventListener("click", () => { activityView.chart = btn.dataset.chart; renderStats(); }));
   container.querySelector("#activityRange").addEventListener("change", event => {
     const { from, to } = activityRange();
     activityView.range = event.target.value;
@@ -2129,10 +2377,26 @@ function wireActivity(container) {
     tip.className = "act-tip";
     tip.hidden = true;
     document.body.appendChild(tip);
+    // Phones have no hover: a tapped bar's tooltip stays until a tap elsewhere
+    document.addEventListener("pointerdown", event => {
+      if (!event.target.closest(".act-col")) tip.hidden = true;
+    });
   }
+  const place = col => {
+    tip.hidden = false;
+    const r = col.getBoundingClientRect();
+    const left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2));
+    tip.style.left = `${left + window.scrollX}px`;
+    tip.style.top = `${window.scrollY + Math.max(8, r.top - tip.offsetHeight - 6)}px`;
+  };
   const show = col => {
+    if (!col.dataset.tip) {
+      tip.innerHTML = timeTipHtml(col);
+      place(col);
+      return;
+    }
     // Values lead, the period follows; a short colour key marks each series
-    const [learned, practiced, attempts, correct, wrong, ...kinds] = col.dataset.tip.split("|");
+    const [learned, practiced, attempts, correct, wrong, learningSeconds, practiceSeconds, ...kinds] = col.dataset.tip.split("|");
     tip.replaceChildren();
     const label = document.createElement("div");
     label.className = "act-tip-label";
@@ -2158,18 +2422,24 @@ function wireActivity(container) {
       }),
       label
     );
-    tip.hidden = false;
-    const r = col.getBoundingClientRect();
-    const left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2));
-    tip.style.left = `${left + window.scrollX}px`;
-    tip.style.top = `${r.top + window.scrollY - tip.offsetHeight - 6}px`;
+    const timeSeconds = Number(learningSeconds) + Number(practiceSeconds);
+    if (timeSeconds) {
+      const line = document.createElement("div");
+      line.className = "act-tip-row";
+      line.textContent = `⏱️ ${formatDuration(timeSeconds)} · ${timeSplit(Number(learningSeconds), Number(practiceSeconds))}`;
+      label.before(line);
+    }
+    place(col);
   };
   container.querySelectorAll(".act-col").forEach(col => {
     col.addEventListener("pointerenter", () => show(col));
     col.addEventListener("focus", () => show(col));
-    col.addEventListener("pointerleave", () => (tip.hidden = true));
+    col.addEventListener("pointerleave", event => {
+      if (event.pointerType === "mouse") tip.hidden = true;
+    });
     col.addEventListener("blur", () => (tip.hidden = true));
   });
+
 }
 
 /* ---------------------------
@@ -2183,6 +2453,8 @@ async function confirmReset() {
 }
 
 async function resetSelection() {
+  learnClock = null;
+  learnSitting = null;
   currentIndex = -1;
   currentItem = null;
   document.getElementById("correctionCheckbox").checked = false;
