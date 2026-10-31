@@ -888,6 +888,7 @@
     }
 
     .tab-btn:hover { color: var(--text); }
+    .tab-btn:disabled { opacity: 0.4; cursor: not-allowed; color: var(--text-secondary); }
 
     .tab-btn.active {
       background: var(--accent);
@@ -1047,6 +1048,59 @@
     .practice-layout .card { order: -1; } /* typing area first on phones */
 
     .practice-screen { display: flex; flex-direction: column; gap: 12px; }
+
+    /* Bee Buddy: each mood swaps the face and the movement */
+    .bee-buddy { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; min-height: 64px; }
+    .bee-buddy.compact { min-height: 44px; margin-bottom: 8px; }
+    .bb-figure { width: 64px; height: 64px; flex: none; overflow: visible; transform-origin: 50% 50%; }
+    .bee-buddy.compact .bb-figure { width: 44px; height: 44px; }
+    .bb-speech {
+      margin: 0; padding: 6px 12px; font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--text);
+      background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-md);
+    }
+    .bee-buddy.compact .bb-speech { font-size: 13px; padding: 4px 10px; }
+    .bb-eyes { fill: #2b2233; }
+    .bb-eyes-x, .bb-mouth { fill: none; stroke: #2b2233; stroke-width: 2; stroke-linecap: round; }
+    .bb-oh { fill: #2b2233; }
+    .bb-sweat { fill: #7dd3fc; animation: bb-drip 0.9s ease-in infinite; }
+    .bb-sweat-2 { animation-delay: 0.4s; }
+    .bb-wings { transform-box: fill-box; transform-origin: 50% 100%; animation: bb-flap 0.25s ease-in-out infinite alternate; }
+
+    .bb-eyes-x, .bb-wavy, .bb-oh, .bb-sweat { display: none; }
+    [data-mood="idle"] .bb-figure { animation: bb-float 2.4s ease-in-out infinite; }
+    [data-mood="worried"] .bb-wavy, [data-mood="worried"] .bb-sweat:not(.bb-sweat-2) { display: block; }
+    [data-mood="worried"] .bb-smile { display: none; }
+    [data-mood="worried"] .bb-figure { animation: bb-sway 1s ease-in-out infinite; }
+    [data-mood="panic"] .bb-oh, [data-mood="panic"] .bb-sweat { display: block; }
+    [data-mood="panic"] .bb-smile { display: none; }
+    [data-mood="panic"] .bb-figure { animation: bb-shake 0.2s linear infinite; }
+    [data-mood="happy"] .bb-figure { animation: bb-dance 0.8s ease-in-out 2; }
+    [data-mood="party"] .bb-figure { animation: bb-dance 0.8s ease-in-out infinite; }
+    [data-mood="evolve"] .bb-figure { animation: bb-grow 0.9s ease-out 3; }
+    [data-mood="faint"] .bb-figure { transform: rotate(90deg); animation: bb-faint 0.6s ease-in; }
+    [data-mood="faint"] .bb-eyes, [data-mood="faint"] .bb-smile { display: none; }
+    [data-mood="faint"] .bb-eyes-x, [data-mood="faint"] .bb-oh { display: block; }
+    [data-mood="faint"] .bb-wings { animation: none; }
+
+    @keyframes bb-float { 50% { transform: translateY(-4px); } }
+    @keyframes bb-flap { to { transform: scaleY(0.8); } }
+    @keyframes bb-sway { 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+    @keyframes bb-shake { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+    @keyframes bb-drip { from { transform: translateY(-3px); opacity: 1; } to { transform: translateY(10px); opacity: 0; } }
+    @keyframes bb-dance {
+      25% { transform: translateY(-10px) rotate(-14deg); }
+      50% { transform: translateY(0) rotate(0); }
+      75% { transform: translateY(-10px) rotate(14deg); }
+    }
+    @keyframes bb-faint {
+      from { transform: rotate(0); }
+      30% { transform: rotate(-12deg); }
+      to { transform: rotate(90deg); }
+    }
+    @keyframes bb-grow { 50% { transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) {
+      .bb-figure, .bb-wings, .bb-sweat { animation: none !important; }
+    }
 
     .practice-title { margin: 0; font-size: 22px; font-weight: 800; }
 
@@ -1425,8 +1479,9 @@
     .act-tip {
       position: absolute; z-index: 50; pointer-events: none; padding: 6px 10px; font-size: 12px;
       color: var(--text-secondary); background: var(--bg-inset); border: 1px solid var(--border-strong);
-      border-radius: 6px; box-shadow: var(--shadow-md); white-space: nowrap;
+      border-radius: 6px; box-shadow: var(--shadow-md); white-space: nowrap; max-width: calc(100vw - 16px);
     }
+    .act-tip-sitting { white-space: normal; margin-top: 3px; }
     .act-tip strong { color: var(--text); font-size: 13px; }
     .act-tip-row { display: flex; align-items: center; gap: 6px; }
     .act-tip-key { width: 10px; height: 2px; border-radius: 1px; }
@@ -1434,7 +1489,7 @@
     .act-tip-sub { padding-left: 12px; }
     .act-tip-sub .act-tip-key { height: 8px; width: 8px; border-radius: 2px; }
     .act-legend { flex-wrap: wrap; }
-    .act-table-wrap { margin-top: 14px; }
+    .act-table-wrap { margin-top: 14px; overflow-x: auto; }
     .act-table-wrap summary { cursor: pointer; font-size: 13px; color: var(--accent-hover); font-weight: 600; }
     .act-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
     .act-table th, .act-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; }
@@ -1876,6 +1931,11 @@
       </div>
 
       <div class="card practice-card">
+        <!-- Bee Buddy (bee-buddy.js): shown on every Practice screen -->
+        <div id="beeBuddy" class="bee-buddy" data-mood="idle">
+          <svg id="beeBuddyFigure" class="bb-figure" viewBox="0 0 64 64" aria-hidden="true"></svg>
+          <p id="beeBuddySpeech" class="bb-speech" hidden></p>
+        </div>
         <!-- Start -->
         <div id="practiceStart" class="practice-screen">
           <h2 class="practice-title">Spelling test</h2>
@@ -2116,7 +2176,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026102605"></script>
-<script src="practice.js?v=2026103103"></script>
+<script src="app.js?v=2026103106"></script>
+<script src="bee-buddy.js?v=2026103101"></script>
+<script src="practice.js?v=2026103109"></script>
 </body>
 </html>
