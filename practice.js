@@ -5,6 +5,7 @@
 const TIME_LIMIT_MS = 90 * 1000;
 const AUTO_NEXT_SECONDS = 4;        // after time runs out, move on by itself
 const MAX_MISSPELLINGS = 3;         // kept per word (the progress doc must stay under 1 MB)
+const MIN_LEARNED_WORDS = 50;       // "Completed in Learning" unlocks at this many words
 
 let practice = null;                // running/finished test: { entries, index, label, mode, saved }
 const practiceLetters = new Set();  // first letters picked on the Practice tab
@@ -48,9 +49,10 @@ function practicePool() {
 
 const MODE_NAMES = { wrong: "Wrong", pending: "Not attempted", alwaysRight: "Always right", everWrong: "Ever spelled wrong", learned: "Completed in Learning" };
 
-// Which practice groups to test: any mix of the MODE_NAMES keys
+// Which practice groups to test: any mix of the MODE_NAMES keys. A locked
+// group stays ticked, so it's back in the test once it unlocks.
 function selectedModes() {
-  return Array.from(document.querySelectorAll('input[name="practiceMode"]:checked'))
+  return Array.from(document.querySelectorAll('input[name="practiceMode"]:checked:enabled'))
     .map(input => input.value);
 }
 
@@ -167,6 +169,10 @@ function onWordsLoaded() {
   if (!practice) showPracticeStart();
 }
 
+function learnedModeInput() {
+  return document.querySelector('input[name="practiceMode"][value="learned"]');
+}
+
 function practiceSetLabel(modes) {
   const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
@@ -193,10 +199,16 @@ function showPracticeStart() {
   practiceEl("modeCountAlwaysRight").textContent = counts.alwaysRight;
   practiceEl("modeCountEverWrong").textContent = counts.everWrong;
   practiceEl("modeCountLearned").textContent = counts.learned;
+  // Locked until enough words are learned, unless these filters have no
+  // unlearned words left (the last few words would never unlock otherwise).
+  // Kept ticked while locked, so it always unlocks ticked.
+  const learnedLocked = counts.learned < MIN_LEARNED_WORDS && counts.pending > counts.learned;
+  learnedModeInput().disabled = learnedLocked;
+  if (learnedLocked) learnedModeInput().checked = true;
 
   document.querySelectorAll(".mode-option").forEach(option => {
     const input = option.querySelector("input");
-    option.classList.toggle("selected", input.checked);
+    option.classList.toggle("selected", input.checked && !input.disabled);
     option.classList.toggle("disabled", input.disabled || !counts[input.value]);
   });
 
@@ -205,6 +217,9 @@ function showPracticeStart() {
   let text;
   if (!pool.length) {
     text = "No words match these filters. Try a different Scope, Difficulty, Origin or letter.";
+  } else if (learnedLocked && !count) {
+    const left = MIN_LEARNED_WORDS - counts.learned;
+    text = `Learn ${left} more word${left === 1 ? "" : "s"} to unlock Completed in Learning, or pick another group below.`;
   } else if (!modes.length) {
     text = "Pick at least one group of words below.";
   } else if (!count) {
@@ -215,7 +230,8 @@ function showPracticeStart() {
   practiceEl("practiceSetText").textContent = text;
   practiceEl("startTallyTotal").textContent = pool.length;
   practiceEl("startTallyTest").textContent = count;
-  practiceEl("practiceStartBtn").disabled = !count;
+  // Stays pressable while locked, so Start can show the "learn more" pop-up
+  practiceEl("practiceStartBtn").disabled = !count && !(learnedLocked && pool.length);
 
   renderPracticeLetters();
   renderSavedPractice();
@@ -880,26 +896,55 @@ const LEARN_FIRST_JOKES = [
   ["🧙", "Even wizards practice their spells before casting them. Off to Learning, young speller!"],
   ["🦖", "A T. rex once tried a test without learning. Now it's extinct. Coincidence? Learn first!"]
 ];
+const LEARN_50_JOKES = [
+  ["🐝", `Bzzt! This hive only opens at ${MIN_LEARNED_WORDS} words. No honey for early bees!`],
+  ["🎢", `Sorry, you must be ${MIN_LEARNED_WORDS} words tall to ride this test!`],
+  ["🚀", `Houston, we have a problem! This rocket needs ${MIN_LEARNED_WORDS} words of fuel before it can launch.`],
+  ["🍕", `Nobody orders a pizza with just a few toppings. This test needs ${MIN_LEARNED_WORDS} words on it!`],
+  ["🐒", `Even the monkeys at the zoo learn ${MIN_LEARNED_WORDS} words before showtime. Back to Learning!`],
+  ["🦸", `Every superhero needs training first. Yours is ${MIN_LEARNED_WORDS} words long!`]
+];
 let lastJoke = -1;
+
+function showLearnFirstDialog(emoji, text) {
+  practiceEl("learnFirstDialog").returnValue = "";
+  practiceEl("learnFirstEmoji").textContent = emoji;
+  practiceEl("learnFirstText").textContent = text;
+  practiceEl("learnFirstDialog").showModal();
+}
+
+function pickJoke(jokes) {
+  let pick;
+  do { pick = Math.floor(Math.random() * jokes.length); } while (pick === lastJoke);
+  lastJoke = pick;
+  return jokes[pick];
+}
 
 function showLearnFirst(event) {
   event.preventDefault();
-  let pick;
-  do { pick = Math.floor(Math.random() * LEARN_FIRST_JOKES.length); } while (pick === lastJoke);
-  lastJoke = pick;
-  practiceEl("learnFirstDialog").returnValue = "";
-  practiceEl("learnFirstEmoji").textContent = LEARN_FIRST_JOKES[pick][0];
-  practiceEl("learnFirstText").textContent = LEARN_FIRST_JOKES[pick][1];
-  practiceEl("learnFirstDialog").showModal();
+  showLearnFirstDialog(...pickJoke(LEARN_FIRST_JOKES));
+}
+
+// Tapping "Completed in Learning" while it's locked, or pressing Start with
+// nothing else to test, gets a joke plus how far there is to go
+function showLearnedLocked(event) {
+  if (!learnedModeInput().disabled) return;
+  event.preventDefault();
+  const learned = wordsForModes(practicePool(), ["learned"]).length;
+  const left = MIN_LEARNED_WORDS - learned;
+  const [emoji, joke] = pickJoke(LEARN_50_JOKES);
+  showLearnFirstDialog(emoji, `${joke} You've done ${learned} so far, just ${left} more to go!`);
 }
 
 /* ---------------------------
    Wiring
 --------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  practiceEl("practiceStartBtn").addEventListener("click", () => {
+  practiceEl("practiceStartBtn").addEventListener("click", event => {
     const modes = selectedModes();
-    startPractice(wordsForModes(practicePool(), modes), modes.join("+"), practiceSetLabel(modes));
+    const items = wordsForModes(practicePool(), modes);
+    if (!items.length) return showLearnedLocked(event);
+    startPractice(items, modes.join("+"), practiceSetLabel(modes));
   });
   document.querySelectorAll("#practiceFilters .multi-select:not(.filter-select) input").forEach(input => {
     input.addEventListener("change", practiceFiltersChanged);
@@ -910,6 +955,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("change", showPracticeStart);
   });
   document.querySelector(".mode-option.mode-pending").addEventListener("click", showLearnFirst);
+  document.querySelector(".mode-option.mode-learned").addEventListener("click", showLearnedLocked);
   // A tap outside the pop-up (on the dimmed backdrop) closes it too. Backdrop
   // taps report the dialog itself as the target, so check they're outside its box
   practiceEl("learnFirstDialog").addEventListener("click", event => {
