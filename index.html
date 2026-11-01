@@ -7,6 +7,7 @@
   <title>Spelling Bee Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://media.merriam-webster.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
 
   <style>
@@ -1418,6 +1419,10 @@
       box-shadow: var(--shadow-sm);
     }
     .learn-first-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+    .learn-first-actions { display: flex; flex-direction: column; gap: 10px; }
+    .learn-first-dialog .parent-error { margin: 0; color: var(--danger); font-weight: 600; }
+    .parent-code { flex: none; width: 100%; box-sizing: border-box; text-align: center; -webkit-text-security: disc; }
+    .link-btn { padding: 4px; border: 0; background: none; font: inherit; font-size: 13px; color: var(--accent-hover); text-decoration: underline; cursor: pointer; }
     .learn-first-emoji { font-size: 48px; line-height: 1; }
     .learn-first-dialog h3 { margin: 12px 0 6px; font-size: 20px; }
     .learn-first-dialog p { margin: 0 0 18px; color: var(--text-secondary); line-height: 1.45; }
@@ -1986,9 +1991,23 @@
             <div class="learn-first-emoji" id="learnFirstEmoji" aria-hidden="true">🐝</div>
             <h3 id="learnFirstTitle">Finish the learning first!</h3>
             <p id="learnFirstText"></p>
-            <form method="dialog"><button class="primary-btn" value="learn">📘 OK, back to learning</button></form>
+            <form method="dialog" class="learn-first-actions">
+              <button class="primary-btn" value="learn">📘 OK, back to learning</button>
+              <button class="link-btn" value="parent" id="parentUnlockBtn" hidden>🔑 Parent unlock</button>
+            </form>
+          </dialog>
+          <dialog id="parentDialog" class="learn-first-dialog" aria-labelledby="parentDialogTitle">
+            <h3 id="parentDialogTitle">🔑 Parent unlock</h3>
+            <p>Turns off the 50-word lock for one practice test.</p>
+            <form id="parentForm" class="learn-first-actions" autocomplete="off">
+              <input id="parentCode" class="practice-input parent-code" type="text" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="Passcode" placeholder="Passcode" />
+              <p id="parentError" class="parent-error" role="alert" hidden>That's not the right passcode.</p>
+              <button type="submit" class="primary-btn">Unlock</button>
+              <button type="button" class="link-btn" id="parentCancelBtn">Cancel</button>
+            </form>
           </dialog>
           <p class="practice-hint mode-hint">Tap to include or leave out a group. Completed in Learning = opened on the Learning card and not practiced yet; it unlocks at 50 words. Ever spelled wrong = wrong in any attempt, even if right since.</p>
+          <p class="practice-hint" id="lockOffNote" hidden>🔓 50-word lock is off for the next test. <button type="button" class="link-btn" id="lockOnBtn">Turn it back on</button></p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>
@@ -2176,8 +2195,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026103106"></script>
-<script src="bee-buddy.js?v=2026103101"></script>
-<script src="practice.js?v=2026103109"></script>
+<script src="app.js?v=2026110101"></script>
+<script src="bee-buddy.js?v=2026110101"></script>
+<script src="practice.js?v=2026110102"></script>
 </body>
 </html>

@@ -104,13 +104,12 @@ function buddyStageIndex(count) {
   return BUDDY_STAGES.reduce((best, stage, i) => (count >= stage.at ? i : best), 0);
 }
 
-// Start screen: how big she's grown, with a party when a new stage is reached
+// Start screen: the bee as big as she's grown it, with a party at a new stage
 function buddyHome() {
   document.getElementById("beeBuddy").classList.remove("compact");
   const count = words.filter(isCompleted).length;
   const index = buddyStageIndex(count);
   const stage = BUDDY_STAGES[index];
-  const next = BUDDY_STAGES[index + 1];
   buddySetStage(stage);
 
   let seen = null;
@@ -125,10 +124,7 @@ function buddyHome() {
     setBuddy("evolve", `🎉 Your buddy grew into a ${stage.name}!`);
     return;
   }
-  const left = next ? next.at - count : 0;
-  setBuddy("idle", next
-    ? `${stage.name} · ${left} more word${left === 1 ? "" : "s"} to ${next.name}`
-    : `${stage.name} · the whole hive bows to you!`);
+  setBuddy("idle", "");
 }
 
 function buddyNewWord(answered) {
