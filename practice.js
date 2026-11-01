@@ -6,9 +6,13 @@ const TIME_LIMIT_MS = 90 * 1000;
 const AUTO_NEXT_SECONDS = 4;        // after time runs out, move on by itself
 const MAX_MISSPELLINGS = 3;         // kept per word (the progress doc must stay under 1 MB)
 const MIN_LEARNED_WORDS = 50;       // "Completed in Learning" unlocks at this many words
+// Parent passcode for lifting that lock. Stored as a hash so it isn't readable
+// at a glance; it only keeps a curious kid out, it isn't real security.
+const PARENT_CODE_HASH = 420285646;
 
 let practice = null;                // running/finished test: { entries, index, label, mode, saved }
 const practiceLetters = new Set();  // first letters picked on the Practice tab
+let lockLifted = false;              // parent lifted the 50-word lock for the next test
 
 function practiceEl(id) {
   return document.getElementById(id);
@@ -178,6 +182,40 @@ function learnedModeInput() {
   return document.querySelector('input[name="practiceMode"][value="learned"]');
 }
 
+/* Parent unlock: lifts the 50-word lock for one test. Starting a test uses it
+   up, and it's only held in memory, so a refresh locks it again too. */
+function setLockLifted(lifted) {
+  lockLifted = lifted;
+  showPracticeStart();
+}
+
+function parentCodeHash(code) {
+  let hash = 2166136261;
+  for (const ch of `spelling-bee:${code}`) {
+    hash = Math.imul(hash ^ ch.charCodeAt(0), 16777619) >>> 0;
+  }
+  return hash;
+}
+
+function showParentUnlock() {
+  practiceEl("parentCode").value = "";
+  practiceEl("parentError").hidden = true;
+  practiceEl("parentDialog").showModal();
+  practiceEl("parentCode").focus();
+}
+
+function checkParentCode(event) {
+  event.preventDefault();
+  if (parentCodeHash(practiceEl("parentCode").value.trim()) !== PARENT_CODE_HASH) {
+    practiceEl("parentError").hidden = false;
+    practiceEl("parentCode").value = "";
+    practiceEl("parentCode").focus();
+    return;
+  }
+  practiceEl("parentDialog").close();
+  setLockLifted(true);
+}
+
 function practiceSetLabel(modes) {
   const scopes = selectedValues("practiceScopeFilter")
     .map(s => s.charAt(0).toUpperCase() + s.slice(1))
@@ -207,8 +245,9 @@ function showPracticeStart() {
   // Locked until enough words are learned, unless these filters have no
   // unlearned words left (the last few words would never unlock otherwise).
   // Kept ticked while locked, so it always unlocks ticked.
-  const learnedLocked = counts.learned < MIN_LEARNED_WORDS && counts.pending > counts.learned;
+  const learnedLocked = !lockLifted && counts.learned < MIN_LEARNED_WORDS && counts.pending > counts.learned;
   learnedModeInput().disabled = learnedLocked;
+  practiceEl("lockOffNote").hidden = !lockLifted;
   if (learnedLocked) learnedModeInput().checked = true;
 
   document.querySelectorAll(".mode-option").forEach(option => {
@@ -937,8 +976,9 @@ const LEARN_50_JOKES = [
 ];
 let lastJoke = -1;
 
-function showLearnFirstDialog(emoji, text) {
+function showLearnFirstDialog(emoji, text, parentOption = false) {
   practiceEl("learnFirstDialog").returnValue = "";
+  practiceEl("parentUnlockBtn").hidden = !parentOption;
   practiceEl("learnFirstEmoji").textContent = emoji;
   practiceEl("learnFirstText").textContent = text;
   practiceEl("learnFirstDialog").showModal();
@@ -964,7 +1004,7 @@ function showLearnedLocked(event) {
   const learned = wordsForModes(practicePool(), ["learned"]).length;
   const left = MIN_LEARNED_WORDS - learned;
   const [emoji, joke] = pickJoke(LEARN_50_JOKES);
-  showLearnFirstDialog(emoji, `${joke} You've done ${learned} so far, just ${left} more to go!`);
+  showLearnFirstDialog(emoji, `${joke} You've done ${learned} so far, just ${left} more to go!`, true);
 }
 
 /* ---------------------------
@@ -976,12 +1016,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const items = wordsForModes(practicePool(), modes);
     if (!items.length) return showLearnedLocked(event);
     startPractice(items, modes.join("+"), practiceSetLabel(modes));
+    lockLifted = false;
   });
   document.querySelectorAll("#practiceFilters .multi-select:not(.filter-select) input").forEach(input => {
     input.addEventListener("change", practiceFiltersChanged);
   });
   wireFilterSelect("practiceOriginFilter", practiceFiltersChanged);
   practiceEl("clearPracticeFilters").addEventListener("click", clearPracticeFilters);
+  practiceEl("parentForm").addEventListener("submit", checkParentCode);
+  practiceEl("parentCancelBtn").addEventListener("click", () => practiceEl("parentDialog").close());
+  practiceEl("lockOnBtn").addEventListener("click", () => setLockLifted(false));
   document.querySelectorAll('input[name="practiceMode"]').forEach(input => {
     input.addEventListener("change", showPracticeStart);
   });
@@ -999,6 +1043,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   practiceEl("learnFirstDialog").addEventListener("close", event => {
     if (event.target.returnValue === "learn") switchTab("learning");
+    if (event.target.returnValue === "parent") showParentUnlock();
   });
 
   practiceEl("practiceRestartBtn").addEventListener("click", () => {

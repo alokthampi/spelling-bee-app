@@ -1144,11 +1144,15 @@ let audioQueue = [];
 let audioQueueTimer = null;
 const PRONUNCIATION_GAP_MS = 600; // pause between one pronunciation and the next
 
-// A recording that hasn't started playing this long after being asked for is
-// treated as stuck and asked for again
-const AUDIO_START_TIMEOUT_MS = 3000;
+// A recording that hasn't started this long after being asked for is treated
+// as stuck and asked for again. One entry per try; later tries wait longer, so
+// a slow connection isn't cut off just before the recording arrives.
+const AUDIO_TRY_TIMEOUTS_MS = [3000, 6000, 8000];
+// After a failed load, the wait before the next try: an instant retry just
+// fails again while the network is still dropped
+const AUDIO_RETRY_PAUSES_MS = [1500, 5000];
 let audioWatchdog = null;
-let audioRequest = null; // { url, retry } of the recording being loaded/played
+let audioRequest = null; // { url, attempt } of the recording being loaded/played
 
 function stopAllAudio() {
   if (synth) synth.cancel();
@@ -1171,22 +1175,22 @@ function releaseAudio() {
 }
 
 // Plays one recording on the shared element. If it hasn't started in time or
-// fails to load, it's asked for once more under a fresh URL (so it can't queue
-// behind a stuck request); if that fails too it's skipped.
-function startAudio(url, retry = false) {
+// fails to load, it's asked for again under a fresh URL (so it can't queue
+// behind a stuck request); once the tries run out it's skipped.
+function startAudio(url, attempt = 0) {
   releaseAudio();
-  const request = audioRequest = { url, retry };
-  audioPlayer.src = retry ? `${url}${url.includes("?") ? "&" : "?"}r=${Date.now()}` : url;
+  const request = audioRequest = { url, attempt };
+  audioPlayer.src = attempt ? `${url}${url.includes("?") ? "&" : "?"}r=${Date.now()}` : url;
   audioPlayer.play().catch(err => {
     // Blocked without a tap: retrying won't help
     if (err.name === "NotAllowedError" && audioRequest === request) clearTimeout(audioWatchdog);
   });
-  audioWatchdog = setTimeout(() => audioStalled(request), AUDIO_START_TIMEOUT_MS);
+  audioWatchdog = setTimeout(() => audioStalled(request), AUDIO_TRY_TIMEOUTS_MS[attempt]);
 }
 
 function audioStalled(request) {
   if (audioRequest !== request) return;
-  if (!request.retry) startAudio(request.url, true);
+  if (request.attempt + 1 < AUDIO_TRY_TIMEOUTS_MS.length) startAudio(request.url, request.attempt + 1);
   else {
     releaseAudio();
     playNextQueued();
@@ -1230,8 +1234,9 @@ audioPlayer.addEventListener("ended", () => {
 // Errors from releasing the element (no src) aren't failed recordings
 audioPlayer.addEventListener("error", () => {
   if (audioRequest && audioPlayer.hasAttribute("src")) {
+    const request = audioRequest;
     clearTimeout(audioWatchdog);
-    audioStalled(audioRequest);
+    audioWatchdog = setTimeout(() => audioStalled(request), AUDIO_RETRY_PAUSES_MS[request.attempt] || 0);
   }
 });
 
