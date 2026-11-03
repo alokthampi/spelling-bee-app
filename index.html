@@ -1227,6 +1227,13 @@
 
     .primary-btn:hover { background: var(--accent-hover); }
     .primary-btn:active { background: #4f52d6; }
+    /* Greyed out, e.g. Start practice with no words in the picked groups */
+    .primary-btn:disabled,
+    .primary-btn:disabled:hover {
+      background: var(--bg-inset);
+      color: var(--text-tertiary);
+      cursor: not-allowed;
+    }
 
     .practice-form { display: flex; gap: 8px; }
 
@@ -1695,6 +1702,7 @@
         <div class="multi-select-menu">
           <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
           <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+          <label class="multi-select-option"><input type="checkbox" value="class" />Class</label>
           <button type="button" class="scope-default-btn"></button>
         </div>
       </details>
@@ -1878,6 +1886,7 @@
           <div class="multi-select-menu">
             <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
             <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+            <label class="multi-select-option"><input type="checkbox" value="class" />Class</label>
             <button type="button" class="scope-default-btn"></button>
           </div>
         </details>
@@ -2108,6 +2117,7 @@
           <div class="multi-select-menu">
             <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
             <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
+            <label class="multi-select-option"><input type="checkbox" value="class" />Class</label>
             <button type="button" class="scope-default-btn"></button>
           </div>
         </details>
@@ -2195,8 +2205,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110101"></script>
+<script src="app.js?v=2026110303"></script>
 <script src="bee-buddy.js?v=2026110101"></script>
-<script src="practice.js?v=2026110102"></script>
+<script src="practice.js?v=2026110303"></script>
 </body>
 </html>

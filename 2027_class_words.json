@@ -1,0 +1,22 @@
+{
+  "_note": "School words the class is studying. Shown as the \"Class\" scope. Each word must match a word in word_list_school.json (case doesn't matter). Bump CLASS_WORDS_FILE's ?v= in app.js after editing.",
+  "words": [
+    "Halloween", "compliment", "compromise",
+    "incident", "Japanese", "investment",
+    "bifocals", "cutlery", "chisel",
+    "fundraiser", "geologist", "bellowed",
+    "organism", "quail", "atmosphere",
+    "disappointment", "truant", "pamphlet",
+    "helium", "suggested", "chimpanzees",
+    "desperate", "annoyance", "interruption",
+    "concentrate", "piñata", "territory",
+    "stragglers", "albino", "ridiculous",
+    "monorail", "exploratory", "indigo",
+    "bratwurst", "alphabetical", "integrity",
+    "Oregon", "rebuttal", "prejudice",
+    "solidarity", "calico", "sputnik",
+    "cartridge", "segregation", "tortillas",
+    "civilian", "fertilizer", "apprentice",
+    "synthetic", "Caesar"
+  ]
+}

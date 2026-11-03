@@ -39,7 +39,7 @@ function showPracticeScreen(name) {
 function practiceScopeAndLevelWords() {
   const scopes = selectedValues("practiceScopeFilter");
   const levels = selectedValues("practiceDifficultyFilter");
-  return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
+  return words.filter(w => inScopes(w, scopes) && levels.includes(w.difficulty));
 }
 
 // Scope + Difficulty + Origin. Origin's options are counted from Scope + Difficulty.
@@ -217,9 +217,7 @@ function checkParentCode(event) {
 }
 
 function practiceSetLabel(modes) {
-  const scopes = selectedValues("practiceScopeFilter")
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(" + ");
+  const scopes = scopeNames("practiceScopeFilter");
   const origins = filterSelectValues("practiceOriginFilter");
   const originText = origins.length ? ` · ${document.querySelector("#practiceOriginFilter .summary-text").textContent}` : "";
   const letters = practiceLetters.size ? ` · ${[...practiceLetters].sort().join(", ")}` : "";
@@ -274,7 +272,8 @@ function showPracticeStart() {
   practiceEl("practiceSetText").textContent = text;
   practiceEl("startTallyTotal").textContent = pool.length;
   practiceEl("startTallyTest").textContent = count;
-  // Stays pressable while locked, so Start can show the "learn more" pop-up
+  // Greyed out with nothing to test, except while Completed in Learning is
+  // locked: then it stays pressable so Start can show the "learn more" pop-up
   practiceEl("practiceStartBtn").disabled = !count && !(learnedLocked && pool.length);
 
   renderPracticeLetters();
@@ -295,7 +294,7 @@ function startPractice(items, mode, label) {
     label,
     startedAt: new Date().toISOString(),
     // Filters the test was taken with, shown under Recent tests on Stats
-    scope: selectedValues("practiceScopeFilter").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + "),
+    scope: scopeNames("practiceScopeFilter"),
     difficulty: difficultySummary("practiceDifficultyFilter"),
     letters: [...practiceLetters].sort(),
     origins: filterSelectValues("practiceOriginFilter"),
