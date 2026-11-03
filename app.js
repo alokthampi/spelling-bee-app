@@ -198,6 +198,33 @@ const SCOPE_FILES = {
   regional: "word_list_regional.json?v=2026102601"
 };
 
+// School words the class is studying, shown as the "Class" scope.
+// They stay school words (progress is saved under "school"); this only tags them.
+const CLASS_WORDS_FILE = "2027_class_words.json?v=2026110301";
+
+async function fetchClassWords() {
+  try {
+    const r = await fetch(CLASS_WORDS_FILE);
+    if (!r.ok) throw new Error(`${CLASS_WORDS_FILE}: HTTP ${r.status}`);
+    const data = await r.json();
+    return new Set((data.words || []).map(w => w.toLowerCase()));
+  } catch (err) {
+    console.error("Could not load class words:", err);
+    return new Set();
+  }
+}
+
+// Is the word in any of the picked scopes? "class" (Class) picks the tagged school words.
+function inScopes(item, scopes) {
+  return scopes.includes(item._scope) || (item.classWord && scopes.includes("class"));
+}
+
+// Picked scopes by name: "School + Class"
+function scopeNames(id) {
+  return Array.from(document.querySelectorAll(`#${id} input[type="checkbox"]:checked`))
+    .map(optionText).join(" + ");
+}
+
 function emptyPractice() {
   // history: every attempt oldest first, "c" = correct, "w" = wrong
   return { attempts: 0, correct: 0, wrong: 0, last: null, lastAt: null, history: "" };
@@ -225,8 +252,9 @@ function applyProgressToWords(data) {
 }
 
 async function loadWords() {
-  const [progress, ...datasets] = await Promise.all([
+  const [progress, classWords, ...datasets] = await Promise.all([
     fetchProgressDoc(),
+    fetchClassWords(),
     ...Object.keys(SCOPE_FILES).map(async scope => {
       const file = SCOPE_FILES[scope];
       const data = !file ? [] : await fetch(file).then(r => {
@@ -251,6 +279,8 @@ async function loadWords() {
   ]);
 
   words = datasets.flat();
+  // Tagged only now: classWords isn't available inside the Promise.all above
+  words.forEach(w => (w.classWord = w._scope === "school" && classWords.has(w.word.toLowerCase())));
   const defaultScopes = savedDefaultScopes();
   if (defaultScopes) {
     applyDefaultScopes(defaultScopes, true);
@@ -618,8 +648,8 @@ function renderLearningCounts() {
   const scopes = selectedValues("scopeFilter");
   const levels = selectedValues("difficultyFilter");
   document.querySelectorAll('#scopeFilter input[type="checkbox"]').forEach(input =>
-    setOptionCount(input, words.filter(w => w._scope === input.value).length));
-  const inScope = words.filter(w => scopes.includes(w._scope));
+    setOptionCount(input, words.filter(w => inScopes(w, [input.value])).length));
+  const inScope = words.filter(w => inScopes(w, scopes));
   document.querySelectorAll('#difficultyFilter input[type="checkbox"]').forEach(input =>
     setOptionCount(input, inScope.filter(w => w.difficulty === input.value).length));
   const base = inScope.filter(w => levels.includes(w.difficulty));
@@ -884,7 +914,7 @@ function wordsBeforeOrigin(f) {
   const levels = selectedValues(f.difficulty);
   const results = filterSelectValues(f.results);
   return words.filter(w =>
-    scopes.includes(w._scope) && levels.includes(w.difficulty) && matchesResults(w, results)
+    inScopes(w, scopes) && levels.includes(w.difficulty) && matchesResults(w, results)
   );
 }
 
@@ -1712,7 +1742,7 @@ const statsLetters = new Set();
 function statsScopeAndLevelWords() {
   const scopes = selectedValues("statsScopeFilter");
   const levels = selectedValues("statsDifficultyFilter");
-  return words.filter(w => scopes.includes(w._scope) && levels.includes(w.difficulty));
+  return words.filter(w => inScopes(w, scopes) && levels.includes(w.difficulty));
 }
 
 function statsWords() {
@@ -1782,8 +1812,7 @@ function renderStats() {
   renderStatsLetters();
   const scopeWords = statsWords();
   const levels = ["one", "two", "three"];
-  const scopeLabel = selectedValues("statsScopeFilter")
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" + ") || "No scope";
+  const scopeLabel = scopeNames("statsScopeFilter") || "No scope";
   const lettersLabel = statsLetters.size ? ` · Letters ${[...statsLetters].sort().join(", ")}` : "";
 
   // ---- Learning ----
