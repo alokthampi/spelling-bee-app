@@ -733,12 +733,12 @@ function filterDropdownsAtDefault(ids) {
 const LEARNING_DROPDOWNS = ["scopeFilter", "difficultyFilter", "resultFilter", "originFilter"];
 
 /* ---------------------------
-   Default scope, shared by all three tabs. It's what each tab opens with and
+   Default scope, shared by Learning and Practice. It's what each tab opens with and
    what Clear filters goes back to (the Scope checkboxes' defaultChecked).
    Saved in the progress doc so it follows to other devices, and in this
    browser so the page opens with it before the progress doc arrives.
 --------------------------- */
-const SCOPE_DROPDOWNS = ["scopeFilter", "practiceScopeFilter", "statsScopeFilter"];
+const SCOPE_DROPDOWNS = ["scopeFilter", "practiceScopeFilter"];
 const SETTINGS_KEY = "_settings";
 const DEFAULT_SCOPES_LOCAL = "spellingBeeDefaultScopes";
 
