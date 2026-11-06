@@ -1295,6 +1295,9 @@ window.applyFilters = applyFilter;
    (grey) words, like the Practice tab's letters.
    Letters combine; adding one jumps the word list to that letter's words. */
 let letterPool = []; // the words the buttons were last counted from
+// Letters whose words were all completed at the last draw (with that pool), so a
+// letter that just reached 100% gets crowned by a bee (bee-buddy.js)
+let lettersDone = { pool: null, letters: new Set() };
 
 function renderLearningLetters(pool = letterPool) {
   const container = document.getElementById("letterFilter");
@@ -1305,6 +1308,10 @@ function renderLearningLetters(pool = letterPool) {
     if (isCompleted(w)) c.completed++;
   });
   const loaded = words.length > 0; // before the word lists arrive, plain letters
+  const done = new Set(Object.keys(counts).filter(l => counts[l].total && counts[l].completed === counts[l].total));
+  // Only when a word was completed: a filter change (new pool) isn't an achievement
+  const justDone = loaded && lettersDone.pool === pool ? [...done].filter(l => !lettersDone.letters.has(l)) : [];
+  lettersDone = { pool, letters: done };
 
   container.replaceChildren(..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(letter => {
     const c = counts[letter] || { total: 0, completed: 0 };
@@ -1326,6 +1333,14 @@ function renderLearningLetters(pool = letterPool) {
         `linear-gradient(to right, var(--covered) 0 ${pct}%, var(--border-strong) ${pct}% 100%)`;
       btn.append(grade);
     }
+    if (loaded && done.has(letter)) {
+      const crown = document.createElement("span");
+      crown.className = justDone.includes(letter) ? "letter-crown crown-new" : "letter-crown";
+      crown.textContent = "👑";
+      crown.setAttribute("aria-hidden", "true");
+      btn.append(crown);
+      btn.title += " · all completed!";
+    }
     btn.onclick = () => {
       const adding = !window.selectedLetters.has(letter);
       if (adding) window.selectedLetters.add(letter);
@@ -1335,6 +1350,9 @@ function renderLearningLetters(pool = letterPool) {
     };
     return btn;
   }));
+  if (typeof buddyCrownLetter === "function") {
+    justDone.forEach(letter => buddyCrownLetter(container.children[letter.charCodeAt(0) - 65]));
+  }
 }
 
 /* ---------------------------

@@ -1104,6 +1104,89 @@
       .bb-figure, .bb-wings, .bb-sweat { animation: none !important; }
     }
 
+    /* ---------- Just for fun (bee-buddy.js). Transforms and opacity only, so
+       the phone's graphics chip does the work; each effect plays once. ---------- */
+    .bb-figure {
+      cursor: pointer; touch-action: manipulation; position: relative;
+      transition: scale 0.35s ease-in-out, translate 0.35s ease-in-out;
+    }
+    /* Pop: bigger while a streak / golden bee / tickle plays (bee-buddy.js buddyPop).
+       translate keeps the left edge in place so it grows into the card, not off it.
+       Drawn over the speech bubble while big; layout doesn't move. */
+    .bee-buddy.bb-pop .bb-figure {
+      z-index: 5; scale: 1.6; translate: 19px 0;
+      transition: scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), translate 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .bee-buddy.compact.bb-pop .bb-figure { scale: 2; translate: 22px 0; }
+    .bb-shades, .bb-flame, .bb-dizzy-eyes { display: none; }
+    .bb-dizzy-eyes { fill: none; stroke: #2b2233; stroke-width: 1.6; stroke-linecap: round; }
+    .bb-dizzy-eyes path { transform-box: fill-box; transform-origin: center; animation: bb-spiral 0.7s linear infinite; }
+    .bb-shades { transform-box: fill-box; transform-origin: center; }
+
+    /* Streak: 😎 at 5 correct in a row, 🔥 at 10, shades fall off on a miss */
+    [data-streak="cool"] .bb-shades, [data-streak="fire"] .bb-shades { display: block; }
+    [data-streak="fire"] .bb-flame {
+      display: block; transform-box: fill-box; transform-origin: 100% 100%;
+      animation: bb-flicker 0.18s ease-in-out infinite alternate;
+    }
+    [data-streak="drop"] .bb-shades { display: block; animation: bb-shades-fall 0.9s ease-in forwards; }
+
+    /* Tap the bee: giggle + spin; 10 quick taps: dizzy */
+    .bee-buddy[data-fx="tickle"] .bb-figure { animation: bb-spin 0.6s ease-out; }
+    .bee-buddy[data-fx="dizzy"] .bb-figure { animation: bb-wobble 0.5s ease-in-out infinite; }
+    .bee-buddy[data-fx="dizzy"] .bb-eyes, .bee-buddy[data-fx="dizzy"] .bb-eyes-x,
+    .bee-buddy[data-fx="dizzy"] .bb-shades { display: none; }
+    .bee-buddy[data-fx="dizzy"] .bb-dizzy-eyes { display: block; }
+
+    @keyframes bb-flicker { from { transform: scaleY(0.85) skewX(-5deg); } to { transform: scaleY(1.1) skewX(5deg); } }
+    @keyframes bb-shades-fall { to { transform: translateY(26px) rotate(-35deg); opacity: 0; } }
+    @keyframes bb-spin { 50% { transform: rotate(200deg) scale(1.15); } 100% { transform: rotate(360deg); } }
+    @keyframes bb-wobble {
+      25% { transform: rotate(-12deg) translateX(-3px); }
+      75% { transform: rotate(12deg) translateX(3px); }
+    }
+    @keyframes bb-spiral { to { transform: rotate(360deg); } }
+
+    /* Correct answer: the word's letters hop one after another */
+    .fb-letter { display: inline-block; white-space: pre; animation: fb-hop 0.45s ease-out both; }
+    @keyframes fb-hop {
+      40% { transform: translateY(-9px) scale(1.15); }
+      70% { transform: translateY(2px); }
+    }
+
+    /* Golden bee: about 1 in 40 correct answers */
+    .golden-bee {
+      position: fixed; left: 0; z-index: 60; width: 48px; height: 48px; pointer-events: none;
+      animation: gb-fly 1.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+    }
+    .golden-bee svg { width: 100%; height: 100%; overflow: visible; }
+    .gb-bob { width: 100%; height: 100%; animation: gb-bob 0.28s ease-in-out infinite alternate; }
+    .gb-wings { transform-box: fill-box; transform-origin: 50% 100%; animation: bb-flap 0.08s linear infinite alternate; }
+    @keyframes gb-fly { from { transform: translateX(-60px); } to { transform: translateX(calc(100vw + 60px)); } }
+    @keyframes gb-bob { from { transform: translateY(-7px) rotate(-6deg); } to { transform: translateY(7px) rotate(6deg); } }
+
+    /* Learning letter at 100%: a bee flies in, drops a crown, flies off */
+    .letter-bee {
+      position: fixed; z-index: 60; font-size: 20px; line-height: 1; pointer-events: none;
+      animation: lb-visit 1.6s ease-in-out forwards;
+    }
+    @keyframes lb-visit {
+      0% { transform: translate(70px, -60px) rotate(-20deg); opacity: 0; }
+      15% { opacity: 1; }
+      45%, 62% { transform: translate(0, 0) rotate(0); opacity: 1; }
+      100% { transform: translate(-70px, -70px) rotate(15deg); opacity: 0; }
+    }
+    .letter-crown { position: absolute; top: 1px; right: 2px; font-size: 9px; line-height: 1; pointer-events: none; }
+    .letter-crown.crown-new { animation: crown-pop 0.5s 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    @keyframes crown-pop { from { transform: translateY(-8px) scale(0); opacity: 0; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fb-letter, .bb-flame, .bb-dizzy-eyes path, .letter-crown.crown-new, .golden-bee, .gb-bob, .gb-wings,
+      .letter-bee, .bee-buddy[data-fx] .bb-figure { animation: none !important; }
+      [data-streak="drop"] .bb-shades { display: none; }
+      .bee-buddy.bb-pop .bb-figure { scale: none; translate: none; }
+    }
+
     .practice-title { margin: 0; font-size: 22px; font-weight: 800; }
 
     .practice-sub { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
@@ -2233,8 +2316,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110703"></script>
-<script src="bee-buddy.js?v=2026110101"></script>
-<script src="practice.js?v=2026110303"></script>
+<script src="app.js?v=2026110704"></script>
+<script src="bee-buddy.js?v=2026110702"></script>
+<script src="practice.js?v=2026110701"></script>
 </body>
 </html>

@@ -698,6 +698,10 @@ function checkPracticeAnswer() {
   entry.status = normalizeSpelling(typed) === normalizeSpelling(entry.item.word) ? "correct" : "wrong";
   recordPracticeResult(entry);
   showAnswerState(entry);
+  // Only on a fresh answer, not when an answered word is shown again
+  if (entry.status === "correct" && typeof buddyBounceWord === "function") {
+    buddyBounceWord(practiceEl("practiceFeedback").querySelector(".fb-word"), entry.item.word);
+  }
   renderPracticeList();
   updatePracticeCounter();
 }
