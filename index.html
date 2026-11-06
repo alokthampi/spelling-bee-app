@@ -3,44 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d0f13" />
+  <meta name="theme-color" content="#0f0d12" />
   <title>Spelling Bee Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://media.merriam-webster.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <!-- Inter for reading; Fraunces (an elegant serif) for the word, titles and numbers -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
 
   <style>
+    /* "Midnight Honey": warm ink surfaces, ivory text, honey-gold accent.
+       Every colour in the app comes from these, so the look is changed here. */
     :root {
-      --bg: #0d0f13;
-      --bg-elevated: #14171d;
-      --bg-inset: #1a1e26;
-      --border: #262b34;
-      --border-strong: #323844;
-      --text: #e5e7eb;
-      --text-secondary: #9ca3af;
-      --text-tertiary: #6b7280;
-      --accent: #6366f1;
-      --accent-hover: #7c7ff2;
-      --accent-soft: rgba(99, 102, 241, 0.14);
-      --success: #34d399;
-      --success-soft: rgba(52, 211, 153, 0.14);
-      --danger: #f87171;
-      --danger-soft: rgba(248, 113, 113, 0.16);
-      --covered: #60a5fa;
-      --covered-soft: rgba(96, 165, 250, 0.12);
+      --bg: #0f0d12;                      /* page: warm near-black */
+      --bg-elevated: #18151d;             /* cards and panels */
+      --bg-inset: #211d27;                /* fields, buttons, rows inside cards */
+      --bg-hover: #2a2531;
+      --border: rgba(255, 236, 205, 0.08);       /* hairlines, faintly warm */
+      --border-strong: rgba(255, 236, 205, 0.15);
+      --text: #f3eee4;                    /* ivory */
+      --text-secondary: #b8b0a3;
+      --text-tertiary: #847c70;
+      --accent: #e5b455;                  /* honey gold */
+      --accent-hover: #f0c66e;
+      --accent-press: #c9993d;
+      --accent-soft: rgba(229, 180, 85, 0.13);
+      --accent-line: rgba(229, 180, 85, 0.45);
+      --on-accent: #1d1607;               /* text on a gold background */
+      --gold-gradient: linear-gradient(135deg, #f3cf7f 0%, #e5b455 48%, #c9923a 100%);
+      --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+      --success: #4fd1a1;
+      --success-soft: rgba(79, 209, 161, 0.13);
+      --danger: #f2877a;
+      --danger-soft: rgba(242, 135, 122, 0.15);
+      --covered: #7fb2f5;                 /* completed in Learning */
+      --covered-soft: rgba(127, 178, 245, 0.12);
       /* Stats > Activity chart series: learned is blue; the practiced bar is
          stacked purple (new words) / orange (ever spelled wrong) / green (always right) */
       --series-learned: #3987e5;
       --series-new: #9a6fe0;
       --series-missed: #d95926;
       --series-solid: #2fa46f;
-      --warning: #fbbf24;
-      --radius-lg: 14px;
-      --radius-md: 10px;
-      --radius-sm: 8px;
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.28);
+      --warning: #f4c45e;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      /* Soft depth plus a faint top highlight, like light catching an edge */
+      --shadow-sm: 0 1px 0 rgba(255, 240, 210, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
+      --shadow-md: 0 1px 0 rgba(255, 240, 210, 0.05) inset, 0 18px 48px rgba(0, 0, 0, 0.45);
       --tap: 44px;
     }
 
@@ -59,7 +69,49 @@
       padding-left: max(16px, env(safe-area-inset-left));
       padding-right: max(16px, env(safe-area-inset-right));
       -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Backdrop: a honey glow at the top and a barely-there honeycomb, on a
+       fixed layer of its own so scrolling stays smooth */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(1100px 520px at 50% -180px, rgba(229, 180, 85, 0.16), transparent 70%),
+        radial-gradient(700px 420px at 100% 0, rgba(127, 178, 245, 0.06), transparent 70%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0l28 16v32L28 64 0 48V16zM28 64v33M0 48l-28 16M56 48l28 16' fill='none' stroke='%23ffecc8' stroke-opacity='0.035' stroke-width='1'/%3E%3C/svg%3E"),
+        var(--bg);
+    }
+
+    /* Serif for the things worth admiring: titles, the word, big numbers */
+    h1, h2, h3 { font-family: var(--font-display); }
+
+    /* Line icons (the <symbol>s at the top of <body>): sized to the text, thin
+       strokes in the text colour, with a little space before the label */
+    .ic {
+      width: 1.15em; height: 1.15em; flex: none;
+      vertical-align: -0.2em; margin-right: 0.4em;
+      fill: none; stroke: currentColor; stroke-width: 1.7;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    /* Gold icons on the calm outlined buttons; the label stays ivory */
+    .audio-buttons button .ic, .reset-btn .ic, .link-btn .ic, .mw-full .ic,
+    .fb-mw .ic, .stats-heading .ic, .stat-label .ic, .mw-brand .ic,
+    .saved-tests-title .ic, .mode-name .ic, .tally-label .ic { color: var(--accent); }
+    .audio-buttons button:disabled .ic { color: inherit; }
+    .list-shuffle-btn[aria-pressed="true"] .ic { color: inherit; }
+    /* Difficulty level as gold hexagon pips: One ⬢, Two ⬢⬢, Three ⬢⬢⬢ */
+    .pips { color: var(--accent); letter-spacing: 0.08em; font-size: 0.85em; }
+    /* Icons in tight spots: no gap after them */
+    .letter-crown { color: var(--accent); }
+    .letter-crown .ic { width: 10px; height: 10px; margin: 0; vertical-align: top; }
+    .wi-pic .ic { margin: 0; color: var(--text-tertiary); }
+    .practice-item .ic { margin: 0 0 0 0.35em; color: var(--warning); } /* ran out of time */
+    .fb-title .ic { width: 1.25em; height: 1.25em; }
 
     /* Dev-only banner (see #devBanner): striped so it can't be mistaken for the live app */
     .dev-banner {
@@ -86,9 +138,9 @@
     }
 
     /* App title: a quiet wordmark - gold hexagon monogram, spaced gold eyebrow,
-       ivory Cormorant Garamond with "Practice" in italics */
+       ivory Fraunces serif with "Practice" in gold italics */
     .app-title {
-      --gold: #d4af6a;
+      --gold: var(--accent);
       display: flex;
       align-items: center;
       gap: 14px;
@@ -100,7 +152,7 @@
     .title-mark .hex-inner { fill: none; stroke: var(--gold); stroke-width: 0.75; opacity: 0.45; }
     .title-mark .bee { fill: none; stroke: var(--gold); stroke-width: 1.2; stroke-linecap: round; }
     .title-mark .wing { fill: rgba(212, 175, 106, 0.14); }
-    .title-mark .body { fill: #0d0f13; }
+    .title-mark .body { fill: var(--bg); }
     .title-mark .head { fill: var(--gold); }
     .title-mark .stripe { stroke-width: 1.7; }
     .title-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -113,14 +165,14 @@
       color: var(--gold);
     }
     .title-main {
-      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-family: var(--font-display);
       font-size: clamp(28px, 6vw, 40px);
       font-weight: 600;
       line-height: 1.02;
       letter-spacing: 0.01em;
-      color: #f3ede0;
+      color: var(--text);
     }
-    .title-main em { font-style: italic; font-weight: 500; color: #cfc6b4; }
+    .title-main em { font-style: italic; font-weight: 500; color: var(--accent); }
 
     /* ---------- Filter bar ---------- */
     .difficulty-bar {
@@ -147,16 +199,21 @@
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-tertiary);
+      letter-spacing: 0.12em;
+      color: rgba(229, 180, 85, 0.72); /* muted gold */
       padding-left: 1px;
     }
 
     .difficulty-bar select,
     .search-box {
       background-color: var(--bg-inset);
+      /* thin gold magnifier inside the box, matching the line icons */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5b455' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M16 16l4.5 4.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 12px center;
+      background-size: 18px;
       color: var(--text);
-      padding: 11px 12px;
+      padding: 11px 12px 11px 38px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       font-size: 16px;
@@ -319,8 +376,8 @@
       touch-action: manipulation;
     }
 
-    .reset-btn:hover { background: #20242d; border-color: var(--accent); }
-    .reset-btn:active { background: #262b34; }
+    .reset-btn:hover { background: var(--bg-hover); border-color: var(--accent-line); }
+    .reset-btn:active { background: var(--bg-hover); }
 
     /* ---------- Progress ---------- */
     .progress-panel {
@@ -354,7 +411,8 @@
       height: 100%;
       width: 0%;
       border-radius: 999px;
-      background: var(--accent);
+      background: var(--gold-gradient);
+      box-shadow: 0 0 12px rgba(229, 180, 85, 0.35);
       transition: width 0.3s ease;
     }
 
@@ -381,7 +439,7 @@
     /* Word List header: Shuffle on/off */
     .list-shuffle-btn { flex: none; min-height: 32px; padding: 6px 10px; font-size: 12px; }
     .list-shuffle-btn[aria-pressed="true"],
-    .list-shuffle-btn[aria-pressed="true"]:hover { background: var(--accent); border-color: var(--accent); color: white; }
+    .list-shuffle-btn[aria-pressed="true"]:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
     .clear-filters-btn:disabled { opacity: 0.4; cursor: default; }
     .clear-filters-btn:disabled:hover { background: var(--bg-inset); border-color: var(--border-strong); }
 
@@ -510,8 +568,8 @@
     }
 
     .letter-btn.active {
-      background: var(--accent);
-      color: white;
+      background: var(--gold-gradient);
+      color: var(--on-accent);
       border-color: var(--accent);
     }
 
@@ -560,7 +618,8 @@
     .word-list-header h3,
     .word-list-title {
       margin: 0;
-      font-size: 13px;
+      font-family: inherit;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-tertiary);
       text-transform: uppercase;
@@ -612,7 +671,7 @@
     .word-item.active {
       background: var(--accent-soft);
       border-left-color: var(--accent);
-      color: #c7c8fb;
+      color: #f6dfa6;
       font-weight: 700;
     }
 
@@ -623,8 +682,8 @@
     }
 
     .card {
-      background: var(--bg-elevated);
-      padding: 16px;
+      background: linear-gradient(180deg, rgba(255, 240, 210, 0.025), rgba(255, 240, 210, 0) 140px), var(--bg-elevated);
+      padding: 18px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
@@ -637,19 +696,23 @@
       justify-content: space-between;
       gap: 12px;
       margin: 0 0 14px;
-      padding: 18px 16px;
+      padding: 22px 20px;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.26), rgba(99, 102, 241, 0.07));
-      border: 1px solid rgba(124, 127, 242, 0.45);
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.12);
+      /* A gold-edged plaque with a soft honey glow from the top-left corner */
+      background:
+        radial-gradient(120% 140% at 0% 0%, rgba(229, 180, 85, 0.20), transparent 55%),
+        linear-gradient(180deg, #221d27, #1a1720);
+      border: 1px solid var(--accent-line);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(229, 180, 85, 0.06) inset;
     }
 
     #word {
-      font-size: clamp(30px, 7.5vw, 42px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: clamp(32px, 8vw, 48px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      color: #fff8ea;
       margin: 0;
       min-width: 0;
       overflow-wrap: anywhere;
@@ -670,7 +733,7 @@
       border-radius: 0;
       box-shadow: none;
     }
-    .word-header.empty #word { font-size: 22px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0; }
+    .word-header.empty #word { font-size: 24px; font-weight: 500; font-style: italic; color: var(--text-tertiary); letter-spacing: 0; }
 
     @media (prefers-reduced-motion: reduce) {
       #word.word-enter { animation: none; }
@@ -734,18 +797,20 @@
       font-size: 14px;
       font-weight: 600;
       border-radius: var(--radius-md);
-      border: 1px solid transparent;
+      /* Quiet outlined buttons: the card holds six of them, so they stay calm
+         and the word stays the star. Gold appears on hover. */
+      border: 1px solid var(--border-strong);
       cursor: pointer;
-      color: white;
-      background: var(--accent);
-      transition: background 0.15s ease;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(255, 240, 210, 0.04), rgba(255, 240, 210, 0)) , var(--bg-inset);
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
       touch-action: manipulation;
     }
 
     .audio-buttons button:hover,
-    .mark-buttons button:hover { background: var(--accent-hover); }
+    .mark-buttons button:hover { background: var(--bg-hover); border-color: var(--accent-line); color: #fff7e6; }
     .audio-buttons button:active,
-    .mark-buttons button:active { background: #4f52d6; }
+    .mark-buttons button:active { background: var(--accent-press); }
 
     .mark-buttons .correct { background: var(--success); color: #06281a; }
     .mark-buttons .correct:hover { background: #4de3ac; }
@@ -766,8 +831,8 @@
       font-weight: 700;
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-tertiary);
+      letter-spacing: 0.12em;
+      color: rgba(229, 180, 85, 0.72); /* muted gold, like the filter labels */
     }
 
     #difficulty, #origin, #pos {
@@ -862,39 +927,65 @@
       border-radius: var(--radius-sm);
     }
 
-    /* ---------- Tabs ---------- */
+    /* ---------- Header: title on the left, tabs on the right (stacked on phones) ---------- */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      margin-bottom: 18px;
+    }
+    .app-header .app-title { margin: 6px 0; }
+
+    /* ---------- Tabs: pill switcher, gold on the open tab ---------- */
     .tabs {
       display: flex;
       gap: 4px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 4px;
-      margin-bottom: 12px;
-      width: fit-content;
+      padding: 5px;
+      background: rgba(24, 21, 29, 0.8);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
       font-family: inherit;
       font-size: 14px;
       font-weight: 600;
-      padding: 9px 18px;
-      min-height: 38px;
-      border-radius: var(--radius-sm);
+      letter-spacing: 0.01em;
+      padding: 9px 20px;
+      min-height: 40px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
       touch-action: manipulation;
     }
+    .tab-icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn:disabled { opacity: 0.4; cursor: not-allowed; color: var(--text-secondary); }
+    .tab-btn:hover { color: var(--text); background: var(--bg-inset); }
+    .tab-btn:disabled { opacity: 0.4; cursor: not-allowed; color: var(--text-secondary); background: transparent; }
 
     .tab-btn.active {
-      background: var(--accent);
-      color: white;
+      background: var(--gold-gradient);
+      color: var(--on-accent);
+      box-shadow: 0 4px 14px rgba(229, 180, 85, 0.28);
+    }
+
+    /* Phones: the tabs fill the width, under the title */
+    @media (max-width: 699px) {
+      .app-header { margin-bottom: 14px; }
+      .tabs { width: 100%; }
+      .tab-btn { flex: 1; padding: 9px 8px; }
     }
 
     .tab-panel { display: none; }
@@ -938,8 +1029,10 @@
     }
 
     .stat-value {
-      font-size: 28px;
-      font-weight: 700;
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.1;
       color: var(--text);
     }
 
@@ -960,6 +1053,7 @@
 
     .stat-section h3 {
       margin: 0 0 12px;
+      font-family: inherit; /* small capitals read better in the sans */
       font-size: 13px;
       font-weight: 700;
       color: var(--text-tertiary);
@@ -1187,7 +1281,7 @@
       .bee-buddy.bb-pop .bb-figure { scale: none; translate: none; }
     }
 
-    .practice-title { margin: 0; font-size: 22px; font-weight: 800; }
+    .practice-title { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: 0.005em; }
 
     .practice-sub { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
 
@@ -1303,18 +1397,20 @@
       border-radius: var(--radius-md);
       border: none;
       cursor: pointer;
-      color: white;
-      background: var(--accent);
+      color: var(--on-accent);
+      background: var(--gold-gradient);
+      box-shadow: 0 6px 18px rgba(229, 180, 85, 0.25);
       touch-action: manipulation;
-      transition: background 0.15s ease;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
     }
 
-    .primary-btn:hover { background: var(--accent-hover); }
-    .primary-btn:active { background: #4f52d6; }
+    .primary-btn:hover { background: var(--accent-hover); box-shadow: 0 8px 22px rgba(229, 180, 85, 0.35); }
+    .primary-btn:active { background: var(--accent-press); }
     /* Greyed out, e.g. Start practice with no words in the picked groups */
     .primary-btn:disabled,
     .primary-btn:disabled:hover {
       background: var(--bg-inset);
+      box-shadow: none;
       color: var(--text-tertiary);
       cursor: not-allowed;
     }
@@ -1397,7 +1493,7 @@
       padding: 12px 16px; border-bottom: 1px solid var(--border);
     }
     .mw-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
-    .mw-panel-word { font-size: 20px; font-weight: 800; }
+    .mw-panel-word { font-family: var(--font-display); font-size: 24px; font-weight: 600; }
     .mw-close {
       flex: none; width: var(--tap); height: var(--tap); font-size: 18px; color: var(--text);
       background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
@@ -1406,7 +1502,7 @@
     .mw-entry { padding: 12px 0; }
     .mw-entry + .mw-entry { border-top: 1px solid var(--border); }
     .mw-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-    .mw-hw { font-size: 22px; font-weight: 800; }
+    .mw-hw { font-family: var(--font-display); font-size: 24px; font-weight: 600; }
     .mw-hom { font-size: 12px; color: var(--text-tertiary); margin-left: -6px; }
     .mw-fl { font-style: italic; color: var(--accent); font-weight: 600; }
     .mw-labels, .mw-forms, .mw-sls { color: var(--text-secondary); font-size: 13px; }
@@ -1449,7 +1545,7 @@
     @media (max-width: 699px) { .mw-panel { max-height: 85vh; } }
     @media (prefers-reduced-motion: reduce) { .mw-overlay, .mw-panel { animation: none; } }
 
-    /* "📖 Show MW info", shown once the word is answered */
+    /* "Show MW info", shown once the word is answered */
     .practice-feedback .fb-mw {
       display: inline-block; margin-top: 10px; padding: 6px 12px; min-height: 36px;
       font-family: inherit; font-size: 13px; font-weight: 700; color: inherit;
@@ -1458,7 +1554,7 @@
     }
     .practice-feedback .fb-mw:hover { background: rgba(255, 255, 255, 0.16); }
     .fb-tips { margin-top: 10px; }
-    .fb-tips::before { content: "💡 Spelling tips"; display: block; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .fb-tips::before { content: "✦  Spelling tips"; color: var(--accent); display: block; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
 
     .past-mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
     .past-mistakes li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
@@ -1627,7 +1723,7 @@
       font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary);
       background: none; border: none; border-radius: 6px; padding: 8px 14px; min-height: 36px; cursor: pointer;
     }
-    .act-toggle button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+    .act-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
     .act-select, .act-custom input {
       font-family: inherit; font-size: 16px; color: var(--text); background: var(--bg-inset);
       border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; min-height: 42px;
@@ -1810,12 +1906,49 @@
       .difficulty-bar { grid-template-columns: repeat(5, minmax(0, 1fr)); }
       .field-search { grid-column: auto; }
       body { padding: 24px; }
-      .app-title { margin-bottom: 24px; }
+      .app-header { margin-bottom: 24px; }
     }
   </style>
 </head>
 
 <body>
+<!-- Icon set: thin line icons drawn in the text colour (gold in the outlined
+     buttons, dark on gold buttons). Used as <svg class="ic"><use href="#i-name"/></svg>;
+     app.js iconSvg()/iconEl()/setIconText() build them for script-made text. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-device" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2.5 5.5c2.5-1 6-1 9.5 1 3.5-2 7-2 9.5-1v13c-2.5-1-6-1-9.5 1-3.5-2-7-2-9.5-1z"/><path d="M12 6.5v13"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M15.5 4.5l4 4L8 20H4v-4z"/><path d="M13 7l4 4"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3.5h12v17l-6-4-6 4z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h3.5c3.5 0 5.5 10 9 10H21M3 17h3.5c1.3 0 2.4-1.4 3.3-3.2M14.5 7H21M17.5 3.5 21 7l-3.5 3.5M17.5 13.5 21 17l-3.5 3.5"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6.5 3h11M6.5 21h11M7.5 3c0 5 9 6 9 9s-9 4-9 9M16.5 3c0 5-9 6-9 9s9 4 9 9"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.4v.1"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12 20 3M16.5 6.5 19 9M14 9.5l2 2"/></symbol>
+  <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.6-1.7"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M5.5 15.5a8 8 0 1 0 1.3-8L4 10"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 2.5 20.5 6 17 9.5"/><path d="M3.5 11.5V9a3 3 0 0 1 3-3h14M7 21.5 3.5 18 7 14.5"/><path d="M20.5 12.5V15a3 3 0 0 1-3 3h-14"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 3.2l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.2 6-.9z"/></symbol>
+  <symbol id="i-star-outline" viewBox="0 0 24 24"><path d="M12 3.2l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.2 6-.9z"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M3 8.5l4.6 3.8L12 5l4.4 7.3L21 8.5l-1.8 10H4.8z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-8.5 8.5"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3.5 3.5 0 0 0 3.8 4M16 6h3.5a3.5 3.5 0 0 1-3.8 4M12 13v4M9 20.5h6M10 17h4v3.5h-4z"/></symbol>
+</svg>
 <!-- DEV banner: everywhere except the live GitHub Pages site (localhost, the
      Wi-Fi server, opening the file), i.e. whenever the app uses the dev
      Firebase project. Same hostname check as the Firebase setup at the bottom. -->
@@ -1830,6 +1963,8 @@
   }
 </script>
 <div class="container">
+  <!-- Title and tabs share one row on wide screens, stacked on phones -->
+  <header class="app-header">
   <h1 class="app-title">
     <svg class="title-mark" viewBox="0 0 46 52" aria-hidden="true">
       <polygon class="hex" points="23,1.5 44.5,13.75 44.5,38.25 23,50.5 1.5,38.25 1.5,13.75" />
@@ -1850,6 +1985,23 @@
     </span>
   </h1>
 
+  <!-- Tabs: a pill switcher with line icons (switchTab in app.js uses data-tab) -->
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab-btn active" data-tab="learning">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7.5h8M8 11h6"/></svg>
+      <span>Learning</span>
+    </button>
+    <button class="tab-btn" data-tab="practice">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5l4 4L8 20H4v-4z"/><path d="M13 7l4 4"/></svg>
+      <span>Practice</span>
+    </button>
+    <button class="tab-btn" data-tab="stats">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg>
+      <span>Stats</span>
+    </button>
+  </nav>
+  </header>
+
   <div id="syncBanner" class="sync-banner" role="status" hidden>
     <span id="syncBannerText"></span>
     <button id="syncRetryBtn" class="reset-btn">Retry now</button>
@@ -1865,11 +2017,6 @@
     <span id="saveFailedBannerText"></span>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="learning">Learning</button>
-    <button class="tab-btn" data-tab="practice">Practice</button>
-    <button class="tab-btn" data-tab="stats">Stats</button>
-  </div>
 
   <div id="learningTab" class="tab-panel active">
   <div class="difficulty-bar">
@@ -1891,9 +2038,9 @@
       <details class="multi-select" id="difficultyFilter" data-kind="difficulty">
         <summary>All Bees</summary>
         <div class="multi-select-menu">
-          <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
-          <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
-          <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee <span class="pips">⬢</span></label>
+          <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee <span class="pips">⬢⬢</span></label>
+          <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee <span class="pips">⬢⬢⬢</span></label>
           <button type="button" class="filter-default-btn"></button>
         </div>
       </details>
@@ -1931,8 +2078,8 @@
     <div class="field field-search">
       <label class="field-label" for="searchInput">Search</label>
       <div class="field-row">
-        <input id="searchInput" class="search-box" placeholder="🔍 Search words" />
-        <button type="button" class="reset-btn clear-filters-btn" id="clearLearningFilters" title="Clear all filters" disabled>✖ Clear</button>
+        <input id="searchInput" class="search-box" placeholder="Search words" />
+        <button type="button" class="reset-btn clear-filters-btn" id="clearLearningFilters" title="Clear all filters" disabled><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Clear</button>
       </div>
     </div>
 
@@ -1962,7 +2109,7 @@
           <span class="word-list-title">Word List</span>
           <span class="collapse-summary" id="wordListCount"></span>
         </button>
-        <button type="button" class="reset-btn list-shuffle-btn" id="shuffleWordsBtn" aria-pressed="true" title="Show the words in a random order">🔀 Shuffle</button>
+        <button type="button" class="reset-btn list-shuffle-btn" id="shuffleWordsBtn" aria-pressed="true" title="Show the words in a random order"><svg class="ic" aria-hidden="true"><use href="#i-shuffle"/></svg>Shuffle</button>
       </div>
       <div class="collapse-body">
         <div class="list-legend">
@@ -1979,7 +2126,7 @@
       <div class="word-header empty">
         <h2 id="word">Select a word</h2>
         <div class="word-status">
-          <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
+          <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg>Clear</button>
         </div>
       </div>
       <!-- Other spellings Merriam-Webster accepts (app.js showWordVariants) -->
@@ -1993,21 +2140,21 @@
 
       <div class="audio-buttons">
         <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-          🔊 MW Pronunciation
+          <svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation
         </button>
-        <button onclick="playAmericanPronunciation()" title="Said by this device's American voice">🗣️ Device Pronunciation</button>
+        <button onclick="playAmericanPronunciation()" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
       </div>
 
       <div class="audio-buttons">
-        <button onclick="readDefinition()">▶️ Definition</button>
-        <button onclick="readSentence()">▶️ Sentence</button>
+        <button onclick="readDefinition()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
+        <button onclick="readSentence()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
       </div>
 
       <!-- "Show MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
       <div class="audio-buttons">
         <button type="button" id="mwPageBtn" class="mw-page-btn" disabled
           title="Show this word's Merriam-Webster entry: meanings, other spellings, phrases, word history">
-          📖 Show MW info
+          <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Show MW info
         </button>
       </div>
 
@@ -2087,9 +2234,9 @@
         <details class="multi-select" id="practiceDifficultyFilter" data-kind="difficulty">
           <summary>All Bees</summary>
           <div class="multi-select-menu">
-            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
-            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
-            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee <span class="pips">⬢</span></label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee <span class="pips">⬢⬢</span></label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee <span class="pips">⬢⬢⬢</span></label>
             <button type="button" class="filter-default-btn"></button>
           </div>
         </details>
@@ -2104,7 +2251,7 @@
         </details>
       </div>
 
-      <button type="button" class="reset-btn clear-filters-btn" id="clearPracticeFilters" title="Clear all filters" disabled>✖ Clear</button>
+      <button type="button" class="reset-btn clear-filters-btn" id="clearPracticeFilters" title="Clear all filters" disabled><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Clear</button>
 
       <div class="collapsible letters-collapsible collapsed">
         <button type="button" class="collapse-toggle letters-toggle" aria-expanded="false">
@@ -2146,7 +2293,7 @@
           <h2 class="practice-title">Spelling test</h2>
           <!-- Tests saved with "Save for later" (newest first); ending or finishing one removes it -->
           <section id="practiceSaved" class="saved-tests" aria-labelledby="practiceSavedTitle" hidden>
-            <div class="saved-tests-title" id="practiceSavedTitle">💾 Saved tests <span id="practiceSavedCount" class="saved-tests-count"></span></div>
+            <div class="saved-tests-title" id="practiceSavedTitle"><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg>Saved tests <span id="practiceSavedCount" class="saved-tests-count"></span></div>
             <div id="practiceSavedList" class="saved-tests-list"></div>
           </section>
           <p class="practice-sub" id="practiceSetText"></p>
@@ -2158,32 +2305,32 @@
             <label class="mode-option mode-learned" title="Opened on the Learning card and not practiced yet">
               <input type="checkbox" name="practiceMode" value="learned" checked />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">📘 Completed in Learning</span>
+              <span class="mode-name"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Completed in Learning</span>
               <span class="mode-count" id="modeCountLearned"></span>
             </label>
             <label class="mode-option mode-wrong">
               <input type="checkbox" name="practiceMode" value="wrong" checked />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">❌ Wrong</span>
+              <span class="mode-name"><svg class="ic" aria-hidden="true"><use href="#i-x-circle"/></svg>Wrong</span>
               <span class="mode-count" id="modeCountWrong"></span>
             </label>
             <!-- Locked: words must be learned before they're tested (tapping it explains why) -->
             <label class="mode-option mode-pending disabled" title="Finish the learning first">
               <input type="checkbox" name="practiceMode" value="pending" disabled />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">⏳ Not attempted</span>
+              <span class="mode-name"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg>Not attempted</span>
               <span class="mode-count" id="modeCountPending"></span>
             </label>
             <label class="mode-option mode-correct" title="Practiced and never spelled wrong">
               <input type="checkbox" name="practiceMode" value="alwaysRight" />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">✅ Always right</span>
+              <span class="mode-name"><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg>Always right</span>
               <span class="mode-count" id="modeCountAlwaysRight"></span>
             </label>
             <label class="mode-option mode-ever-wrong" title="Spelled wrong in at least one attempt, even if right since">
               <input type="checkbox" name="practiceMode" value="everWrong" />
               <span class="mode-check" aria-hidden="true"></span>
-              <span class="mode-name">⚠️ Ever spelled wrong</span>
+              <span class="mode-name"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg>Ever spelled wrong</span>
               <span class="mode-count" id="modeCountEverWrong"></span>
             </label>
           </div>
@@ -2192,12 +2339,12 @@
             <h3 id="learnFirstTitle">Finish the learning first!</h3>
             <p id="learnFirstText"></p>
             <form method="dialog" class="learn-first-actions">
-              <button class="primary-btn" value="learn">📘 OK, back to learning</button>
-              <button class="link-btn" value="parent" id="parentUnlockBtn" hidden>🔑 Parent unlock</button>
+              <button class="primary-btn" value="learn"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>OK, back to learning</button>
+              <button class="link-btn" value="parent" id="parentUnlockBtn" hidden><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>Parent unlock</button>
             </form>
           </dialog>
           <dialog id="parentDialog" class="learn-first-dialog" aria-labelledby="parentDialogTitle">
-            <h3 id="parentDialogTitle">🔑 Parent unlock</h3>
+            <h3 id="parentDialogTitle"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg>Parent unlock</h3>
             <p>Turns off the 50-word lock for one practice test.</p>
             <form id="parentForm" class="learn-first-actions" autocomplete="off">
               <input id="parentCode" class="practice-input parent-code" type="text" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="Passcode" placeholder="Passcode" />
@@ -2207,7 +2354,7 @@
             </form>
           </dialog>
           <p class="practice-hint mode-hint">Tap to include or leave out a group. Completed in Learning = opened on the Learning card and not practiced yet; it unlocks at 50 words. Ever spelled wrong = wrong in any attempt, even if right since.</p>
-          <p class="practice-hint" id="lockOffNote" hidden>🔓 50-word lock is off for the next test. <button type="button" class="link-btn" id="lockOnBtn">Turn it back on</button></p>
+          <p class="practice-hint" id="lockOffNote" hidden><svg class="ic" aria-hidden="true"><use href="#i-unlock"/></svg>50-word lock is off for the next test. <button type="button" class="link-btn" id="lockOnBtn">Turn it back on</button></p>
           <label class="correction-toggle" for="practiceShuffle">
             <input id="practiceShuffle" type="checkbox" checked />
             <span>Shuffle the words</span>
@@ -2216,7 +2363,7 @@
             <input id="practiceShowPictures" type="checkbox" checked />
             <span>Show pictures</span>
           </label>
-          <button class="primary-btn" id="practiceStartBtn">▶️ Start practice</button>
+          <button class="primary-btn" id="practiceStartBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Start practice</button>
           <p class="practice-hint">
             Pick the Scope, Difficulty and letters above, choose which words, then press Start.
             Listen to each word and type the spelling — you have 90 seconds per word.
@@ -2228,15 +2375,15 @@
           <div class="practice-top">
             <span id="practiceCounter" class="practice-counter"></span>
             <div class="practice-top-actions">
-              <button type="button" class="reset-btn practice-top-btn" id="practiceSaveBtn" title="Keep this test to finish later">💾 Save for later</button>
-              <button type="button" class="reset-btn practice-top-btn end-test-btn" id="practiceEndBtn" title="Finish now and see your results">⏹️ End test</button>
+              <button type="button" class="reset-btn practice-top-btn" id="practiceSaveBtn" title="Keep this test to finish later"><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg>Save for later</button>
+              <button type="button" class="reset-btn practice-top-btn end-test-btn" id="practiceEndBtn" title="Finish now and see your results"><svg class="ic" aria-hidden="true"><use href="#i-stop"/></svg>End test</button>
             </div>
           </div>
           <div class="practice-tally" aria-label="Test progress">
             <div class="tally-item"><span class="tally-value" id="tallyTotal">0</span><span class="tally-label">Total</span></div>
-            <div class="tally-item tally-correct"><span class="tally-value" id="tallyCorrect">0</span><span class="tally-label">✅ Right</span></div>
-            <div class="tally-item tally-wrong"><span class="tally-value" id="tallyWrong">0</span><span class="tally-label">❌ Wrong</span></div>
-            <div class="tally-item"><span class="tally-value" id="tallyLeft">0</span><span class="tally-label">⏳ Left</span></div>
+            <div class="tally-item tally-correct"><span class="tally-value" id="tallyCorrect">0</span><span class="tally-label"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Right</span></div>
+            <div class="tally-item tally-wrong"><span class="tally-value" id="tallyWrong">0</span><span class="tally-label"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Wrong</span></div>
+            <div class="tally-item"><span class="tally-value" id="tallyLeft">0</span><span class="tally-label"><svg class="ic" aria-hidden="true"><use href="#i-hourglass"/></svg>Left</span></div>
           </div>
           <div class="timer" id="practiceTimer" role="timer" aria-live="off">
             <div class="timer-track"><div class="timer-fill" id="practiceTimerFill"></div></div>
@@ -2244,17 +2391,17 @@
           </div>
 
           <div class="audio-buttons">
-            <button id="practiceMWBtn">🔊 MW Pronunciation</button>
-            <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations">🔁 Other pronunciation</button>
-            <button id="practiceUSBtn" title="Said by this device's American voice">🗣️ Device Pronunciation</button>
+            <button id="practiceMWBtn"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation</button>
+            <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Other pronunciation</button>
+            <button id="practiceUSBtn" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
           </div>
           <div class="audio-buttons">
-            <button id="practiceDefBtn">▶️ Definition</button>
-            <button id="practiceSentBtn">▶️ Sentence</button>
+            <button id="practiceDefBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
+            <button id="practiceSentBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
           </div>
           <div class="audio-buttons">
-            <button id="practiceOriginBtn">🌍 Origin</button>
-            <button id="practicePosBtn">🏷️ Part of speech</button>
+            <button id="practiceOriginBtn"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Origin</button>
+            <button id="practicePosBtn"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>Part of speech</button>
           </div>
           <div id="practiceInfo" class="practice-info" hidden aria-live="polite"></div>
           <!-- No caption or credit here: the Wikipedia title would give away the spelling -->
@@ -2291,8 +2438,8 @@
           <div class="practice-big-score" id="practiceDoneScore"></div>
           <p class="practice-sub" id="practiceDoneText"></p>
           <div class="practice-actions">
-            <button class="primary-btn" id="practiceRetryBtn">🔁 Practice missed words</button>
-            <button class="reset-btn" id="practiceRestartBtn">🏠 Go to practice home</button>
+            <button class="primary-btn" id="practiceRetryBtn"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Practice missed words</button>
+            <button class="reset-btn" id="practiceRestartBtn"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Go to practice home</button>
           </div>
         </div>
       </div>
@@ -2318,9 +2465,9 @@
         <details class="multi-select" id="statsDifficultyFilter" data-kind="difficulty">
           <summary>All Bees</summary>
           <div class="multi-select-menu">
-            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
-            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
-            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+            <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee <span class="pips">⬢</span></label>
+            <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee <span class="pips">⬢⬢</span></label>
+            <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee <span class="pips">⬢⬢⬢</span></label>
           </div>
         </details>
       </div>
@@ -2340,13 +2487,13 @@
 
     <div style="margin-top:20px;text-align:center;">
       <button class="reset-btn" style="width:100%;max-width:400px;" onclick="confirmReset()">
-        ♻️ Start Over
+        <svg class="ic" aria-hidden="true"><use href="#i-restart"/></svg>Start Over
       </button>
     </div>
   </div>
 </div>
 
-<!-- 🔤 Letters picked on the Learning tab (buttons drawn by renderLearningLetters in app.js) -->
+<!-- Letters picked on the Learning tab (buttons drawn by renderLearningLetters in app.js) -->
 <script>
   window.selectedLetters = new Set();
 </script>
@@ -2359,7 +2506,7 @@
 <div class="mw-panel" role="dialog" aria-modal="true" aria-label="Merriam-Webster dictionary entry">
   <header class="mw-panel-head">
     <div>
-      <div class="mw-brand">📖 Merriam-Webster</div>
+      <div class="mw-brand"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Merriam-Webster</div>
       <div id="mwPanelWord" class="mw-panel-word"></div>
     </div>
     <button type="button" id="mwPanelClose" class="mw-close" aria-label="Close">✕</button>
@@ -2431,8 +2578,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110709"></script>
+<script src="app.js?v=2026110801"></script>
 <script src="bee-buddy.js?v=2026110702"></script>
-<script src="practice.js?v=2026110704"></script>
+<script src="practice.js?v=2026110802"></script>
 </body>
 </html>

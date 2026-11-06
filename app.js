@@ -7,6 +7,26 @@ const USER_ID = "nikku";
 const SESSIONS_KEY = "_practiceSessions"; // practice test summaries, same doc
 
 /* ---------------------------
+   Line icons: the <symbol id="i-…"> set at the top of index.html's <body>.
+   iconSvg() is for HTML strings; iconEl() / setIconText() for elements whose
+   text is set by script (the label goes in as plain text, never as HTML).
+--------------------------- */
+function iconSvg(name) {
+  return `<svg class="ic" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+}
+
+function iconEl(name) {
+  const template = document.createElement("template");
+  template.innerHTML = iconSvg(name);
+  return template.content.firstChild;
+}
+
+// e.g. setIconText(button, "repeat", "Practice 3 missed words")
+function setIconText(el, name, text) {
+  el.replaceChildren(iconEl(name), document.createTextNode(text));
+}
+
+/* ---------------------------
    Speech setup (FORCE AMERICAN)
 --------------------------- */
 let americanVoice = null;
@@ -819,9 +839,9 @@ function showWordInLearning(word) {
    Difficulty labels
 --------------------------- */
 function difficultyLabel(level) {
-  if (level === "one") return "One Bee 🐝";
-  if (level === "two") return "Two Bee 🐝🐝";
-  if (level === "three") return "Three Bee 🐝🐝🐝";
+  if (level === "one") return "One Bee ⬢";
+  if (level === "two") return "Two Bee ⬢⬢";
+  if (level === "three") return "Three Bee ⬢⬢⬢";
   return "All Bees";
 }
 
@@ -1053,7 +1073,7 @@ function updateDefaultButtons() {
       const values = currentValues(id);
       const isDefault = sameValues(values, dropdownDefault(id));
       btn.disabled = isDefault || !validDefault(group, values);
-      btn.textContent = isDefault ? `⭐ Default for ${tabs}` : `☆ Make this the default for ${tabs}`;
+      setIconText(btn, isDefault ? "star" : "star-outline", isDefault ? `Default for ${tabs}` : `Make this the default for ${tabs}`);
     });
   });
 }
@@ -1336,7 +1356,7 @@ function renderLearningLetters(pool = letterPool) {
     if (loaded && done.has(letter)) {
       const crown = document.createElement("span");
       crown.className = justDone.includes(letter) ? "letter-crown crown-new" : "letter-crown";
-      crown.textContent = "👑";
+      crown.append(iconEl("crown"));
       crown.setAttribute("aria-hidden", "true");
       btn.append(crown);
       btn.title += " · all completed!";
@@ -1373,7 +1393,7 @@ function renderWordList() {
     if (item.image_url) {
       const pic = document.createElement("span");
       pic.className = "wi-pic" + (item.imageHidden ? " hidden-pic" : "");
-      pic.textContent = "🖼️";
+      pic.append(iconEl("image"));
       pic.title = item.imageHidden ? "Has a picture (hidden)" : "Has a picture";
       label.appendChild(pic);
     }
@@ -1592,7 +1612,7 @@ function renderPronunciations(item) {
   for (const p of list) {
     const chip = document.createElement(p.audio_url ? "button" : "span");
     chip.className = "pronunciation-chip";
-    chip.textContent = `${p.audio_url ? "🔊 " : ""}\\${p.written}\\`;
+    chip.replaceChildren(...(p.audio_url ? [iconEl("volume")] : []), document.createTextNode(`\\${p.written}\\`));
     if (p.label) {
       const label = document.createElement("small");
       label.textContent = p.label;
@@ -1674,7 +1694,7 @@ function renderSourceBadge(id, text, source) {
   const badge = document.getElementById(id);
   const isMW = source === "merriam_webster";
   badge.hidden = !text;
-  badge.textContent = isMW ? "📖 Merriam-Webster" : "🤖 Generated";
+  setIconText(badge, isMW ? "book" : "sparkle", isMW ? "Merriam-Webster" : "Generated");
   badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
   badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
 }
@@ -1720,7 +1740,7 @@ function renderPicture(item) {
   document.getElementById("pictureHiddenNote").hidden = !item.imageHidden;
   document.getElementById("togglePictureBtn").textContent =
     item.imageHidden ? "Show picture" : "Wrong or unhelpful picture? Hide it";
-  source.textContent = isMW ? "📖 Merriam-Webster" : "🌐 Wikipedia";
+  setIconText(source, isMW ? "book" : "globe", isMW ? "Merriam-Webster" : "Wikipedia");
   source.href = item.image_link || item.image_url;
   source.title = item.image_credit || "";
   img.alt = `Picture of ${item.word}`;
@@ -2154,7 +2174,7 @@ function renderStats() {
       <div class="mini-bar-row">
         <div class="mini-bar-row-header">
           <span class="mini-bar-title">${difficultyLabel(level)}</span>
-          <span class="mini-bar-caption"><span title="Always right">${c.alwaysRight} ✅</span> · <span title="Ever spelled wrong">${c.everWrong} ⚠️</span> · ${c.pending} left</span>
+          <span class="mini-bar-caption"><span title="Always right">${c.alwaysRight} ✓</span> · <span title="Ever spelled wrong">${c.everWrong} !</span> · ${c.pending} left</span>
         </div>
         ${stackBarHtml(practiceSegments(c), c.total, true)}
       </div>`;
@@ -2205,12 +2225,12 @@ function renderStats() {
 
     <div class="stats-columns">
       <section class="stats-col" aria-label="Learning">
-        <div class="stats-col-header learning"><h2 class="stats-heading">📖 Learning</h2></div>
+        <div class="stats-col-header learning"><h2 class="stats-heading">${iconSvg("book")}Learning</h2></div>
         <div class="stat-grid">
           ${statTile("Total words", lc.total)}
-          ${statTile("✓ Completed", lc.completed, "var(--covered)", "completed")}
-          ${statTile("○ Not started", lc.notStarted, null, "not-started")}
-          ${statTile("⚑ Marked for correction", lc.correction, "var(--accent-hover)", "correction")}
+          ${statTile(`${iconSvg("check")}Completed`, lc.completed, "var(--covered)", "completed")}
+          ${statTile(`${iconSvg("hourglass")}Not started`, lc.notStarted, null, "not-started")}
+          ${statTile(`${iconSvg("flag")}Marked for correction`, lc.correction, "var(--accent-hover)", "correction")}
         </div>
         <div class="stat-section">
           <h3>Overall</h3>
@@ -2228,14 +2248,14 @@ function renderStats() {
       </section>
 
       <section class="stats-col" aria-label="Practice">
-        <div class="stats-col-header practice"><h2 class="stats-heading">✍️ Practice</h2></div>
+        <div class="stats-col-header practice"><h2 class="stats-heading">${iconSvg("pen")}Practice</h2></div>
         <div class="stat-grid">
-          ${statTile("✍️ Words practiced", pc.alwaysRight + pc.everWrong, null, null, "", `of ${pc.total} words`)}
-          ${statTile("⏳ Not attempted", pc.pending, null, "practice-pending")}
-          ${statTile("✅ Always right", pc.alwaysRight, "var(--success)", "practice-always-right", "", "never spelled wrong")}
-          ${statTile("⚠️ Ever spelled wrong", pc.everWrong, "var(--warning)", "practice-ever-wrong", "",
+          ${statTile(`${iconSvg("pen")}Words practiced`, pc.alwaysRight + pc.everWrong, null, null, "", `of ${pc.total} words`)}
+          ${statTile(`${iconSvg("hourglass")}Not attempted`, pc.pending, null, "practice-pending")}
+          ${statTile(`${iconSvg("check-circle")}Always right`, pc.alwaysRight, "var(--success)", "practice-always-right", "", "never spelled wrong")}
+          ${statTile(`${iconSvg("alert")}Ever spelled wrong`, pc.everWrong, "var(--warning)", "practice-ever-wrong", "",
             pc.stillWrong ? `${pc.stillWrong} still wrong last time` : "")}
-          ${statTile("🎯 First-try accuracy", percent(pc.firstTryCorrect, pc.firstTried), null, null, "stat-wide",
+          ${statTile(`${iconSvg("target")}First-try accuracy`, percent(pc.firstTryCorrect, pc.firstTried), null, null, "stat-wide",
             pc.firstTried ? `${pc.firstTryCorrect} of ${pc.firstTried} words right first time` : "no words practiced yet")}
         </div>
         <div class="stat-section">
@@ -2494,7 +2514,7 @@ function activitySectionHtml(list) {
 
   return `
     <section class="stat-section activity-section" aria-label="Activity">
-      <h3>📅 Activity by ${unit.toLowerCase()}</h3>
+      <h3>${iconSvg("calendar")}Activity by ${unit.toLowerCase()}</h3>
       <div class="act-controls">
         <div class="act-toggle" role="group" aria-label="Show">
           <button type="button" data-chart="words" aria-pressed="${activityView.chart === "words"}">Words</button>
@@ -2514,16 +2534,16 @@ function activitySectionHtml(list) {
       <div class="act-range-text">${escapeHtml(dayLabel(from, { month: "short", day: "numeric", year: "numeric" }))}${from === to ? "" : ` – ${escapeHtml(dayLabel(to, { month: "short", day: "numeric", year: "numeric" }))}`}</div>
       ${activityView.chart === "time" ? timeViewHtml(periods, unit) : `
       <div class="stat-grid act-tiles">
-        ${statTile("📖 Words learned", learned)}
-        ${statTile("✍️ Words practiced", practicedWords)}
+        ${statTile(`${iconSvg("book")}Words learned`, learned)}
+        ${statTile(`${iconSvg("pen")}Words practiced`, practicedWords)}
         ${statTile("Attempts", attempts)}
-        ${statTile("🎯 Accuracy", attempts ? `${Math.round((correct / attempts) * 100)}%` : "—")}
+        ${statTile(`${iconSvg("target")}Accuracy`, attempts ? `${Math.round((correct / attempts) * 100)}%` : "—")}
       </div>
       ${activityChartHtml(periods)}
       <details class="act-table-wrap">
         <summary>Show as a table</summary>
         <table class="act-table">
-          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th>${PRACTICE_KINDS.map(k => `<th scope="col">${k.name}</th>`).join("")}<th scope="col">Attempts</th><th scope="col">✅</th><th scope="col">❌</th></tr></thead>
+          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th>${PRACTICE_KINDS.map(k => `<th scope="col">${k.name}</th>`).join("")}<th scope="col">Attempts</th><th scope="col">✓</th><th scope="col">✗</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </details>
@@ -2535,7 +2555,7 @@ function activitySectionHtml(list) {
    Stats: the Time view of Activity. Comes from the time log, which covers
    everything she did whatever the Stats filters say.
 --------------------------- */
-const SITTING_NAMES = { learning: "📖 Learning", practice: "✍️ Practice" };
+const SITTING_NAMES = { learning: `${iconSvg("book")}Learning`, practice: `${iconSvg("pen")}Practice` };
 const TIME_SERIES = [
   { key: "learning", name: "Learning", color: "var(--series-learned)" },
   { key: "practice", name: "Practice", color: "var(--series-new)" }
@@ -2554,11 +2574,12 @@ function formatDuration(seconds) {
   return rest ? `${minutes} min ${rest} sec` : `${minutes} min`;
 }
 
-// "📖 12 min 5 sec · ✍️ 25 min", leaving out whichever she didn't do
+// "Learning 12 min 5 sec · Practice 25 min", leaving out whichever she didn't do
+// (plain text: it's also used where only text can go)
 function timeSplit(learning, practice) {
   return [
-    learning && `📖 ${formatDuration(learning)}`,
-    practice && `✍️ ${formatDuration(practice)}`
+    learning && `Learning ${formatDuration(learning)}`,
+    practice && `Practice ${formatDuration(practice)}`
   ].filter(Boolean).join(" · ");
 }
 
@@ -2643,9 +2664,9 @@ function timeViewHtml(periods, unit) {
     </tr>`).reverse().join("");
   return `
       <div class="stat-grid act-tiles">
-        ${statTile("⏱️ Total", duration(learning + practice))}
-        ${statTile("📖 Learning", duration(learning))}
-        ${statTile("✍️ Practice", duration(practice))}
+        ${statTile(`${iconSvg("clock")}Total`, duration(learning + practice))}
+        ${statTile(`${iconSvg("book")}Learning`, duration(learning))}
+        ${statTile(`${iconSvg("pen")}Practice`, duration(practice))}
         ${statTile("Sittings", sum("sittings"))}
       </div>
       ${timeChartHtml(periods)}
@@ -2753,7 +2774,7 @@ function wireActivity(container) {
     };
     tip.append(
       row(ACTIVITY_SERIES[0], learned, ""),
-      row(ACTIVITY_SERIES[1], practiced, ` · ${attempts} attempt${attempts === "1" ? "" : "s"}, ${correct} ✅ ${wrong} ❌`),
+      row(ACTIVITY_SERIES[1], practiced, ` · ${attempts} attempt${attempts === "1" ? "" : "s"}, ${correct} right, ${wrong} wrong`),
       ...PRACTICE_KINDS.map((k, i) => {
         const line = row(k, kinds[i], "");
         line.classList.add("act-tip-sub");
@@ -2765,7 +2786,7 @@ function wireActivity(container) {
     if (timeSeconds) {
       const line = document.createElement("div");
       line.className = "act-tip-row";
-      line.textContent = `⏱️ ${formatDuration(timeSeconds)} · ${timeSplit(Number(learningSeconds), Number(practiceSeconds))}`;
+      setIconText(line, "clock", `${formatDuration(timeSeconds)} · ${timeSplit(Number(learningSeconds), Number(practiceSeconds))}`);
       label.before(line);
     }
     place(col);
@@ -2785,9 +2806,9 @@ function wireActivity(container) {
    Reset
 --------------------------- */
 async function confirmReset() {
-  if (!confirm("⚠️ This will reset ALL progress — completed words, practice history and test results.\n\nContinue?")) return;
-  if (!confirm("❗ Are you REALLY sure?")) return;
-  if (!confirm("🛑 Last chance: all progress will be permanently deleted. This cannot be undone.\n\nDelete everything?")) return;
+  if (!confirm("This will reset ALL progress — completed words, practice history and test results.\n\nContinue?")) return;
+  if (!confirm("Are you REALLY sure?")) return;
+  if (!confirm("Last chance: all progress will be permanently deleted. This cannot be undone.\n\nDelete everything?")) return;
   await resetSelection();
 }
 
@@ -2899,7 +2920,7 @@ function followMWPage(item) {
 }
 
 /* ---------------------------
-   MW info pop-up ("📖 Show MW info"): the word's Merriam-Webster entry shown
+   MW info pop-up ("Show MW info"): the word's Merriam-Webster entry shown
    inside the app, over a dimmed page. The entries are saved ahead of time by
    fetch_mw_entries.py (and the nightly "Fetch MW entries" workflow) into
    mw_entries/<scope>_<letter>.json, so the MW API key never reaches the
@@ -2968,13 +2989,18 @@ function renderMWEntry(entry) {
   // "plural of mouse", "past tense of swim"
   if (entry.crossRefs?.length) box.append(mwEl("div", "mw-crossref", entry.crossRefs.join("; ")));
   // Other accepted spellings: what a bee judge would also accept
-  if (entry.variants?.length) box.append(mwEl("div", "mw-variants", `✍️ Also spelled: ${variantText(entry.variants)}`));
+  if (entry.variants?.length) {
+    const variants = mwEl("div", "mw-variants", `Also spelled: ${variantText(entry.variants)}`);
+    variants.prepend(iconEl("pen"));
+    box.append(variants);
+  }
 
   if (entry.prs?.length) {
     const prs = mwEl("div", "mw-prs");
     entry.prs.forEach(p => {
       if (p.audio) {
-        const btn = mwEl("button", "mw-pr", `🔊 \\${p.mw}\\`);
+        const btn = mwEl("button", "mw-pr", `\\${p.mw}\\`);
+        btn.prepend(iconEl("volume"));
         btn.type = "button";
         btn.addEventListener("click", () => playMWAudio(p.audio));
         prs.append(btn);
@@ -3089,7 +3115,7 @@ async function showMWPanel(item = currentItem) {
   renderMWRecord(item.word, words ? words[item.word] : null);
 }
 
-// Learning card: "✍️ Also spelled: or theatre" under the word when MW accepts
+// Learning card: "Also spelled: or theatre" under the word when MW accepts
 // other spellings (what a bee judge would also accept). Learning only: it
 // would give the spelling away in a test.
 async function showWordVariants(item) {
@@ -3100,7 +3126,8 @@ async function showWordVariants(item) {
   if (currentItem !== item || !words) return; // moved on meanwhile, or offline
   const variants = (words[item.word]?.entries || []).flatMap(e => e.variants || []);
   if (!variants.length) return;
-  el.innerHTML = mwHtml(`✍️ Also spelled: ${variantText(variants)}`);
+  el.innerHTML = mwHtml(`Also spelled: ${variantText(variants)}`);
+  el.prepend(iconEl("pen"));
   el.hidden = false;
 }
 
