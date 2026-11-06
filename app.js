@@ -225,8 +225,8 @@ function showSaveFailed(err) {
 // Without offline storage, leaving now would lose the unsent saves
 window.addEventListener("beforeunload", event => {
   if (unconfirmedWrites && !window.dbPersistent) {
-    event.preventDefault();
-    event.returnValue = "";
+    event.preventDefault();  // asks "Leave site?" in current browsers
+    event.returnValue = "";  // the same for older ones (e.g. older Safari); deprecated but harmless
   }
 });
 
@@ -1655,6 +1655,10 @@ function selectWord(index, autoplay = true) {
   renderWordCardStatus();
 
   updateMWButtonState(currentItem);
+  followMWPage(currentItem);
+  // If the MW pop-up is open when the card changes word, it shows the new word
+  if (mwPanelOpen()) showMWPanel(currentItem);
+  showWordVariants(currentItem);
 
   // Every recorded pronunciation, MW's preferred one first, then the device's American voice
   if (!autoplay) stopAllAudio();
@@ -2837,4 +2841,288 @@ async function resetSelection() {
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
   if (btn) btn.disabled = !item?.audio_url;
+  const page = document.getElementById("mwPageBtn");
+  if (page) page.disabled = !item;
 }
+
+/* ---------------------------
+   Full Merriam-Webster web page, opened from the "Open the full page" link at
+   the bottom of the MW info pop-up (below). MW's site refuses to be shown
+   inside other sites, so it gets a window of its own: a small one on the right
+   of the screen on computers, a new tab on phones and iPads. There is only
+   ever one: later clicks load the new word in that same window/tab.
+--------------------------- */
+const MW_WINDOW_NAME = "spellingBeeMW"; // the one window every MW page opens in
+let mwWindow = null;                    // that window, once opened (null after a reload)
+
+// merriam-webster.com/dictionary/<word>, accents and spaces encoded
+function mwPageUrl(word) {
+  return `https://www.merriam-webster.com/dictionary/${encodeURIComponent(word)}`;
+}
+
+// Is the MW window still open? (Reading another site's window can throw.)
+function mwWindowOpen() {
+  try {
+    return Boolean(mwWindow && !mwWindow.closed);
+  } catch {
+    return false;
+  }
+}
+
+// Every click goes through window.open with the same name: the browser finds the
+// MW window/tab that's already open, loads the new word in it and brings it to
+// the front, instead of opening another one. (Its link back to the app is left
+// in place on purpose: without it the browser refuses to let the app send that
+// tab to the next word, which is why a second click used to do nothing.)
+function openMWPage(word = currentItem?.word) {
+  if (!word) return;
+  // Right-hand side of the screen (sizes fall back if the browser doesn't say);
+  // only used the first time, when the window is created
+  const screenW = screen.availWidth || window.outerWidth || 1280;
+  const screenH = screen.availHeight || window.outerHeight || 900;
+  const width = Math.max(360, Math.min(560, screenW));
+  const height = Math.max(480, Math.min(860, screenH - 40));
+  const left = Math.max(0, (screen.availLeft || 0) + screenW - width);
+  const top = screen.availTop || 0;
+  const opened = window.open(mwPageUrl(word), MW_WINDOW_NAME,
+    `popup,width=${width},height=${height},left=${left},top=${top}`);
+  if (opened) mwWindow = opened;
+  try { mwWindow?.focus(); } catch {}
+}
+
+// The Learning card moved to another word (selectWord): if the full MW page is
+// still open in its window, show the new word there too. Never called from
+// Practice, so it can't reveal a test word.
+function followMWPage(item) {
+  if (!item || !mwWindowOpen()) return;
+  try { mwWindow.location.href = mwPageUrl(item.word); } catch {}
+}
+
+/* ---------------------------
+   MW info pop-up ("📖 Show MW info"): the word's Merriam-Webster entry shown
+   inside the app, over a dimmed page. The entries are saved ahead of time by
+   fetch_mw_entries.py (and the nightly "Fetch MW entries" workflow) into
+   mw_entries/<scope>_<letter>.json, so the MW API key never reaches the
+   browser. Each letter's file is downloaded the first time one of its words is
+   opened, then kept for the rest of the visit. Words not saved yet show a
+   note and the link to the full MW page.
+   In Practice it opens only after a word is answered, and the next question
+   closes it (practice.js), so it can never give a spelling away.
+--------------------------- */
+// Added to the file URLs so a phone fetches fresh copies right away. Not
+// required for the nightly additions: GitHub Pages lets browsers keep a file
+// for only ~10 minutes, so new entries show up on their own.
+const MW_ENTRIES_VERSION = "2026110801";
+const mwEntryFiles = new Map(); // "school_a" -> Promise of { word: record }, or null when offline
+let mwPanelItem = null;         // the word the pop-up is showing (null when closed)
+
+// One letter's saved entries, downloaded once per visit. Resolves to
+// { word: record } ({} if there's no file for that letter yet), or null if it
+// couldn't be downloaded (offline), in which case the next call tries again.
+function loadMWEntryFile(part) {
+  if (!mwEntryFiles.has(part)) {
+    mwEntryFiles.set(part, fetch(`mw_entries/${part}.json?v=${MW_ENTRIES_VERSION}`)
+      .then(r => (r.ok ? r.json() : { words: {} })) // no file yet for this letter
+      .then(data => data.words || {})
+      .catch(() => {
+        mwEntryFiles.delete(part); // offline: try again next time
+        return null;
+      }));
+  }
+  return mwEntryFiles.get(part);
+}
+
+// The saved text has only <i>/<b> tags (fetch_mw_entries.py escapes the rest);
+// anything else that looks like a tag is shown as text
+function mwHtml(text) {
+  return String(text || "").replace(/<(?!\/?[ib]>)/g, "&lt;");
+}
+
+// A new element for the pop-up; htmlText (optional) goes through mwHtml first
+function mwEl(tag, className, htmlText) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (htmlText !== undefined) el.innerHTML = mwHtml(htmlText);
+  return el;
+}
+
+// "or theatre; or less commonly cliche" (syllable dots dropped: they're spellings)
+function variantText(variants) {
+  return variants.map(v => `<i>${v.label}</i> <b>${v.spelling.replace(/·/g, "")}</b>`).join("; ");
+}
+
+/* One MW entry (a word can have several: "barge" noun and "barge" verb), laid
+   out like MW's own page: headword, "plural of …", other spellings,
+   pronunciations, forms, drawing, numbered meanings, phrases, synonym
+   discussion, word history, first known use, other forms. Fields a word
+   doesn't have are simply left out. See compact_entry() in fetch_mw_entries.py
+   for what each field holds. */
+function renderMWEntry(entry) {
+  const box = mwEl("section", "mw-entry");
+  const head = mwEl("div", "mw-head");
+  head.append(mwEl("span", "mw-hw", entry.hw));
+  if (entry.hom) head.append(mwEl("sup", "mw-hom", String(entry.hom)));
+  if (entry.fl) head.append(mwEl("span", "mw-fl", entry.fl));
+  box.append(head);
+  if (entry.labels) box.append(mwEl("div", "mw-labels", entry.labels.join("; ")));
+  // "plural of mouse", "past tense of swim"
+  if (entry.crossRefs?.length) box.append(mwEl("div", "mw-crossref", entry.crossRefs.join("; ")));
+  // Other accepted spellings: what a bee judge would also accept
+  if (entry.variants?.length) box.append(mwEl("div", "mw-variants", `✍️ Also spelled: ${variantText(entry.variants)}`));
+
+  if (entry.prs?.length) {
+    const prs = mwEl("div", "mw-prs");
+    entry.prs.forEach(p => {
+      if (p.audio) {
+        const btn = mwEl("button", "mw-pr", `🔊 \\${p.mw}\\`);
+        btn.type = "button";
+        btn.addEventListener("click", () => playMWAudio(p.audio));
+        prs.append(btn);
+      } else {
+        prs.append(mwEl("span", "mw-pr mw-pr-silent", `\\${p.mw}\\`));
+      }
+    });
+    box.append(prs);
+  }
+  if (entry.forms) box.append(mwEl("div", "mw-forms", entry.forms.join("; ")));
+
+  // MW's drawing, for the words that have one (left out if it doesn't load)
+  if (entry.art?.url) {
+    const figure = mwEl("figure", "mw-art");
+    const img = document.createElement("img");
+    img.setAttribute("loading", "lazy");
+    img.alt = entry.art.caption ? entry.art.caption.replace(/<[^>]*>/g, "") : `Drawing of ${entry.hw}`;
+    img.onerror = () => figure.remove();
+    img.src = entry.art.url;
+    figure.append(img);
+    if (entry.art.caption) figure.append(mwEl("figcaption", "", entry.art.caption));
+    box.append(figure);
+  }
+
+  (entry.defs || []).forEach(group => {
+    if (group.vd) box.append(mwEl("div", "mw-vd", group.vd));
+    const list = mwEl("ol", "mw-senses");
+    group.senses.forEach(sense => {
+      const li = mwEl("li", "mw-sense");
+      if (sense.sn) li.append(mwEl("span", "mw-sn", sense.sn));
+      if (sense.label) li.append(mwEl("span", "mw-sls", sense.label));
+      li.append(mwEl("span", "mw-dt", sense.text));
+      if (sense.variants?.length) li.append(mwEl("div", "mw-also", `also spelled ${variantText(sense.variants)}`));
+      if (sense.also) li.append(mwEl("div", "mw-also", sense.also));
+      if (sense.note) li.append(mwEl("div", "mw-note", `— ${sense.note}`));
+      (sense.examples || []).forEach(example => li.append(mwEl("div", "mw-example", `“${example}”`)));
+      list.append(li);
+    });
+    box.append(list);
+  });
+
+  if (entry.phrases?.length) {
+    const list = mwEl("ul", "mw-phrases");
+    entry.phrases.forEach(p => list.append(mwEl("li", "", `<b>${p.phrase}</b> — ${p.meaning}`)));
+    box.append(mwEl("div", "mw-section", "Phrases"), list);
+  }
+  if (entry.synonyms) {
+    box.append(mwEl("div", "mw-section", `${entry.synonyms.title} discussion`),
+      mwEl("p", "mw-synonyms", entry.synonyms.text));
+    (entry.synonyms.examples || []).forEach(example => box.append(mwEl("div", "mw-example", `“${example}”`)));
+  }
+
+  if (entry.history) {
+    box.append(mwEl("div", "mw-section", "Word history"), mwEl("p", "mw-history", entry.history));
+  }
+  if (entry.firstUse) box.append(mwEl("p", "mw-first", `<b>First known use:</b> ${entry.firstUse}`));
+  if (entry.related?.length) {
+    box.append(mwEl("p", "mw-related",
+      `<b>Other forms:</b> ${entry.related.map(r => `${r.word} <i>${r.fl}</i>`).join(", ")}`));
+  }
+  return box;
+}
+
+/* Fills the pop-up for `word`. `record` is what loadMWEntryFile gave for it:
+     null       the letter's file couldn't be downloaded (offline)
+     undefined  not fetched yet (the nightly job hasn't reached it)
+     { offensive: true }        MW has it but marks it offensive: not shown
+     { entries: [] }            not in MW's Collegiate Dictionary (+ MW's suggestions)
+     { entries: [ … ] }         the entries; a plural like "beans" gets MW's
+                                "bean" entry, so the pop-up says which word it is */
+function renderMWRecord(word, record) {
+  const body = document.getElementById("mwPanelBody");
+  if (record === null) {
+    body.replaceChildren(mwEl("p", "mw-empty", "Couldn't load the dictionary entry (no connection?). Try again, or open the full page below."));
+    return;
+  }
+  if (!record) {
+    body.replaceChildren(mwEl("p", "mw-empty", `The Merriam-Webster entry for <b>${word}</b> hasn't been downloaded yet. Open the full page below.`));
+    return;
+  }
+  if (record.offensive) {
+    body.replaceChildren(mwEl("p", "mw-empty", `Merriam-Webster marks <b>${word}</b> as offensive, so its entry isn't shown here.`));
+    return;
+  }
+  if (!record.entries.length) {
+    const none = mwEl("p", "mw-empty", `<b>${word}</b> isn't in Merriam-Webster's Collegiate Dictionary.`);
+    body.replaceChildren(none);
+    if (record.suggestions?.length) body.append(mwEl("p", "mw-empty", `Did MW mean: ${record.suggestions.join(", ")}?`));
+    return;
+  }
+  const parts = [];
+  const shown = record.entries[0].hw.replace(/·/g, "").toLowerCase();
+  if (shown !== word.toLowerCase()) {
+    parts.push(mwEl("p", "mw-form-of", `<b>${word}</b> is a form of <b>${record.entries[0].hw.replace(/·/g, "")}</b>:`));
+  }
+  body.replaceChildren(...parts, ...record.entries.map(renderMWEntry));
+  body.scrollTop = 0;
+}
+
+// Opens the pop-up for a word (the Learning card's word by default): shows
+// "Loading…" at once, then the entry once its letter's file is in
+async function showMWPanel(item = currentItem) {
+  if (!item) return;
+  mwPanelItem = item;
+  const panel = document.getElementById("mwPanel");
+  panel.hidden = false;
+  document.body.classList.add("mw-panel-open");
+  document.getElementById("mwPanelWord").textContent = item.word;
+  document.getElementById("mwPanelBody").replaceChildren(mwEl("p", "mw-empty", "Loading…"));
+  const words = await loadMWEntryFile(letterPart(item._scope, item.word));
+  if (mwPanelItem !== item) return; // moved on to another word meanwhile
+  renderMWRecord(item.word, words ? words[item.word] : null);
+}
+
+// Learning card: "✍️ Also spelled: or theatre" under the word when MW accepts
+// other spellings (what a bee judge would also accept). Learning only: it
+// would give the spelling away in a test.
+async function showWordVariants(item) {
+  const el = document.getElementById("wordVariants");
+  el.hidden = true;
+  if (!item) return;
+  const words = await loadMWEntryFile(letterPart(item._scope, item.word));
+  if (currentItem !== item || !words) return; // moved on meanwhile, or offline
+  const variants = (words[item.word]?.entries || []).flatMap(e => e.variants || []);
+  if (!variants.length) return;
+  el.innerHTML = mwHtml(`✍️ Also spelled: ${variantText(variants)}`);
+  el.hidden = false;
+}
+
+// Also called by practice.js before each new question
+function closeMWPanel() {
+  mwPanelItem = null;
+  document.getElementById("mwPanel").hidden = true;
+  document.body.classList.remove("mw-panel-open"); // lets the page scroll again
+}
+
+function mwPanelOpen() {
+  return !document.getElementById("mwPanel").hidden;
+}
+
+// Ways to open and close it: the card's button, ✕, tapping outside, Esc
+document.getElementById("mwPageBtn")?.addEventListener("click", () => showMWPanel());
+document.getElementById("mwPanelClose").addEventListener("click", closeMWPanel);
+// Tapping the dimmed page around the pop-up closes it
+document.getElementById("mwPanel").addEventListener("click", event => {
+  if (event.target.id === "mwPanel") closeMWPanel();
+});
+document.getElementById("mwPanelFull").addEventListener("click", () => openMWPage(mwPanelItem?.word));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && mwPanelOpen()) closeMWPanel();
+});

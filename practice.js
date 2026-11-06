@@ -610,6 +610,8 @@ function isAnswered(entry) {
 
 function showQuestion(index, autoplay) {
   cancelAutoNext();
+  // The MW panel showed the last answer; it mustn't sit over (or hint at) the next word
+  if (typeof closeMWPanel === "function") closeMWPanel();
   practice.index = index;
   const entry = currentEntry();
   const input = practiceEl("practiceInput");
@@ -742,6 +744,15 @@ function showAnswerState(entry) {
     renderSpellingTips(feedback.querySelector(".fb-tips"), spellingTips(entry.item, 2));
   }
   if (correct) feedback.querySelector(".fb-word").textContent = entry.item.word;
+  // Only after answering, so the page can't give the spelling away
+  const mw = document.createElement("button");
+  mw.type = "button";
+  mw.className = "fb-mw";
+  mw.textContent = "📖 Show MW info";
+  mw.addEventListener("click", () => showMWPanel(entry.item));
+  // Keep focus in the answer box, so Enter still moves on to the next word
+  mw.addEventListener("mousedown", event => event.preventDefault());
+  feedback.append(mw);
   feedback.hidden = false;
 
   practiceEl("practiceCheckBtn").hidden = true;

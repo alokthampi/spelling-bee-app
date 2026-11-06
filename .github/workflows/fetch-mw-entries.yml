@@ -1,0 +1,54 @@
+# Fills mw_entries/ (the in-app Merriam-Webster pop-up) a bit every night:
+# up to 900 words per run, inside MW's 1,000-lookups-a-day allowance. Once
+# every word is saved, runs only look up words added to the lists since, so
+# they finish in seconds. Also runs on demand from the Actions tab.
+# The Merriam-Webster key comes from the MW_API_KEY repository secret.
+name: Fetch MW entries
+
+on:
+  schedule:
+    - cron: "0 8 * * *"   # 3–4 AM US Eastern, away from the 11:30 PM backup and 11:45 PM sync
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Most words to look up (MW allows 1,000 a day)"
+        default: "900"
+
+permissions:
+  contents: write   # commits the new entries
+
+concurrency:
+  group: fetch-mw-entries
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Look up words
+        env:
+          MW_API_KEY: ${{ secrets.MW_API_KEY }}
+        run: python fetch_mw_entries.py --scope all --limit "${{ inputs.limit || '900' }}"
+
+      - name: Commit new entries
+        run: |
+          git add mw_entries
+          if git diff --cached --quiet; then
+            echo "No new entries to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Merriam-Webster entries for more words"
+          # Another job (e.g. the nightly backup) may have pushed meanwhile
+          git pull --rebase origin main
+          git push

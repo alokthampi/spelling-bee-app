@@ -1373,6 +1373,90 @@
     .spelling-tips li { padding: 8px 10px; border-radius: var(--radius-sm); background: var(--bg-inset); color: var(--text); }
     .spelling-tips .tip-lang { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent-hover); }
     .spelling-tips .tip-letters { margin-right: 6px; padding: 0 5px; border-radius: 4px; background: var(--success-soft); color: var(--success); letter-spacing: 0.04em; }
+    /* ---------- MW info pop-up: the word's Merriam-Webster entry inside the app.
+       Element ids/classes still say "panel" (mwPanel, .mw-panel) from its first,
+       side-panel version; app.js refers to them by those names. ---------- */
+    /* A centered pop-up over the dimmed page; only its middle part scrolls */
+    .mw-overlay {
+      position: fixed; inset: 0; z-index: 40;
+      display: flex; align-items: center; justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+      background: rgba(0, 0, 0, 0.55);
+      animation: mw-fade 0.15s ease-out;
+    }
+    .mw-panel {
+      width: min(560px, 100%); max-height: min(80vh, 760px);
+      display: flex; flex-direction: column; overflow: hidden;
+      background: var(--bg-elevated); color: var(--text);
+      border: 1px solid var(--border-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+      animation: mw-pop 0.2s ease-out;
+    }
+    body.mw-panel-open { overflow: hidden; } /* the page behind doesn't scroll */
+    .mw-panel-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+    }
+    .mw-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+    .mw-panel-word { font-size: 20px; font-weight: 800; }
+    .mw-close {
+      flex: none; width: var(--tap); height: var(--tap); font-size: 18px; color: var(--text);
+      background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+    }
+    .mw-panel-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 4px 16px 16px; line-height: 1.5; font-size: 15px; }
+    .mw-entry { padding: 12px 0; }
+    .mw-entry + .mw-entry { border-top: 1px solid var(--border); }
+    .mw-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .mw-hw { font-size: 22px; font-weight: 800; }
+    .mw-hom { font-size: 12px; color: var(--text-tertiary); margin-left: -6px; }
+    .mw-fl { font-style: italic; color: var(--accent); font-weight: 600; }
+    .mw-labels, .mw-forms, .mw-sls { color: var(--text-secondary); font-size: 13px; }
+    .mw-sls { font-style: italic; margin-right: 6px; }
+    .mw-prs { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+    .mw-pr {
+      padding: 4px 10px; min-height: 32px; font-family: inherit; font-size: 14px; color: var(--text);
+      background: var(--accent-soft); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+    }
+    .mw-pr-silent { display: inline-flex; align-items: center; background: none; cursor: default; color: var(--text-secondary); }
+    .mw-vd { margin-top: 10px; font-weight: 700; font-style: italic; color: var(--text-secondary); }
+    .mw-senses { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+    .mw-sn { font-weight: 800; color: var(--accent); margin-right: 6px; }
+    .mw-also, .mw-note { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
+    .mw-example { font-size: 14px; color: var(--text-secondary); margin: 2px 0 0 12px; }
+    .mw-example i { color: var(--text); font-style: normal; font-weight: 700; }
+    .mw-section { margin-top: 12px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+    .mw-history, .mw-first, .mw-related { margin: 4px 0 0; font-size: 14px; }
+    .mw-form-of, .mw-empty { color: var(--text-secondary); margin: 12px 0 0; }
+    .mw-variants, .word-variants {
+      margin: 8px 0; padding: 8px 12px; font-size: 15px; line-height: 1.4;
+      background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
+    }
+    .word-variants { margin: 0 0 12px; }
+    .mw-crossref { margin-top: 4px; font-size: 15px; color: var(--text-secondary); }
+    .mw-art { margin: 10px 0; text-align: center; }
+    .mw-art img { max-width: 100%; max-height: 220px; padding: 8px; background: #fff; border-radius: var(--radius-sm); }
+    .mw-art figcaption { margin-top: 4px; font-size: 12px; color: var(--text-tertiary); }
+    .mw-phrases { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+    .mw-synonyms { margin: 4px 0 0; font-size: 14px; }
+    .mw-panel-foot { display: grid; gap: 4px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
+    .mw-panel-foot small { color: var(--text-tertiary); font-size: 11px; text-align: center; }
+    .mw-full {
+      min-height: 40px; font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+      background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+    }
+    @keyframes mw-fade { from { opacity: 0; } }
+    @keyframes mw-pop { from { transform: scale(0.96) translateY(8px); opacity: 0; } }
+    /* Phones: a little taller, so more of the entry fits */
+    @media (max-width: 699px) { .mw-panel { max-height: 85vh; } }
+    @media (prefers-reduced-motion: reduce) { .mw-overlay, .mw-panel { animation: none; } }
+
+    /* "📖 Show MW info", shown once the word is answered */
+    .practice-feedback .fb-mw {
+      display: inline-block; margin-top: 10px; padding: 6px 12px; min-height: 36px;
+      font-family: inherit; font-size: 13px; font-weight: 700; color: inherit;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm); cursor: pointer; touch-action: manipulation;
+    }
+    .practice-feedback .fb-mw:hover { background: rgba(255, 255, 255, 0.16); }
     .fb-tips { margin-top: 10px; }
     .fb-tips::before { content: "💡 Spelling tips"; display: block; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
 
@@ -1898,6 +1982,8 @@
           <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden>↩️ Clear</button>
         </div>
       </div>
+      <!-- Other spellings Merriam-Webster accepts (app.js showWordVariants) -->
+      <div id="wordVariants" class="word-variants" hidden></div>
 
       <div class="word-nav">
         <button type="button" id="prevWordBtn" class="reset-btn" disabled>← Previous</button>
@@ -1907,14 +1993,22 @@
 
       <div class="audio-buttons">
         <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-          🔊 Dictionary
+          🔊 MW Pronunciation
         </button>
-        <button onclick="playAmericanPronunciation()">🗣️ American</button>
+        <button onclick="playAmericanPronunciation()" title="Said by this device's American voice">🗣️ Device Pronunciation</button>
       </div>
 
       <div class="audio-buttons">
         <button onclick="readDefinition()">▶️ Definition</button>
         <button onclick="readSentence()">▶️ Sentence</button>
+      </div>
+
+      <!-- "Show MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
+      <div class="audio-buttons">
+        <button type="button" id="mwPageBtn" class="mw-page-btn" disabled
+          title="Show this word's Merriam-Webster entry: meanings, other spellings, phrases, word history">
+          📖 Show MW info
+        </button>
       </div>
 
       <div class="label">Pronunciation</div>
@@ -2150,9 +2244,9 @@
           </div>
 
           <div class="audio-buttons">
-            <button id="practiceMWBtn">🔊 Dictionary</button>
+            <button id="practiceMWBtn">🔊 MW Pronunciation</button>
             <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations">🔁 Other pronunciation</button>
-            <button id="practiceUSBtn">🗣️ American</button>
+            <button id="practiceUSBtn" title="Said by this device's American voice">🗣️ Device Pronunciation</button>
           </div>
           <div class="audio-buttons">
             <button id="practiceDefBtn">▶️ Definition</button>
@@ -2257,6 +2351,27 @@
   window.selectedLetters = new Set();
 </script>
 
+<!-- MW info pop-up: the word's Merriam-Webster entry inside the app (app.js "MW info pop-up";
+     entries come from mw_entries/). Shown over a dimmed page: tap outside it, ✕ or Esc to
+     close; only the entry in the middle scrolls. -->
+
+<div id="mwPanel" class="mw-overlay" hidden>
+<div class="mw-panel" role="dialog" aria-modal="true" aria-label="Merriam-Webster dictionary entry">
+  <header class="mw-panel-head">
+    <div>
+      <div class="mw-brand">📖 Merriam-Webster</div>
+      <div id="mwPanelWord" class="mw-panel-word"></div>
+    </div>
+    <button type="button" id="mwPanelClose" class="mw-close" aria-label="Close">✕</button>
+  </header>
+  <div id="mwPanelBody" class="mw-panel-body"></div>
+  <footer class="mw-panel-foot">
+    <button type="button" id="mwPanelFull" class="mw-full">Open the full page on merriam-webster.com ↗</button>
+    <small>From Merriam-Webster's Collegiate® Dictionary</small>
+  </footer>
+</div>
+</div>
+
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -2316,8 +2431,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110704"></script>
+<script src="app.js?v=2026110709"></script>
 <script src="bee-buddy.js?v=2026110702"></script>
-<script src="practice.js?v=2026110701"></script>
+<script src="practice.js?v=2026110704"></script>
 </body>
 </html>
