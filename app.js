@@ -225,8 +225,8 @@ function showSaveFailed(err) {
 // Without offline storage, leaving now would lose the unsent saves
 window.addEventListener("beforeunload", event => {
   if (unconfirmedWrites && !window.dbPersistent) {
-    event.preventDefault();
-    event.returnValue = "";
+    event.preventDefault();  // asks "Leave site?" in current browsers
+    event.returnValue = "";  // the same for older ones (e.g. older Safari); deprecated but harmless
   }
 });
 
@@ -496,11 +496,8 @@ async function loadWords() {
   words = datasets.flat();
   // Tagged only now: classWords isn't available inside the Promise.all above
   words.forEach(w => (w.classWord = w._scope === "school" && classWords.has(w.word.toLowerCase())));
-  const defaultScopes = savedDefaultScopes();
-  if (defaultScopes) {
-    applyDefaultScopes(defaultScopes, true);
-    try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(defaultScopes)); } catch {}
-  }
+  // Default Scope / Difficulty / Results saved with the progress (from another device)
+  applySavedDefaults();
   if (progress) applyProgressToWords(progress);
   // Nothing loaded, or only this device's offline copy: keep trying the server
   if (!progress || progressFromCache) retryProgressLoad();
@@ -586,18 +583,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Default scope: this browser's copy now; the saved one once progress loads
-  const localDefault = savedDefaultScopes();
-  if (localDefault) applyDefaultScopes(localDefault, true);
-  else updateDefaultScopeButtons();
-  SCOPE_DROPDOWNS.forEach(id => {
-    const container = document.getElementById(id);
-    container.addEventListener("change", updateDefaultScopeButtons);
-    container.querySelector(".scope-default-btn").addEventListener("click", () => makeDefaultScope(id));
-  });
-
   wireFilterSelect("resultFilter", applyFilter);
   wireFilterSelect("originFilter", applyFilter);
+
+  // Default filters: this browser's copy now; the saved ones once progress loads.
+  // The buttons' labels follow every change (updateMultiSelectSummary /
+  // updateFilterSelectSummary call updateDefaultButtons).
+  applySavedDefaults();
+  Object.entries(FILTER_DEFAULTS).forEach(([group, { dropdowns }]) => {
+    dropdowns.forEach(id => {
+      document.querySelector(`#${id} .filter-default-btn`).addEventListener("click", () => makeDefault(group, id));
+    });
+  });
   document.getElementById("prevWordBtn").addEventListener("click", () => stepWord(-1));
   document.getElementById("nextWordBtn").addEventListener("click", () => stepWord(1));
   document.querySelectorAll(".collapse-toggle").forEach(toggle => {
@@ -880,7 +877,7 @@ function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
   const kind = container.dataset.kind; // "scope" or "difficulty"
-  if (kind === "scope") updateDefaultScopeButtons();
+  updateDefaultButtons();
   if (!selected.length) {
     summary.textContent = kind === "scope" ? "Select scope" : "No difficulty";
     return;
@@ -910,6 +907,7 @@ function updateFilterSelectSummary(id) {
   container.querySelector(".summary-text").textContent = !names.length
     ? container.dataset.allText
     : names.length <= 2 ? names.join(", ") : `${names.slice(0, 2).join(", ")} +${names.length - 2}`;
+  updateDefaultButtons();
 }
 
 function setFilterSelect(id, values) {
@@ -922,14 +920,14 @@ function setFilterSelect(id, values) {
 
 /* ---------------------------
    Clear filters (Learning and Practice): back to how the page opens.
-   Scope and Difficulty go back to their ticked-in-the-HTML options;
-   Results and Origin go back to "All".
+   Every dropdown goes back to its default (see "Default filters"):
+   Origin, and Results unless a default was picked, go back to "All".
 --------------------------- */
 function resetFilterDropdowns(ids) {
   ids.forEach(id => {
     const container = document.getElementById(id);
     if (container.classList.contains("filter-select")) {
-      setFilterSelect(id, []);
+      setFilterSelect(id, dropdownDefault(id));
     } else {
       container.querySelectorAll('input[type="checkbox"]').forEach(input => (input.checked = input.defaultChecked));
       updateMultiSelectSummary(container);
@@ -941,7 +939,7 @@ function filterDropdownsAtDefault(ids) {
   return ids.every(id => {
     const container = document.getElementById(id);
     return container.classList.contains("filter-select")
-      ? !filterSelectValues(id).length
+      ? sameValues(filterSelectValues(id), dropdownDefault(id))
       : Array.from(container.querySelectorAll('input[type="checkbox"]')).every(input => input.checked === input.defaultChecked);
   });
 }
@@ -949,65 +947,135 @@ function filterDropdownsAtDefault(ids) {
 const LEARNING_DROPDOWNS = ["scopeFilter", "difficultyFilter", "resultFilter", "originFilter"];
 
 /* ---------------------------
-   Default scope, shared by Learning and Practice. It's what each tab opens with and
-   what Clear filters goes back to (the Scope checkboxes' defaultChecked).
-   Saved in the progress doc so it follows to other devices, and in this
-   browser so the page opens with it before the progress doc arrives.
+   Default filters: what Learning and Practice open with, and what Clear
+   filters goes back to. Scope and Difficulty defaults are shared by both
+   tabs; Results is only in Learning. Saved in the settings document so they
+   follow to other devices, and in this browser so the page opens with them
+   before progress loads.
+   Scope and Difficulty keep their default in the checkboxes' defaultChecked;
+   Results keeps it on the dropdown (data-default, [] = "All words") because
+   its "All" option works differently.
 --------------------------- */
-const SCOPE_DROPDOWNS = ["scopeFilter", "practiceScopeFilter"];
 const SETTINGS_KEY = "_settings";
-const DEFAULT_SCOPES_LOCAL = "spellingBeeDefaultScopes";
+const FILTER_DEFAULTS = {
+  scope: {
+    dropdowns: ["scopeFilter", "practiceScopeFilter"],
+    setting: "defaultScopes", local: "spellingBeeDefaultScopes", tabs: "Learning & Practice"
+  },
+  difficulty: {
+    dropdowns: ["difficultyFilter", "practiceDifficultyFilter"],
+    setting: "defaultDifficulty", local: "spellingBeeDefaultDifficulty", tabs: "Learning & Practice"
+  },
+  results: {
+    dropdowns: ["resultFilter"],
+    setting: "defaultResults", local: "spellingBeeDefaultResults", tabs: "Learning"
+  }
+};
 
-function savedDefaultScopes() {
-  const fromDoc = progressData?.[SETTINGS_KEY]?.defaultScopes;
-  if (Array.isArray(fromDoc) && fromDoc.length) return fromDoc;
+// Scope and Difficulty need at least one ticked; Results can default to "All words" ([])
+function validDefault(group, values) {
+  return Array.isArray(values) && (values.length > 0 || group === "results");
+}
+
+function sameValues(a, b) {
+  return a.length === b.length && [...a].sort().join("|") === [...b].sort().join("|");
+}
+
+function savedDefault(group) {
+  const { setting, local } = FILTER_DEFAULTS[group];
+  const fromDoc = progressData?.[SETTINGS_KEY]?.[setting];
+  if (validDefault(group, fromDoc)) return fromDoc;
   try {
-    const local = JSON.parse(localStorage.getItem(DEFAULT_SCOPES_LOCAL));
-    if (Array.isArray(local) && local.length) return local;
+    const fromBrowser = JSON.parse(localStorage.getItem(local));
+    if (validDefault(group, fromBrowser)) return fromBrowser;
   } catch {}
   return null;
 }
 
-// Makes `scopes` the default in every tab; `select` also ticks them now
-function applyDefaultScopes(scopes, select) {
-  SCOPE_DROPDOWNS.forEach(id => {
+function isFilterSelect(id) {
+  return document.getElementById(id).classList.contains("filter-select");
+}
+
+// What's picked now ([] = "All" in Results and Origin)
+function currentValues(id) {
+  return isFilterSelect(id) ? filterSelectValues(id) : selectedValues(id);
+}
+
+// The dropdown's default, in the same form
+function dropdownDefault(id) {
+  const container = document.getElementById(id);
+  if (isFilterSelect(id)) {
+    try {
+      return JSON.parse(container.dataset.default || "[]");
+    } catch {
+      return [];
+    }
+  }
+  return Array.from(container.querySelectorAll('input[type="checkbox"]'))
+    .filter(input => input.defaultChecked).map(input => input.value);
+}
+
+// Makes `values` the default in every tab; `select` also picks them now
+function applyDefault(group, values, select) {
+  FILTER_DEFAULTS[group].dropdowns.forEach(id => {
     const container = document.getElementById(id);
-    container.querySelectorAll('input[type="checkbox"]').forEach(input => {
-      input.defaultChecked = scopes.includes(input.value);
-      if (select) input.checked = input.defaultChecked;
+    if (isFilterSelect(id)) {
+      container.dataset.default = JSON.stringify(values);
+      if (select) setFilterSelect(id, values);
+    } else {
+      container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.defaultChecked = values.includes(input.value);
+        if (select) input.checked = input.defaultChecked;
+      });
+      updateMultiSelectSummary(container);
+    }
+  });
+  updateDefaultButtons();
+}
+
+// The saved defaults (progress doc, else this browser), picked now
+function applySavedDefaults() {
+  Object.keys(FILTER_DEFAULTS).forEach(group => {
+    const values = savedDefault(group);
+    if (!values) return;
+    applyDefault(group, values, true);
+    try { localStorage.setItem(FILTER_DEFAULTS[group].local, JSON.stringify(values)); } catch {}
+  });
+  updateDefaultButtons();
+}
+
+// The "Make this the default" line at the bottom of each of these dropdowns
+function updateDefaultButtons() {
+  Object.entries(FILTER_DEFAULTS).forEach(([group, { dropdowns, tabs }]) => {
+    dropdowns.forEach(id => {
+      const btn = document.querySelector(`#${id} .filter-default-btn`);
+      if (!btn) return;
+      const values = currentValues(id);
+      const isDefault = sameValues(values, dropdownDefault(id));
+      btn.disabled = isDefault || !validDefault(group, values);
+      btn.textContent = isDefault ? `⭐ Default for ${tabs}` : `☆ Make this the default for ${tabs}`;
     });
-    updateMultiSelectSummary(container);
-  });
-  updateDefaultScopeButtons();
-}
-
-function updateDefaultScopeButtons() {
-  SCOPE_DROPDOWNS.forEach(id => {
-    const inputs = Array.from(document.querySelectorAll(`#${id} input[type="checkbox"]`));
-    const isDefault = inputs.every(input => input.checked === input.defaultChecked);
-    const btn = document.querySelector(`#${id} .scope-default-btn`);
-    btn.disabled = isDefault || !inputs.some(input => input.checked);
-    btn.textContent = isDefault ? "⭐ Default scope for all tabs" : "☆ Make this the default scope";
   });
 }
 
-async function saveDefaultScopes(scopes) {
-  try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(scopes)); } catch {}
-  if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), defaultScopes: scopes };
+async function saveDefault(group, values) {
+  const { setting, local } = FILTER_DEFAULTS[group];
+  try { localStorage.setItem(local, JSON.stringify(values)); } catch {}
+  if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), [setting]: values };
   if (!window.db) return;
   try {
-    await writeProgressPart("settings", { [SETTINGS_KEY]: { defaultScopes: scopes } });
+    await writeProgressPart("settings", { [SETTINGS_KEY]: { [setting]: values } });
   } catch (err) {
-    console.warn("Could not save the default scope:", err);
+    console.warn(`Could not save the default ${group}:`, err);
   }
 }
 
-// The picked scopes become the default, and every tab switches to them
-function makeDefaultScope(id) {
-  const scopes = selectedValues(id);
-  if (!scopes.length) return;
-  saveDefaultScopes(scopes);
-  applyDefaultScopes(scopes, true);
+// What's picked in this dropdown becomes the default, and every tab switches to it
+function makeDefault(group, id) {
+  const values = currentValues(id);
+  if (!validDefault(group, values)) return;
+  saveDefault(group, values);
+  applyDefault(group, values, true);
   document.getElementById(id).open = false;
   applyFilter();
   if (typeof practiceFiltersChanged === "function" && !(practice && practice.index >= 0)) practiceFiltersChanged();
@@ -1227,6 +1295,9 @@ window.applyFilters = applyFilter;
    (grey) words, like the Practice tab's letters.
    Letters combine; adding one jumps the word list to that letter's words. */
 let letterPool = []; // the words the buttons were last counted from
+// Letters whose words were all completed at the last draw (with that pool), so a
+// letter that just reached 100% gets crowned by a bee (bee-buddy.js)
+let lettersDone = { pool: null, letters: new Set() };
 
 function renderLearningLetters(pool = letterPool) {
   const container = document.getElementById("letterFilter");
@@ -1237,6 +1308,10 @@ function renderLearningLetters(pool = letterPool) {
     if (isCompleted(w)) c.completed++;
   });
   const loaded = words.length > 0; // before the word lists arrive, plain letters
+  const done = new Set(Object.keys(counts).filter(l => counts[l].total && counts[l].completed === counts[l].total));
+  // Only when a word was completed: a filter change (new pool) isn't an achievement
+  const justDone = loaded && lettersDone.pool === pool ? [...done].filter(l => !lettersDone.letters.has(l)) : [];
+  lettersDone = { pool, letters: done };
 
   container.replaceChildren(..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(letter => {
     const c = counts[letter] || { total: 0, completed: 0 };
@@ -1258,6 +1333,14 @@ function renderLearningLetters(pool = letterPool) {
         `linear-gradient(to right, var(--covered) 0 ${pct}%, var(--border-strong) ${pct}% 100%)`;
       btn.append(grade);
     }
+    if (loaded && done.has(letter)) {
+      const crown = document.createElement("span");
+      crown.className = justDone.includes(letter) ? "letter-crown crown-new" : "letter-crown";
+      crown.textContent = "👑";
+      crown.setAttribute("aria-hidden", "true");
+      btn.append(crown);
+      btn.title += " · all completed!";
+    }
     btn.onclick = () => {
       const adding = !window.selectedLetters.has(letter);
       if (adding) window.selectedLetters.add(letter);
@@ -1267,6 +1350,9 @@ function renderLearningLetters(pool = letterPool) {
     };
     return btn;
   }));
+  if (typeof buddyCrownLetter === "function") {
+    justDone.forEach(letter => buddyCrownLetter(container.children[letter.charCodeAt(0) - 65]));
+  }
 }
 
 /* ---------------------------
@@ -1569,6 +1655,10 @@ function selectWord(index, autoplay = true) {
   renderWordCardStatus();
 
   updateMWButtonState(currentItem);
+  followMWPage(currentItem);
+  // If the MW pop-up is open when the card changes word, it shows the new word
+  if (mwPanelOpen()) showMWPanel(currentItem);
+  showWordVariants(currentItem);
 
   // Every recorded pronunciation, MW's preferred one first, then the device's American voice
   if (!autoplay) stopAllAudio();
@@ -2735,10 +2825,12 @@ async function resetSelection() {
   renderCardTips(null);
   renderWordCardStatus();
   await resetCloudProgress();
-  // Hidden pictures and the default scope aren't progress: keep them after the reset
+  // Hidden pictures and the default filters aren't progress: keep them after the reset
   words.filter(w => w.imageHidden).forEach(w => saveWord(w, { imageHidden: true }));
-  const defaultScopes = savedDefaultScopes();
-  if (defaultScopes) saveDefaultScopes(defaultScopes);
+  Object.keys(FILTER_DEFAULTS).forEach(group => {
+    const values = savedDefault(group); // this browser's copy: the progress doc was just emptied
+    if (values) saveDefault(group, values);
+  });
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
 }
@@ -2749,4 +2841,288 @@ async function resetSelection() {
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
   if (btn) btn.disabled = !item?.audio_url;
+  const page = document.getElementById("mwPageBtn");
+  if (page) page.disabled = !item;
 }
+
+/* ---------------------------
+   Full Merriam-Webster web page, opened from the "Open the full page" link at
+   the bottom of the MW info pop-up (below). MW's site refuses to be shown
+   inside other sites, so it gets a window of its own: a small one on the right
+   of the screen on computers, a new tab on phones and iPads. There is only
+   ever one: later clicks load the new word in that same window/tab.
+--------------------------- */
+const MW_WINDOW_NAME = "spellingBeeMW"; // the one window every MW page opens in
+let mwWindow = null;                    // that window, once opened (null after a reload)
+
+// merriam-webster.com/dictionary/<word>, accents and spaces encoded
+function mwPageUrl(word) {
+  return `https://www.merriam-webster.com/dictionary/${encodeURIComponent(word)}`;
+}
+
+// Is the MW window still open? (Reading another site's window can throw.)
+function mwWindowOpen() {
+  try {
+    return Boolean(mwWindow && !mwWindow.closed);
+  } catch {
+    return false;
+  }
+}
+
+// Every click goes through window.open with the same name: the browser finds the
+// MW window/tab that's already open, loads the new word in it and brings it to
+// the front, instead of opening another one. (Its link back to the app is left
+// in place on purpose: without it the browser refuses to let the app send that
+// tab to the next word, which is why a second click used to do nothing.)
+function openMWPage(word = currentItem?.word) {
+  if (!word) return;
+  // Right-hand side of the screen (sizes fall back if the browser doesn't say);
+  // only used the first time, when the window is created
+  const screenW = screen.availWidth || window.outerWidth || 1280;
+  const screenH = screen.availHeight || window.outerHeight || 900;
+  const width = Math.max(360, Math.min(560, screenW));
+  const height = Math.max(480, Math.min(860, screenH - 40));
+  const left = Math.max(0, (screen.availLeft || 0) + screenW - width);
+  const top = screen.availTop || 0;
+  const opened = window.open(mwPageUrl(word), MW_WINDOW_NAME,
+    `popup,width=${width},height=${height},left=${left},top=${top}`);
+  if (opened) mwWindow = opened;
+  try { mwWindow?.focus(); } catch {}
+}
+
+// The Learning card moved to another word (selectWord): if the full MW page is
+// still open in its window, show the new word there too. Never called from
+// Practice, so it can't reveal a test word.
+function followMWPage(item) {
+  if (!item || !mwWindowOpen()) return;
+  try { mwWindow.location.href = mwPageUrl(item.word); } catch {}
+}
+
+/* ---------------------------
+   MW info pop-up ("📖 Show MW info"): the word's Merriam-Webster entry shown
+   inside the app, over a dimmed page. The entries are saved ahead of time by
+   fetch_mw_entries.py (and the nightly "Fetch MW entries" workflow) into
+   mw_entries/<scope>_<letter>.json, so the MW API key never reaches the
+   browser. Each letter's file is downloaded the first time one of its words is
+   opened, then kept for the rest of the visit. Words not saved yet show a
+   note and the link to the full MW page.
+   In Practice it opens only after a word is answered, and the next question
+   closes it (practice.js), so it can never give a spelling away.
+--------------------------- */
+// Added to the file URLs so a phone fetches fresh copies right away. Not
+// required for the nightly additions: GitHub Pages lets browsers keep a file
+// for only ~10 minutes, so new entries show up on their own.
+const MW_ENTRIES_VERSION = "2026110801";
+const mwEntryFiles = new Map(); // "school_a" -> Promise of { word: record }, or null when offline
+let mwPanelItem = null;         // the word the pop-up is showing (null when closed)
+
+// One letter's saved entries, downloaded once per visit. Resolves to
+// { word: record } ({} if there's no file for that letter yet), or null if it
+// couldn't be downloaded (offline), in which case the next call tries again.
+function loadMWEntryFile(part) {
+  if (!mwEntryFiles.has(part)) {
+    mwEntryFiles.set(part, fetch(`mw_entries/${part}.json?v=${MW_ENTRIES_VERSION}`)
+      .then(r => (r.ok ? r.json() : { words: {} })) // no file yet for this letter
+      .then(data => data.words || {})
+      .catch(() => {
+        mwEntryFiles.delete(part); // offline: try again next time
+        return null;
+      }));
+  }
+  return mwEntryFiles.get(part);
+}
+
+// The saved text has only <i>/<b> tags (fetch_mw_entries.py escapes the rest);
+// anything else that looks like a tag is shown as text
+function mwHtml(text) {
+  return String(text || "").replace(/<(?!\/?[ib]>)/g, "&lt;");
+}
+
+// A new element for the pop-up; htmlText (optional) goes through mwHtml first
+function mwEl(tag, className, htmlText) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (htmlText !== undefined) el.innerHTML = mwHtml(htmlText);
+  return el;
+}
+
+// "or theatre; or less commonly cliche" (syllable dots dropped: they're spellings)
+function variantText(variants) {
+  return variants.map(v => `<i>${v.label}</i> <b>${v.spelling.replace(/·/g, "")}</b>`).join("; ");
+}
+
+/* One MW entry (a word can have several: "barge" noun and "barge" verb), laid
+   out like MW's own page: headword, "plural of …", other spellings,
+   pronunciations, forms, drawing, numbered meanings, phrases, synonym
+   discussion, word history, first known use, other forms. Fields a word
+   doesn't have are simply left out. See compact_entry() in fetch_mw_entries.py
+   for what each field holds. */
+function renderMWEntry(entry) {
+  const box = mwEl("section", "mw-entry");
+  const head = mwEl("div", "mw-head");
+  head.append(mwEl("span", "mw-hw", entry.hw));
+  if (entry.hom) head.append(mwEl("sup", "mw-hom", String(entry.hom)));
+  if (entry.fl) head.append(mwEl("span", "mw-fl", entry.fl));
+  box.append(head);
+  if (entry.labels) box.append(mwEl("div", "mw-labels", entry.labels.join("; ")));
+  // "plural of mouse", "past tense of swim"
+  if (entry.crossRefs?.length) box.append(mwEl("div", "mw-crossref", entry.crossRefs.join("; ")));
+  // Other accepted spellings: what a bee judge would also accept
+  if (entry.variants?.length) box.append(mwEl("div", "mw-variants", `✍️ Also spelled: ${variantText(entry.variants)}`));
+
+  if (entry.prs?.length) {
+    const prs = mwEl("div", "mw-prs");
+    entry.prs.forEach(p => {
+      if (p.audio) {
+        const btn = mwEl("button", "mw-pr", `🔊 \\${p.mw}\\`);
+        btn.type = "button";
+        btn.addEventListener("click", () => playMWAudio(p.audio));
+        prs.append(btn);
+      } else {
+        prs.append(mwEl("span", "mw-pr mw-pr-silent", `\\${p.mw}\\`));
+      }
+    });
+    box.append(prs);
+  }
+  if (entry.forms) box.append(mwEl("div", "mw-forms", entry.forms.join("; ")));
+
+  // MW's drawing, for the words that have one (left out if it doesn't load)
+  if (entry.art?.url) {
+    const figure = mwEl("figure", "mw-art");
+    const img = document.createElement("img");
+    img.setAttribute("loading", "lazy");
+    img.alt = entry.art.caption ? entry.art.caption.replace(/<[^>]*>/g, "") : `Drawing of ${entry.hw}`;
+    img.onerror = () => figure.remove();
+    img.src = entry.art.url;
+    figure.append(img);
+    if (entry.art.caption) figure.append(mwEl("figcaption", "", entry.art.caption));
+    box.append(figure);
+  }
+
+  (entry.defs || []).forEach(group => {
+    if (group.vd) box.append(mwEl("div", "mw-vd", group.vd));
+    const list = mwEl("ol", "mw-senses");
+    group.senses.forEach(sense => {
+      const li = mwEl("li", "mw-sense");
+      if (sense.sn) li.append(mwEl("span", "mw-sn", sense.sn));
+      if (sense.label) li.append(mwEl("span", "mw-sls", sense.label));
+      li.append(mwEl("span", "mw-dt", sense.text));
+      if (sense.variants?.length) li.append(mwEl("div", "mw-also", `also spelled ${variantText(sense.variants)}`));
+      if (sense.also) li.append(mwEl("div", "mw-also", sense.also));
+      if (sense.note) li.append(mwEl("div", "mw-note", `— ${sense.note}`));
+      (sense.examples || []).forEach(example => li.append(mwEl("div", "mw-example", `“${example}”`)));
+      list.append(li);
+    });
+    box.append(list);
+  });
+
+  if (entry.phrases?.length) {
+    const list = mwEl("ul", "mw-phrases");
+    entry.phrases.forEach(p => list.append(mwEl("li", "", `<b>${p.phrase}</b> — ${p.meaning}`)));
+    box.append(mwEl("div", "mw-section", "Phrases"), list);
+  }
+  if (entry.synonyms) {
+    box.append(mwEl("div", "mw-section", `${entry.synonyms.title} discussion`),
+      mwEl("p", "mw-synonyms", entry.synonyms.text));
+    (entry.synonyms.examples || []).forEach(example => box.append(mwEl("div", "mw-example", `“${example}”`)));
+  }
+
+  if (entry.history) {
+    box.append(mwEl("div", "mw-section", "Word history"), mwEl("p", "mw-history", entry.history));
+  }
+  if (entry.firstUse) box.append(mwEl("p", "mw-first", `<b>First known use:</b> ${entry.firstUse}`));
+  if (entry.related?.length) {
+    box.append(mwEl("p", "mw-related",
+      `<b>Other forms:</b> ${entry.related.map(r => `${r.word} <i>${r.fl}</i>`).join(", ")}`));
+  }
+  return box;
+}
+
+/* Fills the pop-up for `word`. `record` is what loadMWEntryFile gave for it:
+     null       the letter's file couldn't be downloaded (offline)
+     undefined  not fetched yet (the nightly job hasn't reached it)
+     { offensive: true }        MW has it but marks it offensive: not shown
+     { entries: [] }            not in MW's Collegiate Dictionary (+ MW's suggestions)
+     { entries: [ … ] }         the entries; a plural like "beans" gets MW's
+                                "bean" entry, so the pop-up says which word it is */
+function renderMWRecord(word, record) {
+  const body = document.getElementById("mwPanelBody");
+  if (record === null) {
+    body.replaceChildren(mwEl("p", "mw-empty", "Couldn't load the dictionary entry (no connection?). Try again, or open the full page below."));
+    return;
+  }
+  if (!record) {
+    body.replaceChildren(mwEl("p", "mw-empty", `The Merriam-Webster entry for <b>${word}</b> hasn't been downloaded yet. Open the full page below.`));
+    return;
+  }
+  if (record.offensive) {
+    body.replaceChildren(mwEl("p", "mw-empty", `Merriam-Webster marks <b>${word}</b> as offensive, so its entry isn't shown here.`));
+    return;
+  }
+  if (!record.entries.length) {
+    const none = mwEl("p", "mw-empty", `<b>${word}</b> isn't in Merriam-Webster's Collegiate Dictionary.`);
+    body.replaceChildren(none);
+    if (record.suggestions?.length) body.append(mwEl("p", "mw-empty", `Did MW mean: ${record.suggestions.join(", ")}?`));
+    return;
+  }
+  const parts = [];
+  const shown = record.entries[0].hw.replace(/·/g, "").toLowerCase();
+  if (shown !== word.toLowerCase()) {
+    parts.push(mwEl("p", "mw-form-of", `<b>${word}</b> is a form of <b>${record.entries[0].hw.replace(/·/g, "")}</b>:`));
+  }
+  body.replaceChildren(...parts, ...record.entries.map(renderMWEntry));
+  body.scrollTop = 0;
+}
+
+// Opens the pop-up for a word (the Learning card's word by default): shows
+// "Loading…" at once, then the entry once its letter's file is in
+async function showMWPanel(item = currentItem) {
+  if (!item) return;
+  mwPanelItem = item;
+  const panel = document.getElementById("mwPanel");
+  panel.hidden = false;
+  document.body.classList.add("mw-panel-open");
+  document.getElementById("mwPanelWord").textContent = item.word;
+  document.getElementById("mwPanelBody").replaceChildren(mwEl("p", "mw-empty", "Loading…"));
+  const words = await loadMWEntryFile(letterPart(item._scope, item.word));
+  if (mwPanelItem !== item) return; // moved on to another word meanwhile
+  renderMWRecord(item.word, words ? words[item.word] : null);
+}
+
+// Learning card: "✍️ Also spelled: or theatre" under the word when MW accepts
+// other spellings (what a bee judge would also accept). Learning only: it
+// would give the spelling away in a test.
+async function showWordVariants(item) {
+  const el = document.getElementById("wordVariants");
+  el.hidden = true;
+  if (!item) return;
+  const words = await loadMWEntryFile(letterPart(item._scope, item.word));
+  if (currentItem !== item || !words) return; // moved on meanwhile, or offline
+  const variants = (words[item.word]?.entries || []).flatMap(e => e.variants || []);
+  if (!variants.length) return;
+  el.innerHTML = mwHtml(`✍️ Also spelled: ${variantText(variants)}`);
+  el.hidden = false;
+}
+
+// Also called by practice.js before each new question
+function closeMWPanel() {
+  mwPanelItem = null;
+  document.getElementById("mwPanel").hidden = true;
+  document.body.classList.remove("mw-panel-open"); // lets the page scroll again
+}
+
+function mwPanelOpen() {
+  return !document.getElementById("mwPanel").hidden;
+}
+
+// Ways to open and close it: the card's button, ✕, tapping outside, Esc
+document.getElementById("mwPageBtn")?.addEventListener("click", () => showMWPanel());
+document.getElementById("mwPanelClose").addEventListener("click", closeMWPanel);
+// Tapping the dimmed page around the pop-up closes it
+document.getElementById("mwPanel").addEventListener("click", event => {
+  if (event.target.id === "mwPanel") closeMWPanel();
+});
+document.getElementById("mwPanelFull").addEventListener("click", () => openMWPage(mwPanelItem?.word));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && mwPanelOpen()) closeMWPanel();
+});

@@ -1,7 +1,9 @@
 # Saves a snapshot of Nikku's progress from Firestore into backup_progress_2027/
 # every night at 11:30 PM US Eastern, and on demand from the Actions tab
 # ("Run workflow"). The Firebase admin key comes from the FIREBASE_SERVICE_ACCOUNT
-# repository secret.
+# repository secret. Only the last 7 days of snapshots are kept in the folder
+# (GitBackup.py deletes older ones, always keeping the newest); deleted ones
+# can still be found in the git history.
 name: Back up progress
 
 on:
