@@ -1,0 +1,11 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    { "collectionGroup": "progress", "fieldPath": "school", "indexes": [] },
+    { "collectionGroup": "progress", "fieldPath": "regional", "indexes": [] },
+    { "collectionGroup": "progress", "fieldPath": "_timeLog", "indexes": [] },
+    { "collectionGroup": "progress", "fieldPath": "_practiceSessions", "indexes": [] },
+    { "collectionGroup": "progress", "fieldPath": "_savedPracticeTests", "indexes": [] },
+    { "collectionGroup": "progress", "fieldPath": "_settings", "indexes": [] }
+  ]
+}

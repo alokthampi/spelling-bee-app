@@ -9,3 +9,6 @@ __pycache__/
 
 # Dev contents saved by sync_prod_to_dev.py before each sync
 dev_backup_*.json
+
+# Local copies saved by migrate_progress_split.py
+progress_before_split_*.json
