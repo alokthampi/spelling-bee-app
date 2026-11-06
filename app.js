@@ -496,11 +496,8 @@ async function loadWords() {
   words = datasets.flat();
   // Tagged only now: classWords isn't available inside the Promise.all above
   words.forEach(w => (w.classWord = w._scope === "school" && classWords.has(w.word.toLowerCase())));
-  const defaultScopes = savedDefaultScopes();
-  if (defaultScopes) {
-    applyDefaultScopes(defaultScopes, true);
-    try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(defaultScopes)); } catch {}
-  }
+  // Default Scope / Difficulty / Results saved with the progress (from another device)
+  applySavedDefaults();
   if (progress) applyProgressToWords(progress);
   // Nothing loaded, or only this device's offline copy: keep trying the server
   if (!progress || progressFromCache) retryProgressLoad();
@@ -586,18 +583,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Default scope: this browser's copy now; the saved one once progress loads
-  const localDefault = savedDefaultScopes();
-  if (localDefault) applyDefaultScopes(localDefault, true);
-  else updateDefaultScopeButtons();
-  SCOPE_DROPDOWNS.forEach(id => {
-    const container = document.getElementById(id);
-    container.addEventListener("change", updateDefaultScopeButtons);
-    container.querySelector(".scope-default-btn").addEventListener("click", () => makeDefaultScope(id));
-  });
-
   wireFilterSelect("resultFilter", applyFilter);
   wireFilterSelect("originFilter", applyFilter);
+
+  // Default filters: this browser's copy now; the saved ones once progress loads.
+  // The buttons' labels follow every change (updateMultiSelectSummary /
+  // updateFilterSelectSummary call updateDefaultButtons).
+  applySavedDefaults();
+  Object.entries(FILTER_DEFAULTS).forEach(([group, { dropdowns }]) => {
+    dropdowns.forEach(id => {
+      document.querySelector(`#${id} .filter-default-btn`).addEventListener("click", () => makeDefault(group, id));
+    });
+  });
   document.getElementById("prevWordBtn").addEventListener("click", () => stepWord(-1));
   document.getElementById("nextWordBtn").addEventListener("click", () => stepWord(1));
   document.querySelectorAll(".collapse-toggle").forEach(toggle => {
@@ -880,7 +877,7 @@ function updateMultiSelectSummary(container) {
   const selected = Array.from(container.querySelectorAll("input:checked"));
   const summary = container.querySelector("summary");
   const kind = container.dataset.kind; // "scope" or "difficulty"
-  if (kind === "scope") updateDefaultScopeButtons();
+  updateDefaultButtons();
   if (!selected.length) {
     summary.textContent = kind === "scope" ? "Select scope" : "No difficulty";
     return;
@@ -910,6 +907,7 @@ function updateFilterSelectSummary(id) {
   container.querySelector(".summary-text").textContent = !names.length
     ? container.dataset.allText
     : names.length <= 2 ? names.join(", ") : `${names.slice(0, 2).join(", ")} +${names.length - 2}`;
+  updateDefaultButtons();
 }
 
 function setFilterSelect(id, values) {
@@ -922,14 +920,14 @@ function setFilterSelect(id, values) {
 
 /* ---------------------------
    Clear filters (Learning and Practice): back to how the page opens.
-   Scope and Difficulty go back to their ticked-in-the-HTML options;
-   Results and Origin go back to "All".
+   Every dropdown goes back to its default (see "Default filters"):
+   Origin, and Results unless a default was picked, go back to "All".
 --------------------------- */
 function resetFilterDropdowns(ids) {
   ids.forEach(id => {
     const container = document.getElementById(id);
     if (container.classList.contains("filter-select")) {
-      setFilterSelect(id, []);
+      setFilterSelect(id, dropdownDefault(id));
     } else {
       container.querySelectorAll('input[type="checkbox"]').forEach(input => (input.checked = input.defaultChecked));
       updateMultiSelectSummary(container);
@@ -941,7 +939,7 @@ function filterDropdownsAtDefault(ids) {
   return ids.every(id => {
     const container = document.getElementById(id);
     return container.classList.contains("filter-select")
-      ? !filterSelectValues(id).length
+      ? sameValues(filterSelectValues(id), dropdownDefault(id))
       : Array.from(container.querySelectorAll('input[type="checkbox"]')).every(input => input.checked === input.defaultChecked);
   });
 }
@@ -949,65 +947,135 @@ function filterDropdownsAtDefault(ids) {
 const LEARNING_DROPDOWNS = ["scopeFilter", "difficultyFilter", "resultFilter", "originFilter"];
 
 /* ---------------------------
-   Default scope, shared by Learning and Practice. It's what each tab opens with and
-   what Clear filters goes back to (the Scope checkboxes' defaultChecked).
-   Saved in the progress doc so it follows to other devices, and in this
-   browser so the page opens with it before the progress doc arrives.
+   Default filters: what Learning and Practice open with, and what Clear
+   filters goes back to. Scope and Difficulty defaults are shared by both
+   tabs; Results is only in Learning. Saved in the settings document so they
+   follow to other devices, and in this browser so the page opens with them
+   before progress loads.
+   Scope and Difficulty keep their default in the checkboxes' defaultChecked;
+   Results keeps it on the dropdown (data-default, [] = "All words") because
+   its "All" option works differently.
 --------------------------- */
-const SCOPE_DROPDOWNS = ["scopeFilter", "practiceScopeFilter"];
 const SETTINGS_KEY = "_settings";
-const DEFAULT_SCOPES_LOCAL = "spellingBeeDefaultScopes";
+const FILTER_DEFAULTS = {
+  scope: {
+    dropdowns: ["scopeFilter", "practiceScopeFilter"],
+    setting: "defaultScopes", local: "spellingBeeDefaultScopes", tabs: "Learning & Practice"
+  },
+  difficulty: {
+    dropdowns: ["difficultyFilter", "practiceDifficultyFilter"],
+    setting: "defaultDifficulty", local: "spellingBeeDefaultDifficulty", tabs: "Learning & Practice"
+  },
+  results: {
+    dropdowns: ["resultFilter"],
+    setting: "defaultResults", local: "spellingBeeDefaultResults", tabs: "Learning"
+  }
+};
 
-function savedDefaultScopes() {
-  const fromDoc = progressData?.[SETTINGS_KEY]?.defaultScopes;
-  if (Array.isArray(fromDoc) && fromDoc.length) return fromDoc;
+// Scope and Difficulty need at least one ticked; Results can default to "All words" ([])
+function validDefault(group, values) {
+  return Array.isArray(values) && (values.length > 0 || group === "results");
+}
+
+function sameValues(a, b) {
+  return a.length === b.length && [...a].sort().join("|") === [...b].sort().join("|");
+}
+
+function savedDefault(group) {
+  const { setting, local } = FILTER_DEFAULTS[group];
+  const fromDoc = progressData?.[SETTINGS_KEY]?.[setting];
+  if (validDefault(group, fromDoc)) return fromDoc;
   try {
-    const local = JSON.parse(localStorage.getItem(DEFAULT_SCOPES_LOCAL));
-    if (Array.isArray(local) && local.length) return local;
+    const fromBrowser = JSON.parse(localStorage.getItem(local));
+    if (validDefault(group, fromBrowser)) return fromBrowser;
   } catch {}
   return null;
 }
 
-// Makes `scopes` the default in every tab; `select` also ticks them now
-function applyDefaultScopes(scopes, select) {
-  SCOPE_DROPDOWNS.forEach(id => {
+function isFilterSelect(id) {
+  return document.getElementById(id).classList.contains("filter-select");
+}
+
+// What's picked now ([] = "All" in Results and Origin)
+function currentValues(id) {
+  return isFilterSelect(id) ? filterSelectValues(id) : selectedValues(id);
+}
+
+// The dropdown's default, in the same form
+function dropdownDefault(id) {
+  const container = document.getElementById(id);
+  if (isFilterSelect(id)) {
+    try {
+      return JSON.parse(container.dataset.default || "[]");
+    } catch {
+      return [];
+    }
+  }
+  return Array.from(container.querySelectorAll('input[type="checkbox"]'))
+    .filter(input => input.defaultChecked).map(input => input.value);
+}
+
+// Makes `values` the default in every tab; `select` also picks them now
+function applyDefault(group, values, select) {
+  FILTER_DEFAULTS[group].dropdowns.forEach(id => {
     const container = document.getElementById(id);
-    container.querySelectorAll('input[type="checkbox"]').forEach(input => {
-      input.defaultChecked = scopes.includes(input.value);
-      if (select) input.checked = input.defaultChecked;
+    if (isFilterSelect(id)) {
+      container.dataset.default = JSON.stringify(values);
+      if (select) setFilterSelect(id, values);
+    } else {
+      container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.defaultChecked = values.includes(input.value);
+        if (select) input.checked = input.defaultChecked;
+      });
+      updateMultiSelectSummary(container);
+    }
+  });
+  updateDefaultButtons();
+}
+
+// The saved defaults (progress doc, else this browser), picked now
+function applySavedDefaults() {
+  Object.keys(FILTER_DEFAULTS).forEach(group => {
+    const values = savedDefault(group);
+    if (!values) return;
+    applyDefault(group, values, true);
+    try { localStorage.setItem(FILTER_DEFAULTS[group].local, JSON.stringify(values)); } catch {}
+  });
+  updateDefaultButtons();
+}
+
+// The "Make this the default" line at the bottom of each of these dropdowns
+function updateDefaultButtons() {
+  Object.entries(FILTER_DEFAULTS).forEach(([group, { dropdowns, tabs }]) => {
+    dropdowns.forEach(id => {
+      const btn = document.querySelector(`#${id} .filter-default-btn`);
+      if (!btn) return;
+      const values = currentValues(id);
+      const isDefault = sameValues(values, dropdownDefault(id));
+      btn.disabled = isDefault || !validDefault(group, values);
+      btn.textContent = isDefault ? `⭐ Default for ${tabs}` : `☆ Make this the default for ${tabs}`;
     });
-    updateMultiSelectSummary(container);
-  });
-  updateDefaultScopeButtons();
-}
-
-function updateDefaultScopeButtons() {
-  SCOPE_DROPDOWNS.forEach(id => {
-    const inputs = Array.from(document.querySelectorAll(`#${id} input[type="checkbox"]`));
-    const isDefault = inputs.every(input => input.checked === input.defaultChecked);
-    const btn = document.querySelector(`#${id} .scope-default-btn`);
-    btn.disabled = isDefault || !inputs.some(input => input.checked);
-    btn.textContent = isDefault ? "⭐ Default scope for all tabs" : "☆ Make this the default scope";
   });
 }
 
-async function saveDefaultScopes(scopes) {
-  try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(scopes)); } catch {}
-  if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), defaultScopes: scopes };
+async function saveDefault(group, values) {
+  const { setting, local } = FILTER_DEFAULTS[group];
+  try { localStorage.setItem(local, JSON.stringify(values)); } catch {}
+  if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), [setting]: values };
   if (!window.db) return;
   try {
-    await writeProgressPart("settings", { [SETTINGS_KEY]: { defaultScopes: scopes } });
+    await writeProgressPart("settings", { [SETTINGS_KEY]: { [setting]: values } });
   } catch (err) {
-    console.warn("Could not save the default scope:", err);
+    console.warn(`Could not save the default ${group}:`, err);
   }
 }
 
-// The picked scopes become the default, and every tab switches to them
-function makeDefaultScope(id) {
-  const scopes = selectedValues(id);
-  if (!scopes.length) return;
-  saveDefaultScopes(scopes);
-  applyDefaultScopes(scopes, true);
+// What's picked in this dropdown becomes the default, and every tab switches to it
+function makeDefault(group, id) {
+  const values = currentValues(id);
+  if (!validDefault(group, values)) return;
+  saveDefault(group, values);
+  applyDefault(group, values, true);
   document.getElementById(id).open = false;
   applyFilter();
   if (typeof practiceFiltersChanged === "function" && !(practice && practice.index >= 0)) practiceFiltersChanged();
@@ -2735,10 +2803,12 @@ async function resetSelection() {
   renderCardTips(null);
   renderWordCardStatus();
   await resetCloudProgress();
-  // Hidden pictures and the default scope aren't progress: keep them after the reset
+  // Hidden pictures and the default filters aren't progress: keep them after the reset
   words.filter(w => w.imageHidden).forEach(w => saveWord(w, { imageHidden: true }));
-  const defaultScopes = savedDefaultScopes();
-  if (defaultScopes) saveDefaultScopes(defaultScopes);
+  Object.keys(FILTER_DEFAULTS).forEach(group => {
+    const values = savedDefault(group); // this browser's copy: the progress doc was just emptied
+    if (values) saveDefault(group, values);
+  });
   applyFilter();
   if (typeof onWordsLoaded === "function") onWordsLoaded();
 }

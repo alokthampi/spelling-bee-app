@@ -219,8 +219,8 @@
       box-shadow: var(--shadow-md);
     }
 
-    /* "Make this the default scope" at the bottom of every Scope menu */
-    .scope-default-btn {
+    /* "Make this the default" at the bottom of the Scope, Difficulty and Results menus */
+    .filter-default-btn {
       margin-top: 4px;
       padding: 8px 6px;
       font-family: inherit;
@@ -232,9 +232,10 @@
       border: none;
       border-top: 1px solid var(--border);
       cursor: pointer;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.3;
     }
-    .scope-default-btn:disabled { color: var(--text-tertiary); cursor: default; }
+    .filter-default-btn:disabled { color: var(--text-tertiary); cursor: default; }
 
     .multi-select-option {
       display: flex;
@@ -1713,7 +1714,7 @@
           <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
           <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
           <label class="multi-select-option"><input type="checkbox" value="class" />Class</label>
-          <button type="button" class="scope-default-btn"></button>
+          <button type="button" class="filter-default-btn"></button>
         </div>
       </details>
     </div>
@@ -1726,6 +1727,7 @@
           <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
           <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
           <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+          <button type="button" class="filter-default-btn"></button>
         </div>
       </details>
     </div>
@@ -1745,6 +1747,7 @@
           <label class="multi-select-option"><input type="checkbox" value="practice-ever-wrong" />Ever spelled wrong</label>
           <label class="multi-select-option"><input type="checkbox" value="practice-always-right" />Always right</label>
           <label class="multi-select-option"><input type="checkbox" value="practice-pending" />Not practiced</label>
+          <button type="button" class="filter-default-btn"></button>
         </div>
       </details>
     </div>
@@ -1897,7 +1900,7 @@
             <label class="multi-select-option"><input type="checkbox" value="regional" />Regional</label>
             <label class="multi-select-option"><input type="checkbox" value="school" checked />School</label>
             <label class="multi-select-option"><input type="checkbox" value="class" />Class</label>
-            <button type="button" class="scope-default-btn"></button>
+            <button type="button" class="filter-default-btn"></button>
           </div>
         </details>
       </div>
@@ -1910,6 +1913,7 @@
             <label class="multi-select-option"><input type="checkbox" value="one" checked />One Bee 🐝</label>
             <label class="multi-select-option"><input type="checkbox" value="two" checked />Two Bee 🐝🐝</label>
             <label class="multi-select-option"><input type="checkbox" value="three" checked />Three Bee 🐝🐝🐝</label>
+            <button type="button" class="filter-default-btn"></button>
           </div>
         </details>
       </div>
@@ -2229,7 +2233,7 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110702"></script>
+<script src="app.js?v=2026110703"></script>
 <script src="bee-buddy.js?v=2026110101"></script>
 <script src="practice.js?v=2026110303"></script>
 </body>
