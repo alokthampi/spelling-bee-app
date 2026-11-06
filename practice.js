@@ -465,7 +465,7 @@ function renderSavedPractice() {
     info.className = "saved-test-info";
     const progress = document.createElement("div");
     progress.className = "saved-test-progress";
-    progress.textContent = `${correct + wrong} of ${total} answered · ✅ ${correct} · ❌ ${wrong} · ${total - correct - wrong} left`;
+    progress.textContent = `${correct + wrong} of ${total} answered · ✓ ${correct} · ✗ ${wrong} · ${total - correct - wrong} left`;
     const meta = document.createElement("div");
     meta.className = "saved-test-meta";
     meta.textContent = [test.label, `saved ${formatSessionDate(test.savedAt)}`].filter(Boolean).join(" · ");
@@ -476,7 +476,7 @@ function renderSavedPractice() {
     const resume = document.createElement("button");
     resume.type = "button";
     resume.className = "primary-btn";
-    resume.textContent = "▶️ Resume";
+    setIconText(resume, "play", "Resume");
     resume.addEventListener("click", () => resumeSavedPractice(test.id));
     const discard = document.createElement("button");
     discard.type = "button";
@@ -719,10 +719,10 @@ function showAnswerState(entry) {
 
   feedback.className = `practice-feedback ${correct ? "correct" : "wrong"}`;
   if (correct) {
-    feedback.innerHTML = `<div class="fb-title">✅ Correct!</div><div class="fb-word"></div>`;
+    feedback.innerHTML = `<div class="fb-title">${iconSvg("check-circle")}Correct!</div><div class="fb-word"></div>`;
   } else {
     feedback.innerHTML = `
-      <div class="fb-title">${entry.timedOut ? "⏰ Time's up" : "❌ Not quite"}</div>
+      <div class="fb-title">${entry.timedOut ? `${iconSvg("clock")}Time's up` : `${iconSvg("x-circle")}Not quite`}</div>
       <div>Correct spelling: <span class="fb-word"></span></div>
       <div class="fb-typed-row">You typed: <span class="fb-typed"></span></div>
       <ul class="sd-notes"></ul>
@@ -748,7 +748,7 @@ function showAnswerState(entry) {
   const mw = document.createElement("button");
   mw.type = "button";
   mw.className = "fb-mw";
-  mw.textContent = "📖 Show MW info";
+  setIconText(mw, "book", "Show MW info");
   mw.addEventListener("click", () => showMWPanel(entry.item));
   // Keep focus in the answer box, so Enter still moves on to the next word
   mw.addEventListener("mousedown", event => event.preventDefault());
@@ -818,8 +818,11 @@ function finishPractice() {
   const answered = correct + wrong;
   const pct = answered ? Math.round((correct / answered) * 100) : 0;
 
-  practiceEl("practiceDoneTitle").textContent =
-    !answered ? "Test ended" : pct === 100 ? "🏆 Perfect score!" : pct >= 80 ? "🎉 Great job!" : "👍 Keep practicing!";
+  const doneTitle = practiceEl("practiceDoneTitle");
+  if (!answered) doneTitle.textContent = "Test ended";
+  else if (pct === 100) setIconText(doneTitle, "trophy", "Perfect score!");
+  else if (pct >= 80) setIconText(doneTitle, "sparkle", "Great job!");
+  else setIconText(doneTitle, "target", "Keep practicing!");
   practiceEl("practiceDoneScore").textContent = `${correct} / ${answered}`;
   const unanswered = total - answered;
   const timedOut = practice.entries.filter(e => e.timedOut).length;
@@ -831,7 +834,7 @@ function finishPractice() {
 
   const retry = practiceEl("practiceRetryBtn");
   retry.hidden = !wrong;
-  retry.textContent = `🔁 Practice ${wrong} missed word${wrong === 1 ? "" : "s"}`;
+  setIconText(retry, "repeat", `Practice ${wrong} missed word${wrong === 1 ? "" : "s"}`);
 
   if (answered && !practice.saved) {
     practice.saved = true;
@@ -914,7 +917,7 @@ function testCounts() {
 function updatePracticeCounter() {
   const { total, correct, wrong } = testCounts();
   practiceEl("practiceCounter").textContent = `Word ${practice.index + 1} of ${total}`;
-  practiceEl("practiceScore").textContent = total ? `✅ ${correct} · ❌ ${wrong} · ${total} words` : "";
+  practiceEl("practiceScore").textContent = total ? `✓ ${correct} · ✗ ${wrong} · ${total} words` : "";
   practiceEl("tallyTotal").textContent = total;
   practiceEl("tallyCorrect").textContent = correct;
   practiceEl("tallyWrong").textContent = wrong;
@@ -928,7 +931,7 @@ function renderPracticeList() {
   if (!practice) return; // start screen: the panel is hidden
 
   const { total, correct, wrong } = testCounts();
-  practiceEl("practiceScore").textContent = `✅ ${correct} · ❌ ${wrong} · ${total} words`;
+  practiceEl("practiceScore").textContent = `✓ ${correct} · ✗ ${wrong} · ${total} words`;
 
   let currentRow = null;
   practice.entries.forEach((entry, i) => {
@@ -947,7 +950,8 @@ function renderPracticeList() {
 
     if (isAnswered(entry)) {
       const word = document.createElement("span");
-      word.textContent = entry.item.word + (entry.timedOut ? " ⏰" : "");
+      word.textContent = entry.item.word;
+      if (entry.timedOut) word.append(iconEl("clock")); // ran out of time
       row.appendChild(word);
     } else {
       const blank = document.createElement("span");
