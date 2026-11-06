@@ -1,0 +1,50 @@
+# One-time move of Nikku's progress from the single progress/nikku document
+# into small per-slice documents (see progress_layout.py), so it never hits
+# Firestore's 1 MB limit. Run by hand from the Actions tab ("Run workflow"):
+# dev first, a dry run before the real one. Safe to run again.
+# The progress as it was before is attached to the run as an artifact.
+name: Split progress
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Which Firebase project"
+        type: choice
+        options: [dev, prod]
+        default: dev
+      dry_run:
+        description: "Dry run (show what would change, write nothing)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Firebase Admin SDK
+        run: pip install firebase-admin
+
+      - name: Split progress
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_SERVICE_ACCOUNT_DEV: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DEV }}
+        run: python migrate_progress_split.py --project ${{ inputs.project }} ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Keep the progress as it was
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: progress-before-split-${{ inputs.project }}
+          path: progress_before_split_*.json
+          if-no-files-found: ignore
+          retention-days: 90

@@ -40,24 +40,195 @@ function withTimeout(promise, ms) {
   ]);
 }
 
-// The whole progress doc, fetched once and kept in sync by saves, so switching
-// scope doesn't go back to Firestore (which can be slow on mobile Safari)
-let progressData = null;
+/* Where progress is stored. A Firestore document can't grow past 1 MB, so
+   progress is spread over many small documents in the "progress" collection.
+   Each holds one slice, under the same field names the app uses in memory:
+     nikku__regional_a        { regional: { word: progress } }  one per scope + first letter
+     nikku__sessions_2026-11  { _practiceSessions: [ … ] }     one per month (test end)
+     nikku__timelog_2026-11   { _timeLog: { id: sitting } }     one per month (sitting start)
+     nikku__savedtests        { _savedPracticeTests: { id: test } }
+     nikku__settings          { _settings: { … } }
+   Loading reads them all with one query and merges them into `progressData`,
+   which keeps the shape the single document used to have.
+   The original single document ("nikku") is still read underneath, so
+   progress saved there (before the split, or by an old copy of the app still
+   open somewhere) keeps showing until migrate_progress_split.py folds it in.
+   migrate_progress_split.py and GitBackup.py must split the same way. */
+const PART_PREFIX = `${USER_ID}__`;
 
-// Resolves to the progress doc, or null if Firestore couldn't be reached
-async function fetchProgressDoc() {
-  if (progressData) return progressData;
+// "regional_a"; words that don't start with a-z (after dropping accents) go in "_other"
+function letterPart(scope, word) {
+  const first = String(word).normalize("NFD").charAt(0).toLowerCase();
+  return `${scope}_${/[a-z]/.test(first) ? first : "other"}`;
+}
+
+// "2026-11" from an ISO date
+function monthOf(iso) {
+  const match = /^\d{4}-\d{2}/.exec(iso || "");
+  return match ? match[0] : "undated";
+}
+
+function isPlainMap(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+// Merges like Firestore's own merge: maps field by field, anything else replaced
+function mergeInto(target, source) {
+  Object.entries(source || {}).forEach(([key, value]) => {
+    if (isPlainMap(value)) mergeInto(isPlainMap(target[key]) ? target[key] : (target[key] = {}), value);
+    else target[key] = value;
+  });
+  return target;
+}
+
+// The original document first, then the slices (which are newer) over it.
+// Practice sessions are the one list split across documents: joined, oldest first.
+function assembleProgress(legacyData, parts) {
+  const data = {};
+  const sessions = [];
+  const add = source => {
+    const { [SESSIONS_KEY]: list, ...rest } = source || {};
+    if (Array.isArray(list)) sessions.push(...list);
+    mergeInto(data, rest);
+  };
+  add(legacyData);
+  parts.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).forEach(([, part]) => add(part));
+  data[SESSIONS_KEY] = sessions.sort((a, b) =>
+    String(a.at || a.startedAt || "").localeCompare(String(b.at || b.startedAt || "")));
+  return data;
+}
+
+// All progress, fetched once and kept in sync by saves, so switching scope
+// doesn't go back to Firestore (which can be slow on mobile Safari)
+let progressData = null;
+// true while progressData is this device's offline copy, not the server's
+let progressFromCache = false;
+// Saved tests still in the original document: discarding one must remove it there too
+let legacySavedTestIds = new Set();
+
+async function progressRefs() {
+  const fs = await import(FIRESTORE_URL);
+  return {
+    fs,
+    legacy: fs.doc(window.db, "progress", USER_ID),
+    parts: fs.query(
+      fs.collection(window.db, "progress"),
+      fs.where(fs.documentId(), ">=", PART_PREFIX),
+      fs.where(fs.documentId(), "<", PART_PREFIX + String.fromCharCode(0xf8ff) /* highest character: every id starting with the prefix */)
+    )
+  };
+}
+
+// Resolves to all saved progress, or null if it couldn't be loaded at all.
+// `fromServer` skips the copy already in memory (used when retrying).
+async function fetchProgressDoc(fromServer = false) {
+  if (progressData && !fromServer) return progressData;
   if (!window.db) return null;
+  const { fs, legacy, parts } = await progressRefs();
+  let legacySnap, partsSnap;
   try {
-    const { doc, getDoc } = await import(FIRESTORE_URL);
-    const snap = await withTimeout(getDoc(doc(window.db, "progress", USER_ID)), 12000);
-    progressData = snap.exists() ? snap.data() || {} : {};
-    return progressData;
+    // Includes this device's saves Firestore hasn't confirmed yet
+    [legacySnap, partsSnap] = await withTimeout(Promise.all([fs.getDoc(legacy), fs.getDocs(parts)]), 15000);
+    progressFromCache = false;
   } catch (err) {
     console.warn("Could not load saved progress:", err);
-    return null;
+    if (progressData) return progressData; // a retry failed: keep what's shown
+    // Offline: what this device last had, plus its unsent saves
+    try {
+      [legacySnap, partsSnap] = await Promise.all([fs.getDocFromCache(legacy), fs.getDocsFromCache(parts)]);
+      progressFromCache = true;
+    } catch {
+      return null;
+    }
+  }
+  const legacyData = legacySnap.exists() ? legacySnap.data() : null;
+  legacySavedTestIds = new Set(Object.keys(legacyData?.[SAVED_TESTS_KEY] || {}));
+  progressData = assembleProgress(legacyData, partsSnap.docs.map(snap => [snap.id, snap.data()]));
+  if (!progressFromCache) recoverLocalOnlySavedTests(progressData);
+  applyUnsentSavedTests(progressData);
+  return progressData;
+}
+
+// One-time: before unsent saved tests were tracked, a test saved while offline
+// stayed only in this browser's copy and was hidden by the server's list after
+// a refresh. Treat any such test as unsent so it comes back and is uploaded.
+const SAVED_TESTS_RECOVERED = "spellingBeeSavedTestsRecovered";
+
+function recoverLocalOnlySavedTests(data) {
+  try {
+    if (localStorage.getItem(SAVED_TESTS_RECOVERED)) return;
+    const local = JSON.parse(localStorage.getItem(SAVED_TESTS_LOCAL)) || {};
+    const server = data[SAVED_TESTS_KEY] || {};
+    Object.entries(local).forEach(([id, test]) => {
+      if (test && !(id in server)) setUnsentSavedTest(id, test);
+    });
+    localStorage.setItem(SAVED_TESTS_RECOVERED, "1");
+  } catch {
+    // storage unavailable: nothing to recover
   }
 }
+
+/* Every progress write goes through here, merged into one slice ("regional_a",
+   "settings", …; null = the original document). Firestore only resolves a
+   write once the server has it, so `unconfirmedWrites` counts saves still
+   waiting on the network; after a few seconds a banner says so. */
+let unconfirmedWrites = 0;
+let unsavedBannerTimer = null;
+const UNSAVED_BANNER_DELAY_MS = 4000;
+
+async function writeProgressPart(part, data) {
+  const { doc, setDoc } = await import(FIRESTORE_URL);
+  unconfirmedWrites++;
+  updateUnsavedBanner();
+  try {
+    await setDoc(doc(window.db, "progress", part ? PART_PREFIX + part : USER_ID), data, { merge: true });
+  } catch (err) {
+    // Rejected by the server (not a network drop, which just waits): this save
+    // is gone for good, so say so instead of failing silently
+    showSaveFailed(err);
+    throw err;
+  } finally {
+    unconfirmedWrites--;
+    updateUnsavedBanner();
+  }
+}
+
+function updateUnsavedBanner() {
+  const banner = document.getElementById("unsavedBanner");
+  if (!banner) return;
+  if (!unconfirmedWrites) {
+    clearTimeout(unsavedBannerTimer);
+    unsavedBannerTimer = null;
+    banner.hidden = true;
+    return;
+  }
+  if (!banner.hidden || unsavedBannerTimer) return;
+  unsavedBannerTimer = setTimeout(() => {
+    unsavedBannerTimer = null;
+    if (!unconfirmedWrites) return;
+    document.getElementById("unsavedBannerText").textContent = window.dbPersistent
+      ? "No connection — your progress is kept on this device and will upload when you're back online."
+      : "No connection — your latest progress isn't saved yet. Don't refresh or close the app until this message goes away.";
+    banner.hidden = false;
+  }, UNSAVED_BANNER_DELAY_MS);
+}
+
+function showSaveFailed(err) {
+  const banner = document.getElementById("saveFailedBanner");
+  if (!banner) return;
+  document.getElementById("saveFailedBannerText").textContent =
+    `Progress could not be saved (${err?.code || err?.message || "unknown error"}). ` +
+    "Words learned or practiced now won't be kept — tell a grown-up.";
+  banner.hidden = false;
+}
+
+// Without offline storage, leaving now would lose the unsent saves
+window.addEventListener("beforeunload", event => {
+  if (unconfirmedWrites && !window.dbPersistent) {
+    event.preventDefault();
+    event.returnValue = "";
+  }
+});
 
 /* Merge `fields` into one word's saved progress (other fields are kept) */
 async function saveProgress(scope, word, fields) {
@@ -67,12 +238,7 @@ async function saveProgress(scope, word, fields) {
   }
   if (!window.db) return;
   try {
-    const { doc, setDoc } = await import(FIRESTORE_URL);
-    await setDoc(
-      doc(window.db, "progress", USER_ID),
-      { [scope]: { [word]: fields } },
-      { merge: true }
-    );
+    await writeProgressPart(letterPart(scope, word), { [scope]: { [word]: fields } });
   } catch (err) {
     console.warn("Could not save progress:", err);
   }
@@ -89,12 +255,8 @@ async function savePracticeSession(session) {
   }
   if (!window.db) return;
   try {
-    const { doc, setDoc, arrayUnion } = await import(FIRESTORE_URL);
-    await setDoc(
-      doc(window.db, "progress", USER_ID),
-      { [SESSIONS_KEY]: arrayUnion(session) },
-      { merge: true }
-    );
+    const { arrayUnion } = await import(FIRESTORE_URL);
+    await writeProgressPart(`sessions_${monthOf(session.at || session.startedAt)}`, { [SESSIONS_KEY]: arrayUnion(session) });
   } catch (err) {
     console.warn("Could not save practice session:", err);
   }
@@ -110,7 +272,7 @@ function practiceSessions() {
    this browser in case the progress doc can't be reached. */
 const SAVED_TESTS_KEY = "_savedPracticeTests";
 const SAVED_TESTS_LOCAL = "spellingBeeSavedPracticeTests";
-const MAX_SAVED_TESTS = 10; // the whole progress doc has to stay under Firestore's 1 MB
+const MAX_SAVED_TESTS = 10; // they share one document, which has to stay under Firestore's 1 MB
 
 function savedTestsMap() {
   if (progressData) return progressData[SAVED_TESTS_KEY] || {};
@@ -128,6 +290,62 @@ function savedPracticeTests() {
     .sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
 }
 
+/* Saves and discards the server hasn't confirmed yet, { id: test | null }.
+   Kept in this browser until confirmed, and laid over the progress doc when
+   it loads, so a "Save for later" made while the connection was down isn't
+   replaced by the server's older copy after a refresh. */
+const SAVED_TESTS_UNSENT = "spellingBeeUnsentPracticeTests";
+
+function unsentSavedTests() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_TESTS_UNSENT)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function setUnsentSavedTest(id, test, confirmed = false) {
+  try {
+    const unsent = unsentSavedTests();
+    if (!confirmed) unsent[id] = test;
+    // Confirmed: forget it, unless a newer change to the same test is still waiting
+    else if (id in unsent && JSON.stringify(unsent[id]) === JSON.stringify(test)) delete unsent[id];
+    else return;
+    localStorage.setItem(SAVED_TESTS_UNSENT, JSON.stringify(unsent));
+  } catch {
+    // private browsing / storage full
+  }
+}
+
+function applyUnsentSavedTests(data) {
+  const unsent = Object.entries(unsentSavedTests());
+  if (!unsent.length) return;
+  const map = { ...(data[SAVED_TESTS_KEY] || {}) };
+  unsent.forEach(([id, test]) => {
+    if (test) map[id] = test;
+    else delete map[id];
+  });
+  data[SAVED_TESTS_KEY] = map;
+  // Send them again (harmless if they did arrive)
+  unsent.forEach(([id, test]) => sendSavedPracticeTest(id, test));
+}
+
+async function sendSavedPracticeTest(id, test) {
+  if (!window.db) return;
+  try {
+    const { deleteField } = await import(FIRESTORE_URL);
+    await writeProgressPart("savedtests", { [SAVED_TESTS_KEY]: { [id]: test || deleteField() } });
+    // Saved before the split: it's also in the original document
+    if (!test && legacySavedTestIds.has(id)) {
+      await writeProgressPart(null, { [SAVED_TESTS_KEY]: { [id]: deleteField() } });
+      legacySavedTestIds.delete(id);
+    }
+    setUnsentSavedTest(id, test, true);
+  } catch (err) {
+    console.warn("Could not save the practice test:", err);
+  }
+}
+
 // `test` = null removes that saved test
 async function storeSavedPracticeTest(id, test) {
   const map = { ...savedTestsMap() };
@@ -139,17 +357,8 @@ async function storeSavedPracticeTest(id, test) {
   } catch {
     // private browsing / storage full: the progress doc still has them
   }
-  if (!window.db) return;
-  try {
-    const { doc, setDoc, deleteField } = await import(FIRESTORE_URL);
-    await setDoc(
-      doc(window.db, "progress", USER_ID),
-      { [SAVED_TESTS_KEY]: { [id]: test || deleteField() } },
-      { merge: true }
-    );
-  } catch (err) {
-    console.warn("Could not save the practice test:", err);
-  }
+  setUnsentSavedTest(id, test);
+  await sendSavedPracticeTest(id, test);
 }
 
 /* Time log: one entry per sitting, so several in a day stay separate. Stored as
@@ -168,23 +377,29 @@ async function saveSitting(id, sitting) {
   }
   if (!window.db) return;
   try {
-    const { doc, setDoc } = await import(FIRESTORE_URL);
-    await setDoc(
-      doc(window.db, "progress", USER_ID),
-      { [TIME_LOG_KEY]: { [id]: sitting } },
-      { merge: true }
-    );
+    await writeProgressPart(`timelog_${monthOf(sitting.startedAt)}`, { [TIME_LOG_KEY]: { [id]: sitting } });
   } catch (err) {
     console.warn("Could not save the time log:", err);
   }
 }
 
 async function resetCloudProgress() {
-  try { localStorage.removeItem(SAVED_TESTS_LOCAL); } catch {}
+  try {
+    localStorage.removeItem(SAVED_TESTS_LOCAL);
+    localStorage.removeItem(SAVED_TESTS_UNSENT);
+  } catch {}
   if (progressData) progressData = {};
+  legacySavedTestIds = new Set();
   if (!window.db) return;
-  const { doc, setDoc } = await import(FIRESTORE_URL);
-  await setDoc(doc(window.db, "progress", USER_ID), {}, { merge: false });
+  // Every slice and the original document
+  const { fs, legacy, parts } = await progressRefs();
+  const snap = await fs.getDocs(parts);
+  const refs = [legacy, ...snap.docs.map(d => d.ref)];
+  for (let i = 0; i < refs.length; i += 400) { // a batch takes at most 500 writes
+    const batch = fs.writeBatch(window.db);
+    refs.slice(i, i + 400).forEach(ref => batch.delete(ref));
+    await batch.commit();
+  }
 }
 
 /* ---------------------------
@@ -287,7 +502,8 @@ async function loadWords() {
     try { localStorage.setItem(DEFAULT_SCOPES_LOCAL, JSON.stringify(defaultScopes)); } catch {}
   }
   if (progress) applyProgressToWords(progress);
-  else retryProgressLoad();
+  // Nothing loaded, or only this device's offline copy: keep trying the server
+  if (!progress || progressFromCache) retryProgressLoad();
 
   // Shuffle starts on (the button's aria-pressed in index.html)
   if (!shuffleRanks && document.getElementById("shuffleWordsBtn").getAttribute("aria-pressed") === "true") {
@@ -326,8 +542,8 @@ function retryProgressLoad() {
 async function retryProgressNow() {
   clearTimeout(progressRetryTimer);
   showSyncBanner("loading");
-  const progress = await fetchProgressDoc();
-  if (!progress) {
+  const progress = await fetchProgressDoc(true);
+  if (!progress || progressFromCache) {
     retryProgressLoad();
     return;
   }
@@ -780,8 +996,7 @@ async function saveDefaultScopes(scopes) {
   if (progressData) progressData[SETTINGS_KEY] = { ...(progressData[SETTINGS_KEY] || {}), defaultScopes: scopes };
   if (!window.db) return;
   try {
-    const { doc, setDoc } = await import(FIRESTORE_URL);
-    await setDoc(doc(window.db, "progress", USER_ID), { [SETTINGS_KEY]: { defaultScopes: scopes } }, { merge: true });
+    await writeProgressPart("settings", { [SETTINGS_KEY]: { defaultScopes: scopes } });
   } catch (err) {
     console.warn("Could not save the default scope:", err);
   }

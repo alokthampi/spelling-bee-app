@@ -1687,6 +1687,16 @@
     <button id="syncRetryBtn" class="reset-btn">Retry now</button>
   </div>
 
+  <!-- Saves Firestore hasn't confirmed yet (offline / flaky connection) -->
+  <div id="unsavedBanner" class="sync-banner" role="status" hidden>
+    <span id="unsavedBannerText"></span>
+  </div>
+
+  <!-- A save the server rejected outright (e.g. the progress doc hit a Firestore limit) -->
+  <div id="saveFailedBanner" class="sync-banner" role="alert" hidden>
+    <span id="saveFailedBannerText"></span>
+  </div>
+
   <div class="tabs">
     <button class="tab-btn active" data-tab="learning">Learning</button>
     <button class="tab-btn" data-tab="practice">Practice</button>
@@ -2163,7 +2173,9 @@
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { initializeFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import {
+    initializeFirestore, persistentLocalCache, persistentMultipleTabManager
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   // The live site (GitHub Pages, built from main) uses the real project.
   // Anywhere else (localhost, opening the file, other hosts) uses the dev
@@ -2197,14 +2209,27 @@
     if (!isProd) console.info("Using dev Firebase project:", firebaseConfig.projectId);
     window.firebaseApp = initializeApp(firebaseConfig);
     // Long polling instead of the default streaming connection, which can
-    // stall on iPhone/iPad Safari and leave the app without saved progress
-    window.db = initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+    // stall on iPhone/iPad Safari and leave the app without saved progress.
+    // Saves are kept on this device (IndexedDB) until Firestore confirms them,
+    // so a dropped connection followed by a refresh or closed tab no longer
+    // throws them away: they upload the next time the app is opened online.
+    try {
+      window.db = initializeFirestore(firebaseApp, {
+        experimentalForceLongPolling: true,
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+      });
+      window.dbPersistent = true;
+    } catch (err) {
+      console.warn("Offline storage unavailable; unsent saves are lost on refresh:", err);
+      window.db = initializeFirestore(firebaseApp, { experimentalForceLongPolling: true });
+      window.dbPersistent = false;
+    }
   }
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110304"></script>
+<script src="app.js?v=2026110702"></script>
 <script src="bee-buddy.js?v=2026110101"></script>
 <script src="practice.js?v=2026110303"></script>
 </body>
