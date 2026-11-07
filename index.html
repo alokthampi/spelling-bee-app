@@ -807,6 +807,16 @@
       touch-action: manipulation;
     }
 
+    /* Learning card: all five buttons in one row (two rows on narrow phones) */
+    .audio-buttons.audio-row button { min-width: max-content; flex-basis: 0; padding: 10px 8px; white-space: nowrap; }
+    @media (max-width: 640px) {
+      .audio-buttons.audio-row button { flex-basis: calc(33.33% - 6px); }
+    }
+    /* Practice card: seven buttons, so two rows (4 + 3) until the screen is wide */
+    @media (max-width: 900px) {
+      .audio-buttons.audio-row-7 button { flex-basis: calc(25% - 6px); }
+    }
+
     .audio-buttons button:hover,
     .mark-buttons button:hover { background: var(--bg-hover); border-color: var(--accent-line); color: #fff7e6; }
     .audio-buttons button:active,
@@ -1279,6 +1289,147 @@
       .letter-bee, .bee-buddy[data-fx] .bb-figure { animation: none !important; }
       [data-streak="drop"] .bb-shades { display: none; }
       .bee-buddy.bb-pop .bb-figure { scale: none; translate: none; }
+    }
+
+    /* Tricks on a right answer (bee-buddy.js BUDDY_TRICKS), a splat on a wrong one.
+       Lengths match the `ms` in BUDDY_TRICKS. */
+    .bee-buddy[data-fx="backflip"] .bb-figure { animation: bb-backflip 1s ease-in-out; }
+    .bee-buddy[data-fx="loop"] .bb-figure { animation: bb-loop 1.1s ease-in-out; }
+    .bee-buddy[data-fx="boing"] .bb-figure { animation: bb-boing 0.9s ease-out; }
+    .bee-buddy[data-fx="waggle"] .bb-figure { animation: bb-waggle 0.3s ease-in-out 4; }
+    .bee-buddy[data-fx="zoom"] .bb-figure { animation: bb-zoom 1.3s ease-in-out; }
+    .bee-buddy[data-fx="splat"] .bb-figure { animation: bb-splat 1.1s ease-out; }
+    @keyframes bb-backflip {
+      0% { transform: none; }
+      15% { transform: translateY(2px) scale(1.1, 0.85); }
+      55% { transform: translateY(-26px) rotate(-200deg); }
+      85% { transform: translateY(0) rotate(-360deg) scale(1.15, 0.85); }
+      100% { transform: rotate(-360deg); }
+    }
+    @keyframes bb-loop {
+      0% { transform: none; }
+      25% { transform: translate(14px, -12px) rotate(90deg); }
+      50% { transform: translate(0, -26px) rotate(180deg); }
+      75% { transform: translate(-14px, -12px) rotate(270deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes bb-boing {
+      15% { transform: translateY(6px) scale(1.3, 0.7); }
+      40% { transform: translateY(-26px) scale(0.8, 1.25); }
+      65% { transform: translateY(4px) scale(1.25, 0.8); }
+      80% { transform: translateY(-6px) scale(0.95, 1.05); }
+    }
+    @keyframes bb-waggle {
+      25% { transform: translateX(-6px) rotate(-18deg); }
+      75% { transform: translateX(6px) rotate(18deg); }
+    }
+    @keyframes bb-zoom {
+      0% { transform: none; }
+      30% { transform: translate(40px, -90px) scale(0.3) rotate(25deg); opacity: 0; }
+      60% { transform: translate(-40px, -90px) scale(0.3); opacity: 0; }
+      100% { transform: none; opacity: 1; }
+    }
+    /* Ends lying down, like the faint it plays during */
+    @keyframes bb-splat {
+      0% { transform: scale(1.2); }
+      12% { transform: translateY(14px) scale(1.5, 0.25); }
+      70% { transform: translateY(12px) scale(1.4, 0.3); }
+      100% { transform: rotate(90deg); }
+    }
+
+    /* Full-screen shows (bee-buddy.js buddyFullScreen): bee swarm, honey,
+       party confetti, flower bloom. Never take taps, so typing carries on. */
+    .fx-screen {
+      position: fixed; z-index: 70; pointer-events: none; overflow: hidden; contain: strict;
+      animation: fx-out var(--ms) linear both;
+    }
+    .fx-screen > * { position: absolute; left: 0; top: 0; }
+    @keyframes fx-out { 0%, 88% { opacity: 1; } 100% { opacity: 0; } }
+    .fx-banner {
+      top: 36%; width: 100%; padding: 0 4%; box-sizing: border-box; translate: 0 -50%; text-align: center;
+      font-size: clamp(28px, 9vw, 60px); font-weight: 900; line-height: 1.05; color: #fbbf24;
+      -webkit-text-stroke: 2px #2b2233; paint-order: stroke fill; text-shadow: 0 5px 0 #2b2233;
+      animation: fx-banner var(--ms) ease-out both;
+    }
+    @keyframes fx-banner {
+      0% { transform: scale(0) rotate(-14deg); opacity: 0; }
+      10% { transform: scale(1.2) rotate(4deg); opacity: 1; }
+      16%, 80% { transform: scale(1) rotate(0); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+    .fx-screen svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+    /* Swarm: bees zoom across the screen, bobbing */
+    .fx-bee { top: var(--y); width: var(--sz); height: var(--sz); animation: fx-cross var(--dur) ease-in-out var(--d) both; }
+    .fx-bee .gb-bob { animation-duration: 0.2s; }
+    @keyframes fx-cross { from { transform: translateX(var(--from)); } to { transform: translateX(var(--to)); } }
+
+    /* Bloom: flowers pop up along the bottom and sway */
+    .fx-flower {
+      left: var(--x); top: var(--y); font-size: var(--sz); line-height: 1; transform-origin: 50% 100%;
+      animation: fx-bloom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) both,
+        fx-sway 1.6s ease-in-out calc(var(--d) + 0.7s) infinite;
+    }
+    @keyframes fx-bloom { from { transform: translateY(40px) scale(0); } }
+    @keyframes fx-sway { 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
+
+    /* Honey oozes from the top, drips and drops */
+    .fx-honey-top {
+      width: 100%; height: 28px; transform-origin: top;
+      background: linear-gradient(#d97706, #f59e0b); border-radius: 0 0 50% 50% / 0 0 14px 14px;
+      animation: fx-ooze 0.6s ease-out both;
+    }
+    .fx-drip {
+      left: var(--x); width: var(--w); height: calc(var(--len) + 28px); transform-origin: top;
+      background: linear-gradient(90deg, #d97706, #fbbf24 40%, #f59e0b); border-radius: 0 0 999px 999px;
+      animation: fx-ooze 1.2s cubic-bezier(0.5, 0, 0.7, 1) var(--d) both;
+    }
+    .fx-drop {
+      left: var(--x); width: 12px; height: 16px; background: #f59e0b;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: fx-drop 0.9s ease-in var(--d) both;
+    }
+    .fx-pot { left: var(--x); font-size: 40px; line-height: 1; animation: fx-pot 1.6s ease-in var(--d) both; }
+    @keyframes fx-ooze { from { transform: scaleY(0); } }
+    @keyframes fx-drop {
+      from { transform: translateY(calc(var(--len) + 14px)); opacity: 0; }
+      10% { opacity: 1; }
+      to { transform: translateY(var(--fall)); opacity: 1; }
+    }
+    @keyframes fx-pot { from { transform: translateY(-60px); } to { transform: translateY(var(--fall)) rotate(var(--r)); } }
+
+    /* Party: confetti, flowers and bees rain down */
+    .fx-fall {
+      left: var(--x); width: 9px; height: 15px; border-radius: 2px; background: var(--c);
+      animation: fx-fall var(--dur) cubic-bezier(0.3, 0.1, 0.7, 1) var(--d) both;
+    }
+    .fx-fall-emoji { width: auto; height: auto; background: none; font-size: 26px; line-height: 1; }
+    @keyframes fx-fall {
+      from { transform: translate(0, -40px) rotate(0); }
+      to { transform: translate(var(--dx), var(--fall)) rotate(var(--r)); }
+    }
+
+    /* Secrets (bee-buddy.js): hold the bee and it falls asleep; upside down on April Fools' */
+    .bb-speech { touch-action: manipulation; } /* tap it for a joke */
+    .bb-sleep-eyes, .bb-zzz { display: none; }
+    .bb-sleep-eyes { fill: none; stroke: #2b2233; stroke-width: 2; stroke-linecap: round; }
+    .bb-zzz text { font: 800 10px sans-serif; fill: #60a5fa; transform-box: fill-box; animation: bb-z 1.8s ease-out infinite both; }
+    .bb-zzz text:nth-child(2) { animation-delay: 0.6s; }
+    .bb-zzz text:nth-child(3) { animation-delay: 1.2s; }
+    .bee-buddy[data-fx="sleep"] .bb-figure { animation: bb-snore 2.4s ease-in-out infinite; }
+    .bee-buddy[data-fx="sleep"] :is(.bb-eyes, .bb-eyes-x, .bb-dizzy-eyes, .bb-shades, .bb-oh, .bb-wavy) { display: none; }
+    .bee-buddy[data-fx="sleep"] :is(.bb-sleep-eyes, .bb-zzz) { display: block; }
+    .bee-buddy[data-fx="sleep"] .bb-wings { animation: none; }
+    .bee-buddy[data-fx="upside"] .bb-figure { animation: none; transform: rotate(180deg); }
+    @keyframes bb-snore { 50% { transform: scale(1.06, 0.95) rotate(-4deg); } }
+    @keyframes bb-z {
+      from { transform: translate(0, 6px) scale(0.5); opacity: 0; }
+      30% { opacity: 1; }
+      to { transform: translate(8px, -10px) scale(1.3); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fx-screen { display: none; }
+      .bb-zzz text { animation: none; }
     }
 
     .practice-title { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: 0.005em; }
@@ -2138,23 +2289,18 @@
         <button type="button" id="nextWordBtn" class="reset-btn" disabled>Next →</button>
       </div>
 
-      <div class="audio-buttons">
-        <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-          <svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation
+      <!-- One row to save space; short labels, full names in the titles.
+           "MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
+      <div class="audio-buttons audio-row">
+        <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled title="Merriam-Webster pronunciation" aria-label="MW pronunciation">
+          <svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW
         </button>
-        <button onclick="playAmericanPronunciation()" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
-      </div>
-
-      <div class="audio-buttons">
+        <button onclick="playAmericanPronunciation()" title="Device pronunciation: said by this device's American voice" aria-label="Device pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device</button>
         <button onclick="readDefinition()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
         <button onclick="readSentence()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
-      </div>
-
-      <!-- "Show MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
-      <div class="audio-buttons">
         <button type="button" id="mwPageBtn" class="mw-page-btn" disabled
           title="Show this word's Merriam-Webster entry: meanings, other spellings, phrases, word history">
-          <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Show MW info
+          <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>MW info
         </button>
       </div>
 
@@ -2390,16 +2536,13 @@
             <span class="timer-text" id="practiceTimerText">1:30</span>
           </div>
 
-          <div class="audio-buttons">
-            <button id="practiceMWBtn"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation</button>
-            <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Other pronunciation</button>
-            <button id="practiceUSBtn" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
-          </div>
-          <div class="audio-buttons">
+          <!-- One row to save space; short labels, full names in the titles -->
+          <div class="audio-buttons audio-row audio-row-7">
+            <button id="practiceMWBtn" title="Merriam-Webster pronunciation" aria-label="MW pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW</button>
+            <button id="practiceAltBtn" title="Other pronunciation: Merriam-Webster's other recorded pronunciations" aria-label="Other pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Other</button>
+            <button id="practiceUSBtn" title="Device pronunciation: said by this device's American voice" aria-label="Device pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device</button>
             <button id="practiceDefBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
             <button id="practiceSentBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
-          </div>
-          <div class="audio-buttons">
             <button id="practiceOriginBtn"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Origin</button>
             <button id="practicePosBtn"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>Part of speech</button>
           </div>
@@ -2578,8 +2721,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110801"></script>
-<script src="bee-buddy.js?v=2026110702"></script>
-<script src="practice.js?v=2026110802"></script>
+<script src="app.js?v=2026110803"></script>
+<script src="bee-buddy.js?v=2026110703"></script>
+<script src="practice.js?v=2026110803"></script>
 </body>
 </html>

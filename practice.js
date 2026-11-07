@@ -619,6 +619,11 @@ function showQuestion(index, autoplay) {
   showPracticeScreen("practiceQuestion");
   updatePracticeCounter();
 
+  // This word's recordings into memory now, and the next word's, so taps
+  // (and the next word's auto-play) don't wait on the network
+  preloadAudio(recordedPronunciations(entry.item));
+  const nextEntry = practice.entries[index + 1];
+  if (nextEntry) preloadAudio(recordedPronunciations(nextEntry.item));
   practiceEl("practiceMWBtn").disabled = !entry.item.audio_url;
   practiceEl("practiceAltBtn").disabled = recordedPronunciations(entry.item).length < 2;
   practice.altPronunciation = 0;

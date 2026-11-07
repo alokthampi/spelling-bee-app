@@ -39,9 +39,13 @@ jobs:
           MW_API_KEY: ${{ secrets.MW_API_KEY }}
         run: python fetch_mw_entries.py --scope all --limit "${{ inputs.limit || '900' }}"
 
+      # The app's own copies of the recordings (iPad plays these; see app.js "Audio helpers")
+      - name: Download new recordings
+        run: python download_mw_audio.py
+
       - name: Commit new entries
         run: |
-          git add mw_entries
+          git add mw_entries mw_audio
           if git diff --cached --quiet; then
             echo "No new entries to commit"
             exit 0
