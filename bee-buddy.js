@@ -20,17 +20,55 @@ const BUDDY_STAGE_KEY = "spellingBeeBuddyStage";
 
 // The joke is always on the word or the bee, never on her
 const BUDDY_LINES = {
-  newWord: ["Listen closely!", "You've got this!", "Ears on, antennae up!", "Ooh, I like this one.", "Take your time."],
-  worried: ["No rush... but I'm sweating!", "Is it hot in here?", "Tick tock, little bee!"],
-  panic: ["Bzz bzz bzz! Hurry!", "My wings are sweating!", "Time is buzzing away!"],
-  right: ["Bee-utiful!", "You're the bee's knees!", "Buzz-tastic!", "Un-bee-lievable!", "Sweet as honey!", "That word never stood a chance!"],
-  wrong: ["Oof! That word stung a bit.", "I'm okay! Just fainting.", "Bzzt! Sneaky word!", "We'll get it next time!", "Even bees bump into windows."],
-  timeUp: ["Time flew, and I flew after it!", "Oops! The clock out-buzzed us."],
-  tickle: ["Hee hee! That tickles!", "Bzz-ha-ha-ha!", "Stop it, I'm ticklish! 😆", "Wheee!", "Again! Again!"],
-  perfect: ["Perfect! I'm doing the honey dance!", "Every. Single. Word. Bee-utiful!"],
-  great: ["What a sweet score!", "The whole hive is cheering!"],
-  keepGoing: ["Every wrong word makes us smarter!", "Those tricky words won't know what hit them."],
-  ended: ["See you next time!"]
+  newWord: ["Listen closely!", "You've got this!", "Ears on, antennae up!", "Ooh, I like this one.", "Take your time.",
+    "Antennae tuned in! 📡", "Shhh... the word is shy.", "I'm all ears! (I don't have ears.)", "Bee-lieve in yourself!",
+    "Ready, set, spell!", "My wings are crossed for you!", "This word looks suspicious 🧐", "I've got my thinking stripes on!"],
+  worried: ["No rush... but I'm sweating!", "Is it hot in here?", "Tick tock, little bee!", "I'm not nervous, YOU'RE nervous!",
+    "Sweating honey over here!", "My stripes are getting wobbly!"],
+  panic: ["Bzz bzz bzz! Hurry!", "My wings are sweating!", "Time is buzzing away!", "AAAH! Spell like the wind!",
+    "My antennae are spinning!", "Buzz-mergency! 🚨"],
+  right: ["Bee-utiful!", "You're the bee's knees!", "Buzz-tastic!", "Un-bee-lievable!", "Sweet as honey!", "That word never stood a chance!",
+    "Hive five! ✋", "I'm buzzing with joy!", "Somebody call the Queen!", "Even the dictionary is impressed!", "Bzz-ingo! 🍯",
+    "That word got stung by your brain!", "Nailed it! Like a stinger. (Gently.)", "Spelled it bee-autifully!"],
+  wrong: ["Oof! That word stung a bit.", "I'm okay! Just fainting.", "Bzzt! Sneaky word!", "We'll get it next time!", "Even bees bump into windows.",
+    "That word is a sneaky little stinker!", "The word cheated. I'm sure of it.", "I fainted. Dramatically. 🎭",
+    "Plot twist! That word is weird.", "Words are like bees: some just sting.", "Mistakes are how bees get smarter!"],
+  timeUp: ["Time flew, and I flew after it!", "Oops! The clock out-buzzed us.", "The clock stole my nectar!", "Tick... tock... BZZT!"],
+  tickle: ["Hee hee! That tickles!", "Bzz-ha-ha-ha!", "Stop it, I'm ticklish! 😆", "Wheee!", "Again! Again!",
+    "That's my ticklish stripe!", "Okay okay, I surrender! 🏳️", "Not the antennae!", "Bzz-hee-hee!"],
+  perfect: ["Perfect! I'm doing the honey dance!", "Every. Single. Word. Bee-utiful!", "PERFECT! Even the Queen is clapping! 👑",
+    "100%?! I need to sit down. On a flower."],
+  great: ["What a sweet score!", "The whole hive is cheering!", "Sweeter than a honey sandwich!", "You're on a roll! A honey roll!"],
+  keepGoing: ["Every wrong word makes us smarter!", "Those tricky words won't know what hit them.",
+    "Practice makes perfect... and honey!", "Every bee started as an egg! 🥚", "Bzz! Next round is ours!"],
+  ended: ["See you next time!", "Buzz you later!", "Flying off for a nap! 💤"],
+  // Secret surprises (see "Secrets" below)
+  jokes: ["What do bees chew? Bumble gum! 😄", "Why do bees have sticky hair? They use honeycombs!",
+    "What's a bee's favorite sport? Rugbee! 🏉", "Where do bees go to the bathroom? The BP station!",
+    "What do you call a bee that can't make up its mind? A may-bee!", "Why did the bee get married? It found its honey! 💍",
+    "What's a bee's favorite haircut? A buzz cut! 💇", "How do bees get to school? On the school buzz! 🚌",
+    "What kind of bee can't be understood? A mumble-bee!", "What do bees say on a hot day? Swarm, isn't it? ☀️"],
+  wake: ["I wasn't sleeping! I was resting my eyes.", "Huh? What? I'm up! I'm up!", "Five more minutes... okay fine! 🥱"],
+  beeWord: ["Hey! That word has a BEE in it! 🐝", "A bee word! My favorite kind!", "That word is basically my cousin!"]
+};
+
+// Little tricks the bee does on a right (or wrong) answer, instead of the dance.
+// `fx` matches a .bee-buddy[data-fx] rule in index.html; ms = its animation length.
+const BUDDY_TRICKS = [
+  { fx: "backflip", ms: 1000, lines: ["Backflip! Did you see that?!", "I've been practicing that one!"] },
+  { fx: "loop", ms: 1100, lines: ["Loop-de-loop! Wheee!", "Air show! ✈️"] },
+  { fx: "boing", ms: 900, lines: ["BOING! 🦘", "I'm so happy I'm bouncy!"] },
+  { fx: "waggle", ms: 1200, lines: ["Waggle dance! That means 'great job' in Bee.", "Shake your stripes! 💃"] },
+  { fx: "zoom", ms: 1300, lines: ["Brb, telling the whole hive!", "Zoom! Be right back!"] }
+];
+const BUDDY_SPLAT = { fx: "splat", ms: 1100, lines: ["SPLAT! Who put a window there?", "I'm flat as a pancake! 🥞"] };
+const BUDDY_TRICK_CHANCE = 0.35;
+
+// Full-screen celebrations for long streaks (5 and 10 have their own looks)
+const BUDDY_STREAK_SCENES = {
+  15: { scene: "swarm", banner: "BEE SWARM!", line: "15 in a row! I called ALL my friends! 🐝🐝🐝" },
+  20: { scene: "honey", banner: "HONEY OVERLOAD!", line: "20 in a row! It's raining honey! 🍯" },
+  25: { scene: "bloom", banner: "FLOWER POWER!", line: "25 in a row! The whole garden is blooming! 🌻" }
 };
 
 let buddyMood = null;
@@ -51,6 +89,8 @@ function buddyFaceSvg() {
     <ellipse class="bb-oh" cx="32" cy="39" rx="3" ry="4"/>
     <path class="bb-sweat" d="M53 16q5 7 0 10q-5-3 0-10z"/>
     <path class="bb-sweat bb-sweat-2" d="M10 22q4 6 0 9q-4-3 0-9z"/>
+    <g class="bb-sleep-eyes"><path d="M22 30q3 3 6 0M36 30q3 3 6 0"/></g>
+    <g class="bb-zzz"><text x="50" y="12">z</text><text x="56" y="4">z</text><text x="61" y="-5">Z</text></g>
     <g class="bb-dizzy-eyes">
       <path d="M25 30m-1 0a1 1 0 1 1 2 0a2 2 0 1 1-4 0a3 3 0 1 1 6 0"/>
       <path d="M39 30m-1 0a1 1 0 1 1 2 0a2 2 0 1 1-4 0a3 3 0 1 1 6 0"/>
@@ -139,9 +179,10 @@ function buddyHome() {
   try { if (seen === null || index > seen) localStorage.setItem(BUDDY_STAGE_KEY, index); } catch {}
   if (seen !== null && index > seen) {
     setBuddy("evolve", `🎉 Your buddy grew into a ${stage.name}!`);
+    buddyFullScreen("party", `${stage.name}!`);
     return;
   }
-  setBuddy("idle", "");
+  buddySpecialDay();
 }
 
 function buddyNewWord(answered) {
@@ -158,12 +199,28 @@ function buddyTimer(elapsed) {
 function buddyAnswer(entry) {
   if (entry.status === "correct") {
     buddyStreak++;
-    const golden = Math.random() < GOLDEN_BEE_CHANCE && buddyGoldenBee();
-    if (buddyStreak === 5) setBuddy("happy", "5 in a row! Too cool for school 😎");
-    else if (buddyStreak === 10) setBuddy("happy", "10 in a row! I'm on fire! 🔥");
-    else if (golden) setBuddy("happy", golden);
-    else setBuddy("happy", buddyPick("right"));
-    if (buddyStreak === 5 || buddyStreak === 10) buddyPop(1700); // the dance is 2 × 0.8s
+    const n = buddyStreak;
+    // 15, 20, 25 in a row, then every 10 more: a full-screen show
+    const show = BUDDY_STREAK_SCENES[n] || (n >= 30 && n % 10 === 0 && {
+      scene: pickOne(["swarm", "honey", "bloom", "party"]),
+      banner: "LEGENDARY!",
+      line: `${n} in a row! Is that even allowed?! 🤯`
+    });
+    if (n === 5) setBuddy("happy", "5 in a row! Too cool for school 😎");
+    else if (n === 10) setBuddy("happy", "10 in a row! I'm on fire! 🔥");
+    else if (show) {
+      setBuddy("party", show.line);
+      buddyFullScreen(show.scene, show.banner);
+    } else if (Math.random() < GOLDEN_BEE_CHANCE) setBuddy("happy", buddyGoldenBee());
+    else if (/bee|buzz|honey|hive|pollen|nectar/i.test(entry.item.word)) {
+      // Secret: a word with a bee (or bee things) in it
+      setBuddy("happy", "");
+      buddyTrick({ fx: "boing", ms: 900, lines: BUDDY_LINES.beeWord });
+    } else if (Math.random() < BUDDY_TRICK_CHANCE) {
+      setBuddy("happy", "");
+      buddyTrick(BUDDY_TRICKS[Math.floor(Math.random() * BUDDY_TRICKS.length)]);
+    } else setBuddy("happy", buddyPick("right"));
+    if (n === 5 || n === 10 || show) buddyPop(1700); // the dance is 2 × 0.8s
   } else {
     const hadShades = buddyStreak >= 5;
     buddyStreak = 0;
@@ -173,6 +230,7 @@ function buddyAnswer(entry) {
       buddyPop(1300); // long enough to watch the shades fall
       return;
     }
+    if (!entry.timedOut && Math.random() < 0.25) buddyTrick(BUDDY_SPLAT);
   }
   buddySetStreakLook(buddyStreak >= 10 ? "fire" : buddyStreak >= 5 ? "cool" : "");
 }
@@ -269,6 +327,186 @@ function buddyCrownLetter(btn) {
   setTimeout(remove, 3000);
 }
 
+// A trick from BUDDY_TRICKS (or the splat): the bee plays it and says one of its lines
+function buddyTrick(trick) {
+  buddyFx(trick.fx, trick.ms, trick.lines[Math.floor(Math.random() * trick.lines.length)]);
+  buddyPop(trick.ms);
+}
+
+/* ---------------------------
+   Full-screen shows: a layer over the whole screen that never takes taps
+   (pointer-events: none), so typing carries on underneath. One at a time,
+   removed when done, skipped for reduced motion or a hidden tab.
+--------------------------- */
+let fxScreenOn = false;
+
+const rand = (min, max) => min + Math.random() * (max - min);
+function pickOne(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+function flyingBeeSvg() {
+  return `<svg viewBox="0 0 64 64">
+    <g class="gb-wings"><ellipse cx="22" cy="16" rx="9" ry="13" fill="#e0f2fe" fill-opacity="0.9" stroke="#7fb9e6" transform="rotate(-25 22 16)"/>
+    <ellipse cx="42" cy="16" rx="9" ry="13" fill="#e0f2fe" fill-opacity="0.9" stroke="#7fb9e6" transform="rotate(25 42 16)"/></g>
+    <ellipse cx="32" cy="36" rx="17" ry="19" fill="#fbbf24" stroke="#2b2233" stroke-width="2"/>
+    <path d="M17 42q15 6 30 0M20 50q12 4 24 0" fill="none" stroke="#2b2233" stroke-width="4"/>
+    <circle cx="26" cy="30" r="2.5" fill="#2b2233"/><circle cx="38" cy="30" r="2.5" fill="#2b2233"/>
+    <path d="M27 36q5 4 10 0" fill="none" stroke="#2b2233" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function fxSprite(parent, className, html, vars) {
+  const el = document.createElement("div");
+  el.className = className;
+  el.innerHTML = html;
+  for (const [name, value] of Object.entries(vars)) el.style.setProperty(`--${name}`, value);
+  parent.append(el);
+  return el;
+}
+
+// Each scene fills the layer (W × H px) and returns how long it lasts (ms)
+const FX_SCENES = {
+  // Bees zoom across from both sides
+  swarm(layer, W, H) {
+    for (let i = 0; i < 22; i++) {
+      const size = rand(26, 56), leftToRight = i % 2 === 0;
+      fxSprite(layer, "fx-bee", `<div class="gb-bob">${flyingBeeSvg()}</div>`, {
+        y: `${rand(0.04, 0.85) * H}px`, sz: `${size}px`,
+        from: `${leftToRight ? -size - 10 : W + 10}px`, to: `${leftToRight ? W + 10 : -size - 10}px`,
+        d: `${rand(0, 1.3)}s`, dur: `${rand(1.4, 2.3)}s`
+      });
+    }
+    return 3600;
+  },
+  // Honey oozes down from the top of the screen and drips
+  honey(layer, W, H) {
+    fxSprite(layer, "fx-honey-top", "", {});
+    const drips = Math.max(8, Math.round(W / 40));
+    for (let i = 0; i < drips; i++) {
+      const w = rand(14, 30), len = rand(0.12, 0.5) * H, d = rand(0, 0.8);
+      const x = (i + rand(0.1, 0.9)) * (W / drips) - w / 2;
+      fxSprite(layer, "fx-drip", "", { x: `${x}px`, w: `${w}px`, len: `${len}px`, d: `${d}s` });
+      fxSprite(layer, "fx-drop", "", { x: `${x + w / 2 - 6}px`, len: `${len}px`, fall: `${H}px`, d: `${d + 1.1}s` });
+    }
+    for (let i = 0; i < 3; i++) {
+      fxSprite(layer, "fx-pot", "🍯", { x: `${rand(0.1, 0.8) * W}px`, fall: `${H}px`, d: `${0.4 + i * 0.5}s`, r: `${rand(-40, 40)}deg` });
+    }
+    return 3800;
+  },
+  // Confetti, flowers, bees and honey pots rain down
+  party(layer, W, H) {
+    const colors = ["#fbbf24", "#f472b6", "#60a5fa", "#34d399", "#a78bfa", "#fb923c"];
+    for (let i = 0; i < 46; i++) {
+      const emoji = i % 3 === 0;
+      fxSprite(layer, emoji ? "fx-fall fx-fall-emoji" : "fx-fall", emoji ? pickOne(["🐝", "🌼", "🌸", "🍯", "⭐", "🎉"]) : "", {
+        x: `${rand(0, W)}px`, dx: `${rand(-60, 60)}px`, fall: `${H + 40}px`, r: `${rand(-540, 540)}deg`,
+        d: `${rand(0, 1.3)}s`, dur: `${rand(1.8, 2.8)}s`, c: pickOne(colors)
+      });
+    }
+    return 3800;
+  },
+  // Flowers pop up along the bottom and sway, and a few bees come to visit
+  bloom(layer, W, H) {
+    const flowers = Math.max(10, Math.round(W / 34));
+    for (let i = 0; i < flowers; i++) {
+      const size = rand(34, 58);
+      fxSprite(layer, "fx-flower", pickOne(["🌻", "🌼", "🌷", "🌸", "🌺"]), {
+        x: `${(i + rand(0, 0.6)) * (W / flowers) - size / 3}px`, y: `${H - size - rand(0, 0.25) * H}px`,
+        sz: `${size}px`, d: `${rand(0, 1)}s`
+      });
+    }
+    for (let i = 0; i < 6; i++) {
+      const leftToRight = i % 2 === 0;
+      fxSprite(layer, "fx-bee", `<div class="gb-bob">${flyingBeeSvg()}</div>`, {
+        y: `${rand(0.45, 0.7) * H}px`, sz: "36px",
+        from: `${leftToRight ? -46 : W + 10}px`, to: `${leftToRight ? W + 10 : -46}px`,
+        d: `${0.8 + i * 0.3}s`, dur: `${rand(2.2, 2.8)}s`
+      });
+    }
+    return 4000;
+  }
+};
+
+function buddyFullScreen(scene, banner) {
+  if (reducedMotion() || document.hidden || fxScreenOn) return false;
+  // The visible area, so it isn't hidden behind the phone's keyboard
+  const vv = window.visualViewport;
+  const W = vv ? vv.width : window.innerWidth;
+  const H = vv ? vv.height : window.innerHeight;
+  const layer = document.createElement("div");
+  layer.className = `fx-screen fx-${scene}`;
+  layer.setAttribute("aria-hidden", "true");
+  Object.assign(layer.style, { top: `${vv ? vv.offsetTop : 0}px`, left: `${vv ? vv.offsetLeft : 0}px`, width: `${W}px`, height: `${H}px` });
+  const ms = FX_SCENES[scene](layer, W, H);
+  layer.style.setProperty("--ms", `${ms}ms`);
+  if (banner) fxSprite(layer, "fx-banner", "", {}).textContent = banner;
+  document.body.append(layer);
+  fxScreenOn = true;
+  setTimeout(() => { layer.remove(); fxScreenOn = false; }, ms + 100);
+  return true;
+}
+
+/* ---------------------------
+   Secrets: hidden surprises with no button or hint, for her to discover.
+   - Tap the speech bubble: the bee tells a joke
+   - Hold the bee for a second: it falls asleep (tap to wake it)
+   - Tap the bee 25 times fast: a secret bee swarm
+   - Spell a word with "bee", "buzz", "honey"... in it right: the bee notices
+   - Special days on the start screen: April Fools', Halloween, Christmas...
+   - On a computer keyboard (not while typing an answer), type "buzz",
+     "honey", "bloom" or "party"
+--------------------------- */
+const BUDDY_SECRET_WORDS = { buzz: "swarm", honey: "honey", bloom: "bloom", party: "party" };
+let buddyHoldTimer = null;
+let buddyAllTaps = [];
+let buddyKeys = "";
+
+// Start screen line (and look) for special days and late nights
+function buddySpecialDay(now = new Date()) {
+  const md = `${now.getMonth() + 1}-${now.getDate()}`;
+  const hour = now.getHours();
+  const days = {
+    "1-1": "Happy New Year! 🎆 New year, new words!",
+    "2-14": "Happy Valentine's Day! You're my honey! 💛",
+    "3-14": "Happy Pi Day! I prefer honey pie. 🥧",
+    "4-1": "April Fools! 🙃 (Tap me to flip me back!)",
+    "5-20": "It's World Bee Day! That's MY day! 🐝🎉",
+    "10-31": "Boo-zz! 👻 Happy Halloween!",
+    "12-24": "Merry Bee-mas Eve! 🎄",
+    "12-25": "Merry Bee-mas! 🎁"
+  };
+  if (days[md]) {
+    setBuddy("idle", days[md]);
+    if (md === "4-1") buddyFx("upside", 60000, days[md]);
+    if (md === "1-1" || md === "5-20") buddyFullScreen("party", md === "1-1" ? "HAPPY NEW YEAR!" : "WORLD BEE DAY!");
+  } else if (hour >= 21 || hour < 5) {
+    setBuddy("idle", pickOne(["Yawn... it's past MY bedtime! 🌙", "Late-night spelling? Bee-sides, I'm a night owl. 🦉"]));
+  } else setBuddy("idle", "");
+}
+
+function buddyJoke(event) {
+  event.preventDefault(); // keep the phone's keyboard open
+  buddyTrick({ fx: "boing", ms: 900, lines: [buddyPick("jokes")] });
+}
+
+function buddyHoldStart() {
+  clearTimeout(buddyHoldTimer);
+  buddyHoldTimer = setTimeout(() => buddyFx("sleep", 8000, "Zzz... 💤"), 900);
+}
+
+function buddyHoldEnd() { clearTimeout(buddyHoldTimer); }
+
+// Typing a secret word on a keyboard, anywhere except an answer box
+function buddySecretKey(event) {
+  const target = event.target;
+  if (target.closest?.("input, textarea, select, [contenteditable]")) return;
+  if (event.key.length !== 1 || !/[a-z]/i.test(event.key)) return;
+  buddyKeys = (buddyKeys + event.key.toLowerCase()).slice(-8);
+  const word = Object.keys(BUDDY_SECRET_WORDS).find(w => buddyKeys.endsWith(w));
+  if (!word) return;
+  buddyKeys = "";
+  if (buddyFullScreen(BUDDY_SECRET_WORDS[word], `${word.toUpperCase()}!`)) buddySay("🤫 You found a secret!");
+}
+
 /* Tickle the bee: a giggle and a spin; 10 quick taps make it dizzy */
 let buddyTaps = [];
 let buddyFxTimer = null;
@@ -293,6 +531,21 @@ function buddyFx(fx, ms, line) {
 function buddyTickle() {
   const el = document.getElementById("beeBuddy");
   const now = Date.now();
+  buddyHoldStart();
+  // Asleep, or upside down on April Fools': a tap puts it right
+  if (el.dataset.fx === "sleep" || el.dataset.fx === "upside") {
+    buddyFx("tickle", 650, el.dataset.fx === "sleep" ? buddyPick("wake") : "Phew! Much better. 😵‍💫");
+    buddyTaps = [];
+    return;
+  }
+  // Secret: 25 taps in 10 seconds summons the swarm
+  buddyAllTaps = [...buddyAllTaps.filter(t => now - t < 10000), now];
+  if (buddyAllTaps.length >= 25 && buddyFullScreen("swarm", "SWARM SUMMONED!")) {
+    buddyAllTaps = [];
+    buddyFx("dizzy", 2600, "You summoned the swarm! 🐝🐝🐝");
+    buddyPop(2600);
+    return;
+  }
   buddyTaps = [...buddyTaps.filter(t => now - t < 4000), now];
   if (buddyTaps.length >= 10) {
     buddyTaps = [];
@@ -310,12 +563,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // tap mid-test doesn't close the phone's keyboard
   figure.addEventListener("pointerdown", buddyTickle);
   figure.addEventListener("mousedown", event => event.preventDefault());
+  for (const type of ["pointerup", "pointerleave", "pointercancel"]) figure.addEventListener(type, buddyHoldEnd);
+  figure.addEventListener("contextmenu", event => event.preventDefault()); // a long press isn't a right-click
+  const speech = document.getElementById("beeBuddySpeech");
+  speech.addEventListener("pointerdown", buddyJoke);
+  speech.addEventListener("mousedown", event => event.preventDefault());
+  document.addEventListener("keydown", buddySecretKey);
 });
 
 function buddyResults(answered, pct) {
   document.getElementById("beeBuddy").classList.remove("compact");
   if (!answered) setBuddy("idle", buddyPick("ended"));
-  else if (pct === 100) setBuddy("party", buddyPick("perfect"));
+  else if (pct === 100) {
+    setBuddy("party", buddyPick("perfect"));
+    if (answered >= 5) buddyFullScreen("party", "PERFECT!");
+  }
   else if (pct >= 80) setBuddy("happy", buddyPick("great"));
   else setBuddy("idle", buddyPick("keepGoing"));
 }
