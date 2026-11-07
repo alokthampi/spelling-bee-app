@@ -807,6 +807,16 @@
       touch-action: manipulation;
     }
 
+    /* Learning card: all five buttons in one row (two rows on narrow phones) */
+    .audio-buttons.audio-row button { min-width: max-content; flex-basis: 0; padding: 10px 8px; white-space: nowrap; }
+    @media (max-width: 640px) {
+      .audio-buttons.audio-row button { flex-basis: calc(33.33% - 6px); }
+    }
+    /* Practice card: seven buttons, so two rows (4 + 3) until the screen is wide */
+    @media (max-width: 900px) {
+      .audio-buttons.audio-row-7 button { flex-basis: calc(25% - 6px); }
+    }
+
     .audio-buttons button:hover,
     .mark-buttons button:hover { background: var(--bg-hover); border-color: var(--accent-line); color: #fff7e6; }
     .audio-buttons button:active,
@@ -2279,23 +2289,18 @@
         <button type="button" id="nextWordBtn" class="reset-btn" disabled>Next →</button>
       </div>
 
-      <div class="audio-buttons">
-        <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled>
-          <svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation
+      <!-- One row to save space; short labels, full names in the titles.
+           "MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
+      <div class="audio-buttons audio-row">
+        <button id="mwPronunciationBtn" onclick="playMWPronunciation()" disabled title="Merriam-Webster pronunciation" aria-label="MW pronunciation">
+          <svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW
         </button>
-        <button onclick="playAmericanPronunciation()" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
-      </div>
-
-      <div class="audio-buttons">
+        <button onclick="playAmericanPronunciation()" title="Device pronunciation: said by this device's American voice" aria-label="Device pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device</button>
         <button onclick="readDefinition()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
         <button onclick="readSentence()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
-      </div>
-
-      <!-- "Show MW info": the word's Merriam-Webster entry in a pop-up (app.js "MW info pop-up") -->
-      <div class="audio-buttons">
         <button type="button" id="mwPageBtn" class="mw-page-btn" disabled
           title="Show this word's Merriam-Webster entry: meanings, other spellings, phrases, word history">
-          <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>Show MW info
+          <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>MW info
         </button>
       </div>
 
@@ -2531,16 +2536,13 @@
             <span class="timer-text" id="practiceTimerText">1:30</span>
           </div>
 
-          <div class="audio-buttons">
-            <button id="practiceMWBtn"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW Pronunciation</button>
-            <button id="practiceAltBtn" title="Hear Merriam-Webster's other recorded pronunciations"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Other pronunciation</button>
-            <button id="practiceUSBtn" title="Said by this device's American voice"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device Pronunciation</button>
-          </div>
-          <div class="audio-buttons">
+          <!-- One row to save space; short labels, full names in the titles -->
+          <div class="audio-buttons audio-row audio-row-7">
+            <button id="practiceMWBtn" title="Merriam-Webster pronunciation" aria-label="MW pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>MW</button>
+            <button id="practiceAltBtn" title="Other pronunciation: Merriam-Webster's other recorded pronunciations" aria-label="Other pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Other</button>
+            <button id="practiceUSBtn" title="Device pronunciation: said by this device's American voice" aria-label="Device pronunciation"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Device</button>
             <button id="practiceDefBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Definition</button>
             <button id="practiceSentBtn"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Sentence</button>
-          </div>
-          <div class="audio-buttons">
             <button id="practiceOriginBtn"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg>Origin</button>
             <button id="practicePosBtn"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>Part of speech</button>
           </div>
