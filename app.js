@@ -1503,7 +1503,91 @@ const AUDIO_TRY_TIMEOUTS_MS = [3000, 6000, 8000];
 // fails again while the network is still dropped
 const AUDIO_RETRY_PAUSES_MS = [1500, 5000];
 let audioWatchdog = null;
-let audioRequest = null; // { url, attempt } of the recording being loaded/played
+let audioRequest = null; // { url, attempt, started } of the recording being loaded/played
+// Recordings whose load was cut off before they started playing. Their request
+// may still be stuck in the browser, so the next play asks for a fresh copy
+// straight away. Doing it then, inside the tap, matters on iPad: Safari there
+// blocks the watchdog's later retry (it isn't a tap), which left MW silent
+// until the stuck request timed out.
+const abandonedAudioUrls = new Set();
+
+/* The app keeps its own copy of every MW recording in mw_audio/ (filled by
+   download_mw_audio.py). On iPad, Safari's connection to MW's server sometimes
+   goes dead and every recording then stayed silent for about two minutes. So
+   as soon as a word appears, its recordings are downloaded from the app's own
+   site into memory, and a tap plays them from there with no network at all.
+   Background downloads can be cancelled and retried freely (a tap isn't needed
+   for that), unlike the audio element's own loading. */
+const MW_AUDIO_PREFIX = "https://media.merriam-webster.com/audio/prons/en/us/mp3/";
+const AUDIO_MEMORY_MAX = 40;                     // recordings kept in memory (~5 KB each)
+const AUDIO_COPY_TIMEOUTS_MS = [4000, 8000, 12000];
+const audioMemory = new Map();                   // MW link -> { blobUrl } (oldest first)
+const unhostedAudio = new Set();                 // no copy yet (word newer than the last download)
+
+function audioCopyPath(url) {
+  return url?.startsWith(MW_AUDIO_PREFIX) && !unhostedAudio.has(url) ? `mw_audio/${url.slice(MW_AUDIO_PREFIX.length)}` : null;
+}
+
+async function fetchAudioCopy(path) {
+  for (let attempt = 0; ; attempt++) {
+    const abort = new AbortController();
+    const timer = setTimeout(() => abort.abort(), AUDIO_COPY_TIMEOUTS_MS[attempt]);
+    try {
+      const response = await fetch(attempt ? `${path}?r=${Date.now()}` : path, { signal: abort.signal });
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const blob = await response.blob();
+      return blob.type.startsWith("audio/") ? blob : new Blob([blob], { type: "audio/mpeg" });
+    } catch (err) {
+      if (attempt + 1 >= AUDIO_COPY_TIMEOUTS_MS.length) throw err;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+}
+
+// Downloads the recordings into memory (in the background; safe to call often)
+function preloadAudio(urls) {
+  for (const url of urls || []) {
+    const path = audioCopyPath(url);
+    if (!path) continue;
+    const known = audioMemory.get(url);
+    audioMemory.delete(url);
+    if (known) {
+      audioMemory.set(url, known); // now the most recently wanted
+      continue;
+    }
+    const entry = { blobUrl: null };
+    audioMemory.set(url, entry);
+    const forget = () => { if (audioMemory.get(url) === entry) audioMemory.delete(url); };
+    fetchAudioCopy(path).then(blob => {
+      if (!blob) {
+        unhostedAudio.add(url); // plays from MW until the next download adds it
+        forget();
+      } else if (audioMemory.get(url) === entry) {
+        entry.blobUrl = URL.createObjectURL(blob);
+      }
+    }).catch(forget); // the tap will still try the copy, then MW
+  }
+  // Forget the oldest, except one that's playing right now
+  for (const [url, entry] of audioMemory) {
+    if (audioMemory.size <= AUDIO_MEMORY_MAX) break;
+    if (entry.blobUrl && audioPlayer.src === entry.blobUrl) continue;
+    if (entry.blobUrl) URL.revokeObjectURL(entry.blobUrl);
+    audioMemory.delete(url);
+  }
+}
+
+// Where to play a recording from: memory, else the app's copy, and on the last
+// try MW itself. `fresh` adds a one-off query so it can't wait behind a stuck request.
+function audioSource(url, attempt, fresh) {
+  const inMemory = audioMemory.get(url)?.blobUrl;
+  if (inMemory) return inMemory;
+  const copy = audioCopyPath(url);
+  const src = copy && attempt < AUDIO_TRY_TIMEOUTS_MS.length - 1 ? copy : url;
+  return fresh ? `${src}${src.includes("?") ? "&" : "?"}r=${Date.now()}` : src;
+}
 
 function stopAllAudio() {
   if (synth) synth.cancel();
@@ -1517,6 +1601,7 @@ function stopAllAudio() {
 // silent, even when tapped, for a minute or two until the request timed out.
 function releaseAudio() {
   clearTimeout(audioWatchdog);
+  if (audioRequest && !audioRequest.started) abandonedAudioUrls.add(audioRequest.url);
   audioRequest = null;
   audioPlayer.pause();
   if (audioPlayer.hasAttribute("src")) {
@@ -1525,13 +1610,16 @@ function releaseAudio() {
   }
 }
 
-// Plays one recording on the shared element. If it hasn't started in time or
-// fails to load, it's asked for again under a fresh URL (so it can't queue
-// behind a stuck request); once the tries run out it's skipped.
+// Plays one recording on the shared element (from memory when it's there; see
+// audioSource). If it hasn't started in time or fails to load, it's asked for
+// again under a fresh URL (so it can't queue behind a stuck request); once the
+// tries run out it's skipped.
 function startAudio(url, attempt = 0) {
   releaseAudio();
-  const request = audioRequest = { url, attempt };
-  audioPlayer.src = attempt ? `${url}${url.includes("?") ? "&" : "?"}r=${Date.now()}` : url;
+  preloadAudio([url]); // for next time, if it isn't in memory yet
+  const fresh = attempt > 0 || abandonedAudioUrls.has(url);
+  const request = audioRequest = { url, attempt, started: false };
+  audioPlayer.src = audioSource(url, attempt, fresh);
   audioPlayer.play().catch(err => {
     // Blocked without a tap: retrying won't help
     if (err.name === "NotAllowedError" && audioRequest === request) clearTimeout(audioWatchdog);
@@ -1577,7 +1665,13 @@ function playNextQueued() {
   }, PRONUNCIATION_GAP_MS);
 }
 
-audioPlayer.addEventListener("playing", () => clearTimeout(audioWatchdog));
+audioPlayer.addEventListener("playing", () => {
+  clearTimeout(audioWatchdog);
+  if (audioRequest) {
+    audioRequest.started = true;
+    abandonedAudioUrls.delete(audioRequest.url);
+  }
+});
 audioPlayer.addEventListener("ended", () => {
   audioRequest = null;
   playNextQueued();
@@ -2862,6 +2956,7 @@ async function resetSelection() {
 function updateMWButtonState(item) {
   const btn = document.getElementById("mwPronunciationBtn");
   if (btn) btn.disabled = !item?.audio_url;
+  preloadAudio(recordedPronunciations(item));
   const page = document.getElementById("mwPageBtn");
   if (page) page.disabled = !item;
 }
