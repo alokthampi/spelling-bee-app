@@ -433,7 +433,7 @@ WIKI_SKIP_DESCRIPTION_RE = re.compile(
 )
 # Words whose Wikipedia picture is known to be unsuitable or misleading
 WIKI_SKIP_WORDS = {
-    "fascism", "hypothermia", "cataract", "prejudice", "arsonist", "bigotry", "contusion",
+    "fascism", "hypothermia", "cataract", "prejudice", "arsonist", "arsonists", "bigotry", "contusion",
     "foible", "minutia", "diddly-squat", "liege", "lanai", "musings",
 }
 

@@ -702,7 +702,9 @@ function checkPracticeAnswer() {
 
   stopTimer();
   entry.typed = typed;
-  entry.status = normalizeSpelling(typed) === normalizeSpelling(entry.item.word) ? "correct" : "wrong";
+  // The list's other spellings count too ("fertiliser", "brasier")
+  entry.status = acceptedSpellings(entry.item).some(s => normalizeSpelling(s) === normalizeSpelling(typed))
+    ? "correct" : "wrong";
   recordPracticeResult(entry);
   showAnswerState(entry);
   // Only on a fresh answer, not when an answered word is shown again
@@ -749,6 +751,13 @@ function showAnswerState(entry) {
     renderSpellingTips(feedback.querySelector(".fb-tips"), spellingTips(entry.item, 2));
   }
   if (correct) feedback.querySelector(".fb-word").textContent = entry.item.word;
+  // The study list's other spellings, once the answer is in
+  if (entry.item.alternate_spellings?.length) {
+    const also = document.createElement("div");
+    also.className = "fb-also";
+    also.append(...studyListSpellingNodes(entry.item));
+    feedback.querySelector(".fb-word").closest("div").after(also);
+  }
   // Only after answering, so the page can't give the spelling away
   const mw = document.createElement("button");
   mw.type = "button";
