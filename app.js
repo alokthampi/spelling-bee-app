@@ -429,7 +429,7 @@ async function resetCloudProgress() {
 // filter by scope in memory, and share the same word objects.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026101302",
+  school: "word_list_school.json?v=2026110901",
   regional: "word_list_regional.json?v=2026102601"
 };
 
@@ -1784,13 +1784,21 @@ function selectWord(index, autoplay = true) {
 
 // Merriam-Webster definitions and sentences get their own badge; every other
 // source shows as generated
+// Where a definition or sentence came from: Merriam-Webster, the official
+// bee study list (study_list: the 2026-2027 School Spelling Bee Study List,
+// which takes its definitions from MW), or generated
+const SOURCE_BADGES = {
+  merriam_webster: { icon: "book", label: "Merriam-Webster", cls: "source-mw", title: "Merriam-Webster Collegiate Dictionary" },
+  study_list: { icon: "book", label: "Bee study list", cls: "source-mw", title: "Official School Spelling Bee Study List" },
+};
 function renderSourceBadge(id, text, source) {
   const badge = document.getElementById(id);
-  const isMW = source === "merriam_webster";
+  const kind = SOURCE_BADGES[source] ||
+    { icon: "sparkle", label: "Generated", cls: "source-generated", title: "Not from Merriam-Webster" };
   badge.hidden = !text;
-  setIconText(badge, isMW ? "book" : "sparkle", isMW ? "Merriam-Webster" : "Generated");
-  badge.className = `source-badge ${isMW ? "source-mw" : "source-generated"}`;
-  badge.title = isMW ? "Merriam-Webster Collegiate Dictionary" : "Not from Merriam-Webster";
+  setIconText(badge, kind.icon, kind.label);
+  badge.className = `source-badge ${kind.cls}`;
+  badge.title = kind.title;
 }
 
 // Language-of-origin tips that fit this word (spelling-help.js)
@@ -3220,10 +3228,19 @@ async function showMWPanel(item = currentItem) {
 // Learning card: "Also spelled: or theatre" under the word when MW accepts
 // other spellings (what a bee judge would also accept). Learning only: it
 // would give the spelling away in a test.
+// The official study list's other spellings come first (alternate_spellings,
+// with preferred_spelling when the list marks the main one as preferred):
+//   ★ Preferred spelling: brazier · Also accepted: brasier
+//   Also accepted: fertiliser (British spelling)
 async function showWordVariants(item) {
   const el = document.getElementById("wordVariants");
   el.hidden = true;
   if (!item) return;
+  if (item.alternate_spellings?.length) {
+    el.replaceChildren(iconEl("pen"), ...studyListSpellingNodes(item));
+    el.hidden = false;
+    return;
+  }
   const words = await loadMWEntryFile(letterPart(item._scope, item.word));
   if (currentItem !== item || !words) return; // moved on meanwhile, or offline
   const variants = (words[item.word]?.entries || []).flatMap(e => e.variants || []);
@@ -3231,6 +3248,29 @@ async function showWordVariants(item) {
   el.innerHTML = mwHtml(`Also spelled: ${variantText(variants)}`);
   el.prepend(iconEl("pen"));
   el.hidden = false;
+}
+
+// "★ Preferred spelling: brazier · Also accepted: brasier" as DOM nodes
+// (also used by practice.js after an answer)
+function studyListSpellingNodes(item) {
+  const nodes = [];
+  const bold = text => Object.assign(document.createElement("b"), { textContent: text });
+  if (item.preferred_spelling) {
+    nodes.push(Object.assign(document.createElement("span"), { className: "spelling-preferred", textContent: "★ Preferred spelling" }),
+      document.createTextNode(": "), bold(item.word), document.createTextNode(" · "));
+  }
+  nodes.push(document.createTextNode("Also accepted: "));
+  (item.alternate_spellings || []).forEach((alt, i) => {
+    if (i) nodes.push(document.createTextNode(", "));
+    nodes.push(bold(alt.spelling));
+    if (alt.note) nodes.push(document.createTextNode(` (${alt.note})`));
+  });
+  return nodes;
+}
+
+// Every spelling a judge would accept: the word, then the list's other spellings
+function acceptedSpellings(item) {
+  return [item.word, ...(item.alternate_spellings || []).map(alt => alt.spelling)];
 }
 
 // Also called by practice.js before each new question

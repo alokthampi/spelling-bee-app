@@ -1678,6 +1678,12 @@
       background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
     }
     .word-variants { margin: 0 0 12px; }
+    /* The study list's preferred spelling (app.js studyListSpellingNodes) */
+    .spelling-preferred {
+      display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 13px; font-weight: 800;
+      background: rgba(251, 191, 36, 0.18); color: var(--warning);
+    }
+    .fb-also { margin-top: 6px; font-size: 15px; color: var(--text-secondary); }
     .mw-crossref { margin-top: 4px; font-size: 15px; color: var(--text-secondary); }
     .mw-art { margin: 10px 0; text-align: center; }
     .mw-art img { max-width: 100%; max-height: 220px; padding: 8px; background: #fff; border-radius: var(--radius-sm); }
@@ -2721,8 +2727,8 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026110803"></script>
+<script src="app.js?v=2026110901"></script>
 <script src="bee-buddy.js?v=2026110703"></script>
-<script src="practice.js?v=2026110803"></script>
+<script src="practice.js?v=2026110901"></script>
 </body>
 </html>
