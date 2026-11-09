@@ -9,17 +9,19 @@ app only downloads the letter it needs. Runs add to the files: words already
 saved in the current format are skipped (unless --refetch), so a daily run with
 --limit fills everything in over a few days within MW's 1,000-a-day allowance.
 
-    python fetch_mw_entries.py --scope all --limit 900
+    python fetch_mw_entries.py --scope all --limit 1000
     python fetch_mw_entries.py --scope school --difficulty one
     python fetch_mw_entries.py --scope all --words cliché piñata     # look these up again
+    python fetch_mw_entries.py --scope all --missing   # again, every word saved without an entry
 
 Normally the nightly "Fetch MW entries" GitHub workflow runs this and commits
 the files. Don't also run it locally then: both would edit the same files and
 share the same daily allowance.
 
 Each record:  {"v": FORMAT, "fetched": date, "entries": [compact_entry(), …]}
-plus "suggestions" (not in MW: its closest words) or "offensive": true (MW
-marks the word offensive; nothing is kept). app.js renderMWRecord shows them.
+plus "suggestions" (not in MW: its closest words), "offensive": true (MW
+marks the word offensive; nothing is kept) or "within": true (MW only has the
+word as part of a longer entry, e.g. fipple flute). app.js renderMWRecord shows them.
 
 The key comes from MW_API_KEY (environment), else from the .env file here.
 """
@@ -150,7 +152,10 @@ def senses_from(sseq_items):
         if kind == "pseq":
             senses += senses_from(value)
         elif kind == "bs":
-            senses.append(sense_from(value.get("sense", {})))
+            sense = value.get("sense", {})
+            if is_offensive(sense.get("sls")) or is_offensive(sense.get("lbs")):
+                continue
+            senses.append(sense_from(sense))
         elif kind == "sense":
             if is_offensive(value.get("sls")) or is_offensive(value.get("lbs")):
                 continue
@@ -254,26 +259,40 @@ def compact_entry(entry):
 
 def entries_for(word, data):
     """MW's entries for this word: its own homographs, else the entry it's a form of
-    (e.g. "beans" -> bean). Entries MW marks offensive are left out.
+    (e.g. "beans" -> bean, "lay-ups" -> layup), else the entry it's part of
+    ("fipple" -> fipple flute; the record then gets "within": true).
+    Offensive senses are left out (senses_from); an entry MW flags offensive is
+    left out only if it has nothing else (e.g. "primitive" keeps its other senses).
     Returns (entries, extra fields for the record)."""
     if not data or not isinstance(data[0], dict):
         suggestions = [s for s in (data or []) if isinstance(s, str)][:5]
         return [], ({"suggestions": suggestions} if suggestions else {})  # not found
-    usable = [e for e in data if isinstance(e, dict) and not e.get("meta", {}).get("offensive")]
+    found = [e for e in data if isinstance(e, dict)]
+    flagged = lambda e: bool(e.get("meta", {}).get("offensive"))
     head_id = lambda e: e.get("meta", {}).get("id", "").split(":")[0]
-    if not usable:
-        return [], {"offensive": True}  # MW has it, but marks every entry offensive
-    own = [e for e in usable if head_id(e).lower() == word.lower()]
+    squash = lambda s: re.sub(r"[\s-]", "", s.lower())
+    pattern = re.compile(rf"(^|[\s-]){re.escape(word.lower())}([\s-]|$)")
+    extra_fields = {}
+    own = [e for e in found if head_id(e).lower() == word.lower()]
     if not own:
-        own = [e for e in usable if word.lower() in (s.lower() for s in e.get("meta", {}).get("stems", []))][:1]
-    entries = [compact_entry(e) for e in own[:MAX_ENTRIES]]
+        own = [e for e in found if squash(word) in (squash(s) for s in e.get("meta", {}).get("stems", []))][:1]
+    if not own:
+        own = [e for e in found if not flagged(e) and pattern.search(head_id(e).lower())][:2]
+        extra_fields = {"within": True} if own else {}
+    entries = [compact_entry(e) for e in own[:MAX_ENTRIES]
+               if not flagged(e) or (not is_offensive(e.get("lbs")) and defs_from(e.get("def")))]
+    if own and not entries:
+        return [], {"offensive": True}  # MW has it, but nothing in it is fit to show
+    usable = [e for e in found if not flagged(e)]
+    used = {e.get("meta", {}).get("id") for e in own}
 
     # MW lists phrases and compounds as entries of their own ("head in the sand",
     # "head cold"): add them to the word's phrases
     if entries:
-        pattern = re.compile(rf"(^|[\s-]){re.escape(word.lower())}([\s-]|$)")
         extra = []
         for e in usable:
+            if e.get("meta", {}).get("id") in used:
+                continue
             name = head_id(e)
             meaning = (e.get("shortdef") or [""])[0]
             if name.lower() != word.lower() and pattern.search(name.lower()) and meaning \
@@ -283,7 +302,7 @@ def entries_for(word, data):
         phrases = entries[0].get("phrases", []) + [p for p in extra if p["phrase"] not in known]
         if phrases:
             entries[0]["phrases"] = phrases[:MAX_PHRASES]
-    return entries, {}
+    return entries, (extra_fields if entries else {})
 
 
 def without_accents(word):
@@ -304,9 +323,10 @@ def main():
     parser = argparse.ArgumentParser(description="Save Merriam-Webster entries for the in-app MW pop-up.")
     parser.add_argument("--scope", required=True, choices=SCOPES + ["all"])
     parser.add_argument("--difficulty", choices=["one", "two", "three"], help="Only this difficulty")
-    parser.add_argument("--limit", type=int, default=900, help="Most words to look up this run (MW allows 1,000 a day)")
+    parser.add_argument("--limit", type=int, default=1000, help="Most words to look up this run (MW allows 1,000 a day)")
     parser.add_argument("--refetch", action="store_true", help="Look up words already saved, too")
     parser.add_argument("--words", nargs="+", help="Only these words (looked up again even if saved)")
+    parser.add_argument("--missing", action="store_true", help="Look up again words saved without an entry")
     args = parser.parse_args()
 
     key = api_key()
@@ -329,7 +349,8 @@ def main():
 
     def needed(scope, word):
         record = file_for(scope, word)["words"].get(word)
-        return args.refetch or args.words or not record or record.get("v", 1) < FORMAT
+        return args.refetch or args.words or not record or record.get("v", 1) < FORMAT \
+            or (args.missing and not record.get("entries"))
 
     pending = [sw for sw in words if needed(*sw)]
     todo = pending[:args.limit]

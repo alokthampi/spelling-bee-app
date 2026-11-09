@@ -3163,9 +3163,11 @@ function renderMWEntry(entry) {
      null       the letter's file couldn't be downloaded (offline)
      undefined  not fetched yet (the nightly job hasn't reached it)
      { offensive: true }        MW has it but marks it offensive: not shown
-     { entries: [] }            not in MW's Collegiate Dictionary (+ MW's suggestions)
+     { entries: [] }            not in MW's Collegiate Dictionary (its suggestions aren't shown)
      { entries: [ … ] }         the entries; a plural like "beans" gets MW's
-                                "bean" entry, so the pop-up says which word it is */
+                                "bean" entry, so the pop-up says which word it is
+     { entries: [ … ], within: true }  MW only has the word inside a longer
+                                entry ("fipple" -> fipple flute) */
 function renderMWRecord(word, record) {
   const body = document.getElementById("mwPanelBody");
   if (record === null) {
@@ -3181,14 +3183,19 @@ function renderMWRecord(word, record) {
     return;
   }
   if (!record.entries.length) {
-    const none = mwEl("p", "mw-empty", `<b>${word}</b> isn't in Merriam-Webster's Collegiate Dictionary.`);
-    body.replaceChildren(none);
-    if (record.suggestions?.length) body.append(mwEl("p", "mw-empty", `Did MW mean: ${record.suggestions.join(", ")}?`));
+    // The app only has MW's Collegiate Dictionary; merriam-webster.com also
+    // searches its larger Unabridged one, which has many rare bee words
+    // (e.g. dariole). MW's suggestions are just near spellings, so not shown.
+    body.replaceChildren(mwEl("p", "mw-empty",
+      `The app's copy of Merriam-Webster doesn't include <b>${word}</b>, but merriam-webster.com may have it in its larger dictionary. Open the full page below.`));
     return;
   }
   const parts = [];
   const shown = record.entries[0].hw.replace(/·/g, "").toLowerCase();
-  if (shown !== word.toLowerCase()) {
+  if (record.within) {
+    const names = record.entries.map(e => `<b>${e.hw.replace(/·/g, "")}</b>`).join(" and ");
+    parts.push(mwEl("p", "mw-form-of", `Merriam-Webster has <b>${word}</b> only as part of ${names}:`));
+  } else if (shown !== word.toLowerCase()) {
     parts.push(mwEl("p", "mw-form-of", `<b>${word}</b> is a form of <b>${record.entries[0].hw.replace(/·/g, "")}</b>:`));
   }
   body.replaceChildren(...parts, ...record.entries.map(renderMWEntry));

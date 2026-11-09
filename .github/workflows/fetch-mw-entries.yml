@@ -1,5 +1,6 @@
 # Fills mw_entries/ (the in-app Merriam-Webster pop-up) a bit every night:
-# up to 900 words per run, inside MW's 1,000-lookups-a-day allowance. Once
+# up to 1,000 words per run, MW's whole daily allowance (lookups past it just
+# fail and are retried the next night). Once
 # every word is saved, runs only look up words added to the lists since, so
 # they finish in seconds. Also runs on demand from the Actions tab.
 # The Merriam-Webster key comes from the MW_API_KEY repository secret.
@@ -12,7 +13,7 @@ on:
     inputs:
       limit:
         description: "Most words to look up (MW allows 1,000 a day)"
-        default: "900"
+        default: "1000"
 
 permissions:
   contents: write   # commits the new entries
@@ -37,7 +38,7 @@ jobs:
       - name: Look up words
         env:
           MW_API_KEY: ${{ secrets.MW_API_KEY }}
-        run: python fetch_mw_entries.py --scope all --limit "${{ inputs.limit || '900' }}"
+        run: python fetch_mw_entries.py --scope all --limit "${{ inputs.limit || '1000' }}"
 
       # The app's own copies of the recordings (iPad plays these; see app.js "Audio helpers")
       - name: Download new recordings
