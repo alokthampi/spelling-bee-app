@@ -429,8 +429,8 @@ async function resetCloudProgress() {
 // filter by scope in memory, and share the same word objects.
 // Bump ?v= whenever a word file changes so phones don't keep a cached copy
 const SCOPE_FILES = {
-  school: "word_list_school.json?v=2026110901",
-  regional: "word_list_regional.json?v=2026102601"
+  school: "word_list_school.json?v=2026111002",
+  regional: "word_list_regional.json?v=2026111001"
 };
 
 // School words the class is studying, shown as the "Class" scope.

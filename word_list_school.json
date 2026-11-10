@@ -4936,8 +4936,17 @@
     "definition_source": "study_list",
     "sentence": "Carlos's birthday party had a piñata.",
     "sentence_source": "tatoeba",
-    "audio_url": null,
-    "pronunciations": [],
+    "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/pinata01.mp3",
+    "pronunciations": [
+      {
+        "written": "pēn-ˈyä-tə",
+        "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/p/pinata01.mp3"
+      },
+      {
+        "written": "pin-",
+        "audio_url": null
+      }
+    ],
     "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/PI%C3%91ATA.jpg/500px-PI%C3%91ATA.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
     "image_source": "wikipedia",
     "image_credit": "Wikipedia: Piñata",
@@ -6833,8 +6842,37 @@
     "definition_source": "study_list",
     "sentence": "We shared a chocolate éclair after lunch.",
     "sentence_source": "generated",
-    "audio_url": null,
-    "pronunciations": [],
+    "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/eclai01v.mp3",
+    "pronunciations": [
+      {
+        "written": "ē-ˈkler",
+        "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/eclai01v.mp3"
+      },
+      {
+        "written": "ā-",
+        "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/eclair02.mp3"
+      },
+      {
+        "written": "e-",
+        "audio_url": null
+      },
+      {
+        "written": "ə-",
+        "audio_url": null
+      },
+      {
+        "written": "ˈē-ˌkler",
+        "audio_url": "https://media.merriam-webster.com/audio/prons/en/us/mp3/e/eclair01.mp3"
+      },
+      {
+        "written": "ˈā-",
+        "audio_url": null
+      },
+      {
+        "written": "ˈe-",
+        "audio_url": null
+      }
+    ],
     "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Two_Safeway_Chocolate_Eclairs_%2819043880936%29.jpg/500px-Two_Safeway_Chocolate_Eclairs_%2819043880936%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
     "image_source": "wikipedia",
     "image_credit": "Wikipedia: Éclair",
