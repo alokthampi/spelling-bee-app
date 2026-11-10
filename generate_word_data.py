@@ -5,6 +5,7 @@ import time
 import re
 import argparse
 import csv
+import unicodedata
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Optional
 
@@ -108,10 +109,15 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\{.*?\}", "", text).strip()
 
 
+def without_accents(text: str) -> str:
+    """"caló" -> "calo": MW's search and some headwords leave accents out."""
+    return "".join(c for c in unicodedata.normalize("NFD", text) if not unicodedata.combining(c))
+
+
 def is_exact_entry(entry: dict, word: str) -> bool:
     meta_id = entry.get("meta", {}).get("id", "")
     headword = meta_id.split(":")[0].lower()
-    return headword == word.lower()
+    return without_accents(headword) == without_accents(word.lower())
 
 
 # ============================================================
@@ -152,7 +158,8 @@ def find_pronunciations(data: list, word: str, part_of_speech: str = "",
     entries = [e for e in data if isinstance(e, dict)]
 
     candidates = ([e for e in entries if headword(e) == word]
-                  or [e for e in entries if headword(e).lower() == word.lower()])
+                  or [e for e in entries if headword(e).lower() == word.lower()]
+                  or [e for e in entries if without_accents(headword(e).lower()) == without_accents(word.lower())])
     if candidates:
         chosen = (next((e for e in candidates if definition and definition in e.get("shortdef", [])), None)
                   or next((e for e in candidates if part_of_speech and e.get("fl") == part_of_speech), None)
@@ -581,6 +588,9 @@ def fetch_word(word: str, difficulty: str = "three") -> Dict:
     }
 
     data = fetch_mw(word) or []
+    # MW's search wants accented words without accents ("caló" -> calo)
+    if not any(isinstance(e, dict) for e in data) and without_accents(word) != word:
+        data = fetch_mw(without_accents(word)) or data
 
     exact_entries = []
     related_entries = []
