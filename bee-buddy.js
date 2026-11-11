@@ -180,6 +180,7 @@ function buddySetStage(stage) {
 function setBuddy(mood, text) {
   const el = document.getElementById("beeBuddy");
   el.dataset.mood = mood;
+  if (mood === "evolve" && buddyMood !== "evolve") buddySfx("evolve");
   buddyMood = mood;
   buddyLastLine = text;
   const speech = document.getElementById("beeBuddySpeech");
@@ -253,9 +254,14 @@ function buddyAnswer(entry) {
       buddyTrick(BUDDY_TRICKS[Math.floor(Math.random() * BUDDY_TRICKS.length)]);
     } else setBuddy("happy", buddyPick("right"));
     if (n === 5 || n === 10 || show) buddyPop(1700); // the dance is 2 × 0.8s
+    // A show plays its own sound (buddyFullScreen)
+    if (n === 5) buddySfx("streak5");
+    else if (n === 10) buddySfx("streak10");
+    else if (!show) buddySfx("correct");
   } else {
     const hadShades = buddyStreak >= 5;
     buddyStreak = 0;
+    buddySfx(entry.timedOut ? "timeUp" : "wrong");
     setBuddy("faint", hadShades ? "My shades! 😵 New streak, here we come." : buddyPick(entry.timedOut ? "timeUp" : "wrong"));
     if (hadShades) {
       buddySetStreakLook("drop");
@@ -274,6 +280,11 @@ function buddyAnswer(entry) {
 let buddyStreak = 0;          // correct answers in a row in this test
 const GOLDEN_BEE_CHANCE = 1 / 40;
 const GOLDEN_BEES_KEY = "spellingBeeGoldenBees";
+
+// Sound effects (sfx.js); does nothing if that file isn't loaded
+function buddySfx(name) {
+  if (typeof sfx === "function") sfx(name);
+}
 
 function reducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -325,6 +336,8 @@ function buddyGoldenBee() {
     setTimeout(remove, 5000); // in case the animation never ends (tab hidden)
   }
   buddyPop(4000); // while the golden bee crosses the screen
+  buddySfx("correct");
+  buddySfx("golden");
   return count === 1
     ? "✨ Whoa, a golden bee! They're super rare!"
     : `✨ A golden bee! That's golden bee #${count}!`;
@@ -473,6 +486,7 @@ function buddyFullScreen(scene, banner) {
   if (banner) fxSprite(layer, "fx-banner", "", {}).textContent = banner;
   document.body.append(layer);
   fxScreenOn = true;
+  buddySfx(scene);
   setTimeout(() => { layer.remove(); fxScreenOn = false; }, ms + 100);
   return true;
 }
@@ -556,6 +570,7 @@ function buddyFx(fx, ms, line) {
   void el.offsetWidth; // restart the animation on every tap
   el.dataset.fx = fx;
   buddySay(line);
+  buddySfx(fx); // tricks, splat, tickle, dizzy, sleep
   clearTimeout(buddyFxTimer);
   buddyFxTimer = setTimeout(() => delete el.dataset.fx, ms);
 }
@@ -608,8 +623,15 @@ function buddyResults(answered, pct) {
   if (!answered) setBuddy("idle", buddyPick("ended"));
   else if (pct === 100) {
     setBuddy("party", buddyPick("perfect"));
-    if (answered >= 5) buddyFullScreen("party", "PERFECT!");
+    // The party show brings its own fanfare
+    if (!(answered >= 5 && buddyFullScreen("party", "PERFECT!"))) buddySfx("perfect");
   }
-  else if (pct >= 80) setBuddy("happy", buddyPick("great"));
-  else setBuddy("idle", buddyPick("keepGoing"));
+  else if (pct >= 80) {
+    setBuddy("happy", buddyPick("great"));
+    buddySfx("great");
+  }
+  else {
+    setBuddy("idle", buddyPick("keepGoing"));
+    buddySfx("keepGoing");
+  }
 }

@@ -1591,6 +1591,7 @@ function audioSource(url, attempt, fresh) {
 
 function stopAllAudio() {
   if (synth) synth.cancel();
+  if (typeof sfxHush === "function") sfxHush(); // sound effects never talk over a word (sfx.js)
   audioQueue = [];
   clearTimeout(audioQueueTimer);
   releaseAudio();

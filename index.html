@@ -1165,6 +1165,16 @@
       background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-md);
     }
     .bee-buddy.compact .bb-speech { font-size: 13px; padding: 4px 10px; }
+    /* Sound effects on/off (sfx.js), at the far end of the bee's row */
+    .sfx-toggle {
+      margin-left: auto; flex: none; width: 36px; height: 36px; padding: 0; border-radius: 50%;
+      display: grid; place-items: center; font-size: 17px; line-height: 1; cursor: pointer;
+      background: var(--bg-inset); border: 1px solid var(--border); color: var(--text);
+      touch-action: manipulation; align-self: flex-start;
+    }
+    .sfx-toggle:hover { background: var(--bg-hover); }
+    .sfx-toggle[aria-pressed="false"] { opacity: 0.6; }
+    .bee-buddy.compact .sfx-toggle { width: 30px; height: 30px; font-size: 14px; }
     .bb-eyes { fill: #2b2233; }
     .bb-eyes-x, .bb-mouth { fill: none; stroke: #2b2233; stroke-width: 2; stroke-linecap: round; }
     .bb-oh { fill: #2b2233; }
@@ -2578,6 +2588,8 @@
         <div id="beeBuddy" class="bee-buddy" data-mood="idle">
           <svg id="beeBuddyFigure" class="bb-figure" viewBox="0 0 64 64" aria-hidden="true"></svg>
           <p id="beeBuddySpeech" class="bb-speech" hidden></p>
+          <!-- Sound effects on/off (sfx.js) -->
+          <button type="button" id="sfxToggle" class="sfx-toggle" aria-label="Sound effects" aria-pressed="true">🔊</button>
         </div>
         <!-- Start -->
         <div id="practiceStart" class="practice-screen">
@@ -2866,9 +2878,10 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026111101"></script>
-<script src="bee-buddy.js?v=2026111102"></script>
+<script src="app.js?v=2026111102"></script>
+<script src="sfx.js?v=2026111101"></script>
+<script src="bee-buddy.js?v=2026111103"></script>
 <script src="learn-bee.js?v=2026111102"></script>
-<script src="practice.js?v=2026110901"></script>
+<script src="practice.js?v=2026111101"></script>
 </body>
 </html>
