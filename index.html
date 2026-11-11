@@ -1397,7 +1397,61 @@
       box-shadow: var(--shadow-sm);
     }
     @keyframes lb-fly { from { transform: translateX(-100%); } to { transform: translateX(100vw); } }
+
+    /* Face bee (face-bee.js): a bee with her photo for a head, now and then */
+    .face-bee-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .learn-bee.lb-face .lb-body, .learn-bee.lb-face .lb-figure { width: 66px; height: 80px; }
+    /* Learning visits: drops in from the top corner (right, or left with .lb-left),
+       low enough that props held overhead (sign, juggled letters) stay on screen */
+    .learn-bee.lb-face { top: max(48px, calc(env(safe-area-inset-top) + 40px)); bottom: auto; align-items: flex-start; }
+    .learn-bee.lb-face.lb-left { right: auto; left: max(12px, env(safe-area-inset-left)); flex-direction: row-reverse; }
+    .learn-bee.lb-face .lb-speech { margin: 34px 0 0; }
+    .learn-bee.lb-face, .learn-bee.lb-face[data-skit] { transform: translateY(calc(-100% - 90px)); }
+    .learn-bee.lb-face.lb-in { transform: none; }
+    .learn-bee.lb-face.lb-out { transform: translate(60px, -160px) rotate(20deg); }
+    .learn-bee.lb-face.lb-left.lb-out { transform: translate(-60px, -160px) rotate(-20deg); }
+    /* Right answer: crosses the screen with a loop-de-loop in the middle */
+    .face-bee-fly {
+      position: fixed; left: 0; z-index: 60; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      animation: fbf-cross 5.5s linear forwards;
+    }
+    .fbf-loop { width: 70px; height: 84px; transform-origin: 50% -40px; animation: fbf-loop 5.5s ease-in-out forwards; }
+    .fbf-speech {
+      margin: 0; padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+      font: 800 13px/1.2 "Inter", system-ui, sans-serif; background: var(--gold-gradient); color: var(--on-accent);
+      box-shadow: var(--shadow-sm);
+    }
+    @keyframes fbf-cross { from { transform: translateX(-160px); } to { transform: translateX(calc(100vw + 20px)); } }
+    @keyframes fbf-loop { 0%, 38% { transform: none; } 62%, 100% { transform: rotate(-360deg); } }
+    /* Wrong answer: drops in from a top corner (left, or right with .fbp-right),
+       shakes its head at the word and flies back up */
+    .face-bee-pop {
+      position: fixed; z-index: 60; pointer-events: none;
+      top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left));
+      display: flex; align-items: flex-start; gap: 6px;
+      animation: fbp-pop 3.4s ease-in-out forwards;
+    }
+    .face-bee-pop.fbp-right { left: auto; right: max(12px, env(safe-area-inset-right)); flex-direction: row-reverse; }
+    .fbp-figure { width: 74px; height: 89px; flex: none; transform-origin: 50% 80%; animation: fbp-shake 0.22s ease-in-out 0.55s 6 alternate; }
+    .fbp-speech {
+      margin: 30px 0 0; max-width: min(220px, calc(100vw - 120px)); padding: 8px 12px;
+      font-size: 14px; font-weight: 700; line-height: 1.35; color: var(--text);
+      background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md); animation: lb-say 0.3s 0.4s ease-out both;
+    }
+    @keyframes fbp-pop {
+      0% { transform: translateY(calc(-100% - 30px)); }
+      12%, 82% { transform: none; }
+      100% { transform: translateY(calc(-100% - 30px)); }
+    }
+    @keyframes fbp-shake { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+    /* "selfie" secret: a camera flash before the face bees fly */
+    .fx-flash { right: 0; bottom: 0; background: #fff; animation: fx-flash 0.7s ease-out both; }
+    @keyframes fx-flash { 0%, 15% { opacity: 0.95; } 100% { opacity: 0; } }
+
     @media (prefers-reduced-motion: reduce) {
+      .face-bee-fly, .face-bee-pop { display: none; }
       .learn-bee, .learn-bee.lb-out { transition: none; }
       .learn-bee *, .lb-flyby { animation: none !important; }
       .lb-note { opacity: 1; }
@@ -2435,7 +2489,7 @@
           <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg>Clear</button>
         </div>
       </div>
-      <!-- Other spellings Merriam-Webster accepts (app.js showWordVariants) -->
+      <!-- The study list's other spellings (app.js showWordVariants) -->
       <div id="wordVariants" class="word-variants" hidden></div>
 
       <div class="word-nav">
@@ -2878,10 +2932,11 @@
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
 <script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026111102"></script>
-<script src="sfx.js?v=2026111101"></script>
-<script src="bee-buddy.js?v=2026111103"></script>
-<script src="learn-bee.js?v=2026111102"></script>
+<script src="app.js?v=2026111103"></script>
+<script src="sfx.js?v=2026111102"></script>
+<script src="bee-buddy.js?v=2026111105"></script>
+<script src="face-bee.js?v=2026111102"></script>
+<script src="learn-bee.js?v=2026111104"></script>
 <script src="practice.js?v=2026111101"></script>
 </body>
 </html>

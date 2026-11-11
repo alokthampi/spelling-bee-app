@@ -171,6 +171,15 @@ const SFX = {
   },
 
   // ---- tapping the bee ----
+  raspberry() { // the face bee's "pbbbt!" (face-bee.js)
+    tone(95, 0.35, 0.75, { type: "sawtooth", vol: 0.14, vib: [32, 35], path: [[0.75, 75]] });
+    noise(0.35, 0.7, { vol: 0.12, kind: "lowpass", freq: 700 });
+  },
+  selfie() { // camera shutter, then the swarm's buzz
+    noise(0, 0.05, { vol: 0.35, kind: "highpass", freq: 2500, attack: 0.002 });
+    noise(0.09, 0.07, { vol: 0.3, kind: "highpass", freq: 1800, attack: 0.002 });
+    SFX.swarm();
+  },
   tickle() { for (let i = 0; i < 5; i++) tone(1000 + Math.random() * 700, i * 0.07, 0.07, { vol: 0.15, path: [[0.06, 1900]] }); },
   dizzy() { tone(600, 0, 2.2, { vol: 0.18, vib: [3, 220] }); },
   sleep() { [0, 2.4, 4.8].forEach(t => noise(t, 1.1, { vol: 0.12, kind: "lowpass", freq: 350, attack: 0.5 })); },
