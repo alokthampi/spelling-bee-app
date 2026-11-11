@@ -525,6 +525,8 @@ function stopTimer() {
   timerInterval = null;
 }
 
+let lastTickSecond = null;
+
 function tickTimer() {
   const left = Math.max(0, timerDeadline - Date.now());
   timerRemaining = left;
@@ -538,6 +540,11 @@ function tickTimer() {
   timer.classList.toggle("warn", elapsed >= 30 && elapsed < 60);
   timer.classList.toggle("danger", elapsed >= 60);
   buddyTimer(elapsed);
+  // A soft tick for each of the last 5 seconds (sfx.js)
+  if (seconds !== lastTickSecond && seconds > 0 && seconds <= 5 && typeof sfx === "function") {
+    sfx(seconds === 1 ? "tickLast" : "tick");
+  }
+  lastTickSecond = seconds;
   if (left <= 0) {
     stopTimer();
     timeUp();

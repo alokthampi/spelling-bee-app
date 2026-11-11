@@ -1591,6 +1591,7 @@ function audioSource(url, attempt, fresh) {
 
 function stopAllAudio() {
   if (synth) synth.cancel();
+  if (typeof sfxHush === "function") sfxHush(); // sound effects never talk over a word (sfx.js)
   audioQueue = [];
   clearTimeout(audioQueueTimer);
   releaseAudio();
@@ -1877,6 +1878,8 @@ function showCardWord(word) {
    Covered (Learning) + undo
 --------------------------- */
 function setCovered(item, covered) {
+  // A word learned just now (not an undo): learn-bee.js counts these for its flyby
+  if (covered && !item.covered && typeof learnBeeLearned === "function") learnBeeLearned();
   item.covered = covered;
   // When it was learned, for Stats > Activity; undoing clears it
   item.coveredAt = covered ? item.coveredAt || new Date().toISOString() : null;

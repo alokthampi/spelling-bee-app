@@ -22,34 +22,61 @@ const BUDDY_STAGE_KEY = "spellingBeeBuddyStage";
 const BUDDY_LINES = {
   newWord: ["Listen closely!", "You've got this!", "Ears on, antennae up!", "Ooh, I like this one.", "Take your time.",
     "Antennae tuned in! 📡", "Shhh... the word is shy.", "I'm all ears! (I don't have ears.)", "Bee-lieve in yourself!",
-    "Ready, set, spell!", "My wings are crossed for you!", "This word looks suspicious 🧐", "I've got my thinking stripes on!"],
+    "Ready, set, spell!", "My wings are crossed for you!", "This word looks suspicious 🧐", "I've got my thinking stripes on!",
+    "New word, who dis? 📱", "I polished my antennae for this one.", "Sounding it out in my head... bzz...",
+    "This one smells like a flower. 🌸", "Let's spell-ebrate in advance!", "I packed snacks for this word. 🍯",
+    "Brain: ON. Wings: ON. Let's go!", "Shh, I'm concentrating... on you!", "Word incoming! Brace your letters!"],
   worried: ["No rush... but I'm sweating!", "Is it hot in here?", "Tick tock, little bee!", "I'm not nervous, YOU'RE nervous!",
-    "Sweating honey over here!", "My stripes are getting wobbly!"],
+    "Sweating honey over here!", "My stripes are getting wobbly!", "I'm chewing my tiny bee nails...",
+    "Hmm, take a deep breath. I'll hold mine! 😤", "The clock is staring at me.", "Should I hum some thinking music? 🎶"],
   panic: ["Bzz bzz bzz! Hurry!", "My wings are sweating!", "Time is buzzing away!", "AAAH! Spell like the wind!",
-    "My antennae are spinning!", "Buzz-mergency! 🚨"],
+    "My antennae are spinning!", "Buzz-mergency! 🚨", "I'm flapping SO fast right now!", "Type type type type! ⌨️",
+    "Go go go! I believe in you!", "My stinger is shaking! (Not in a scary way.)"],
   right: ["Bee-utiful!", "You're the bee's knees!", "Buzz-tastic!", "Un-bee-lievable!", "Sweet as honey!", "That word never stood a chance!",
     "Hive five! ✋", "I'm buzzing with joy!", "Somebody call the Queen!", "Even the dictionary is impressed!", "Bzz-ingo! 🍯",
-    "That word got stung by your brain!", "Nailed it! Like a stinger. (Gently.)", "Spelled it bee-autifully!"],
+    "That word got stung by your brain!", "Nailed it! Like a stinger. (Gently.)", "Spelled it bee-autifully!",
+    "Wing-credible! 🪽", "Ding ding ding! 🔔", "Your brain is made of honey! (The smart kind.)", "Spelling champion of the hive!",
+    "I'm telling all the flowers about this! 🌼", "That was smooth like honey!", "Pollen-tastic!",
+    "The letters lined up just for you!", "I knew you'd get it! (I was 98% sure.)", "Stripe-tacular! 🐝"],
   wrong: ["Oof! That word stung a bit.", "I'm okay! Just fainting.", "Bzzt! Sneaky word!", "We'll get it next time!", "Even bees bump into windows.",
     "That word is a sneaky little stinker!", "The word cheated. I'm sure of it.", "I fainted. Dramatically. 🎭",
-    "Plot twist! That word is weird.", "Words are like bees: some just sting.", "Mistakes are how bees get smarter!"],
-  timeUp: ["Time flew, and I flew after it!", "Oops! The clock out-buzzed us.", "The clock stole my nectar!", "Tick... tock... BZZT!"],
+    "Plot twist! That word is weird.", "Words are like bees: some just sting.", "Mistakes are how bees get smarter!",
+    "Who even invented that word?! 🤨", "That word has too many letters. Rude.", "I'm writing that word a strongly worded letter.",
+    "Almost! The word wiggled at the last second.", "Even the Queen gets that one wrong. Shh! 🤫",
+    "Tricky! Now we know its secret.", "That word owes us an apology."],
+  timeUp: ["Time flew, and I flew after it!", "Oops! The clock out-buzzed us.", "The clock stole my nectar!", "Tick... tock... BZZT!",
+    "The clock is way too fast. I'm reporting it! ⏰", "Time's up! But thinking hard still counts.",
+    "I blinked and the time buzzed off!"],
   tickle: ["Hee hee! That tickles!", "Bzz-ha-ha-ha!", "Stop it, I'm ticklish! 😆", "Wheee!", "Again! Again!",
-    "That's my ticklish stripe!", "Okay okay, I surrender! 🏳️", "Not the antennae!", "Bzz-hee-hee!"],
+    "That's my ticklish stripe!", "Okay okay, I surrender! 🏳️", "Not the antennae!", "Bzz-hee-hee!",
+    "My wings are giggling!", "Hee! You found my tickle spot!", "Ha-ha-ha-honey! 🍯", "I'm laughing so hard I'm buzzing!",
+    "No fair, I can't tickle back!"],
   perfect: ["Perfect! I'm doing the honey dance!", "Every. Single. Word. Bee-utiful!", "PERFECT! Even the Queen is clapping! 👑",
-    "100%?! I need to sit down. On a flower."],
-  great: ["What a sweet score!", "The whole hive is cheering!", "Sweeter than a honey sandwich!", "You're on a roll! A honey roll!"],
+    "100%?! I need to sit down. On a flower.", "Flawless! I'm framing this score! 🖼️",
+    "Not one mistake?! Are you secretly a dictionary? 📖", "Perfect score! Honey for everyone! 🍯🍯🍯"],
+  great: ["What a sweet score!", "The whole hive is cheering!", "Sweeter than a honey sandwich!", "You're on a roll! A honey roll!",
+    "So close to perfect! Bzz-awesome!", "That score made my wings flutter!", "The flowers are doing a wave for you! 🌷"],
   keepGoing: ["Every wrong word makes us smarter!", "Those tricky words won't know what hit them.",
-    "Practice makes perfect... and honey!", "Every bee started as an egg! 🥚", "Bzz! Next round is ours!"],
-  ended: ["See you next time!", "Buzz you later!", "Flying off for a nap! 💤"],
+    "Practice makes perfect... and honey!", "Every bee started as an egg! 🥚", "Bzz! Next round is ours!",
+    "Even honey takes time to make!", "Tricky words just need a second date.", "Round two: the words are scared now! 💪"],
+  ended: ["See you next time!", "Buzz you later!", "Flying off for a nap! 💤", "Bee seeing you! 👋",
+    "Off to tell the hive how great you did!", "Toodle-oo, spelling buddy! 🌻"],
   // Secret surprises (see "Secrets" below)
   jokes: ["What do bees chew? Bumble gum! 😄", "Why do bees have sticky hair? They use honeycombs!",
     "What's a bee's favorite sport? Rugbee! 🏉", "Where do bees go to the bathroom? The BP station!",
     "What do you call a bee that can't make up its mind? A may-bee!", "Why did the bee get married? It found its honey! 💍",
     "What's a bee's favorite haircut? A buzz cut! 💇", "How do bees get to school? On the school buzz! 🚌",
-    "What kind of bee can't be understood? A mumble-bee!", "What do bees say on a hot day? Swarm, isn't it? ☀️"],
-  wake: ["I wasn't sleeping! I was resting my eyes.", "Huh? What? I'm up! I'm up!", "Five more minutes... okay fine! 🥱"],
-  beeWord: ["Hey! That word has a BEE in it! 🐝", "A bee word! My favorite kind!", "That word is basically my cousin!"]
+    "What kind of bee can't be understood? A mumble-bee!", "What do bees say on a hot day? Swarm, isn't it? ☀️",
+    "What do you call a bee that's having a bad hair day? A frizz-bee! 💨", "What's a bee's favorite flower? Bee-gonias! 🌺",
+    "Who's a bee's favorite singer? Sting! 🎤", "What do you call a bee born in May? A May-bee baby!",
+    "Why do bees hum? They forgot the words! 🎵", "What does a bee use to brush its hair? A honeycomb! Wait, I told that one...",
+    "What's black, yellow, and goes zzub zzub? A bee flying backwards! 🔙", "What do bees do after they marry? Go on a honeymoon! 🌙",
+    "What did the bee say to the flower? Hey bud, what time do you open? 🌼", "What's a bee's favorite letter? B, obviously!",
+    "Why was the bee's spelling so good? It practiced in the spelling HIVE!", "What do you call a bee in a library? A book-bee! 📚"],
+  wake: ["I wasn't sleeping! I was resting my eyes.", "Huh? What? I'm up! I'm up!", "Five more minutes... okay fine! 🥱",
+    "I was dreaming about a giant flower! 🌻", "Who? What? Is it honey time?", "I'm awake! My wings were just napping."],
+  beeWord: ["Hey! That word has a BEE in it! 🐝", "A bee word! My favorite kind!", "That word is basically my cousin!",
+    "That word is family! I'm so proud! 🥹", "Bzz! That word speaks my language!"]
 };
 
 // Little tricks the bee does on a right (or wrong) answer, instead of the dance.
@@ -59,9 +86,14 @@ const BUDDY_TRICKS = [
   { fx: "loop", ms: 1100, lines: ["Loop-de-loop! Wheee!", "Air show! ✈️"] },
   { fx: "boing", ms: 900, lines: ["BOING! 🦘", "I'm so happy I'm bouncy!"] },
   { fx: "waggle", ms: 1200, lines: ["Waggle dance! That means 'great job' in Bee.", "Shake your stripes! 💃"] },
-  { fx: "zoom", ms: 1300, lines: ["Brb, telling the whole hive!", "Zoom! Be right back!"] }
+  { fx: "zoom", ms: 1300, lines: ["Brb, telling the whole hive!", "Zoom! Be right back!"] },
+  { fx: "twirl", ms: 1000, lines: ["Ballerina bee! 🩰", "Twirl twirl twirl!"] },
+  { fx: "hophop", ms: 1100, lines: ["Hop! Hop! Hooray!", "Happy hops! 🐇"] },
+  { fx: "peekaboo", ms: 1200, lines: ["Peekaboo! 👀", "Hiding from that word... it's gone? Yay!"] },
+  { fx: "jelly", ms: 1000, lines: ["I'm so happy I'm wobbly! 🍮", "Jelly bee! Wibble wobble!"] }
 ];
-const BUDDY_SPLAT = { fx: "splat", ms: 1100, lines: ["SPLAT! Who put a window there?", "I'm flat as a pancake! 🥞"] };
+const BUDDY_SPLAT = { fx: "splat", ms: 1100, lines: ["SPLAT! Who put a window there?", "I'm flat as a pancake! 🥞",
+  "Ow! That word had a wall in it!", "I'm okay! The window is not. 🪟"] };
 const BUDDY_TRICK_CHANCE = 0.35;
 
 // Full-screen celebrations for long streaks (5 and 10 have their own looks)
@@ -148,6 +180,7 @@ function buddySetStage(stage) {
 function setBuddy(mood, text) {
   const el = document.getElementById("beeBuddy");
   el.dataset.mood = mood;
+  if (mood === "evolve" && buddyMood !== "evolve") buddySfx("evolve");
   buddyMood = mood;
   buddyLastLine = text;
   const speech = document.getElementById("beeBuddySpeech");
@@ -221,9 +254,14 @@ function buddyAnswer(entry) {
       buddyTrick(BUDDY_TRICKS[Math.floor(Math.random() * BUDDY_TRICKS.length)]);
     } else setBuddy("happy", buddyPick("right"));
     if (n === 5 || n === 10 || show) buddyPop(1700); // the dance is 2 × 0.8s
+    // A show plays its own sound (buddyFullScreen)
+    if (n === 5) buddySfx("streak5");
+    else if (n === 10) buddySfx("streak10");
+    else if (!show) buddySfx("correct");
   } else {
     const hadShades = buddyStreak >= 5;
     buddyStreak = 0;
+    buddySfx(entry.timedOut ? "timeUp" : "wrong");
     setBuddy("faint", hadShades ? "My shades! 😵 New streak, here we come." : buddyPick(entry.timedOut ? "timeUp" : "wrong"));
     if (hadShades) {
       buddySetStreakLook("drop");
@@ -242,6 +280,11 @@ function buddyAnswer(entry) {
 let buddyStreak = 0;          // correct answers in a row in this test
 const GOLDEN_BEE_CHANCE = 1 / 40;
 const GOLDEN_BEES_KEY = "spellingBeeGoldenBees";
+
+// Sound effects (sfx.js); does nothing if that file isn't loaded
+function buddySfx(name) {
+  if (typeof sfx === "function") sfx(name);
+}
 
 function reducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -290,9 +333,11 @@ function buddyGoldenBee() {
     document.body.append(bee);
     const remove = () => bee.remove();
     bee.addEventListener("animationend", event => { if (event.target === bee) remove(); });
-    setTimeout(remove, 4000); // in case the animation never ends (tab hidden)
+    setTimeout(remove, 5000); // in case the animation never ends (tab hidden)
   }
-  buddyPop(1900); // while the golden bee crosses the screen
+  buddyPop(4000); // while the golden bee crosses the screen
+  buddySfx("correct");
+  buddySfx("golden");
   return count === 1
     ? "✨ Whoa, a golden bee! They're super rare!"
     : `✨ A golden bee! That's golden bee #${count}!`;
@@ -372,10 +417,10 @@ const FX_SCENES = {
       fxSprite(layer, "fx-bee", `<div class="gb-bob">${flyingBeeSvg()}</div>`, {
         y: `${rand(0.04, 0.85) * H}px`, sz: `${size}px`,
         from: `${leftToRight ? -size - 10 : W + 10}px`, to: `${leftToRight ? W + 10 : -size - 10}px`,
-        d: `${rand(0, 1.3)}s`, dur: `${rand(1.4, 2.3)}s`
+        d: `${rand(0, 1.5)}s`, dur: `${rand(3, 4.2)}s`
       });
     }
-    return 3600;
+    return 6000;
   },
   // Honey oozes down from the top of the screen and drips
   honey(layer, W, H) {
@@ -419,10 +464,10 @@ const FX_SCENES = {
       fxSprite(layer, "fx-bee", `<div class="gb-bob">${flyingBeeSvg()}</div>`, {
         y: `${rand(0.45, 0.7) * H}px`, sz: "36px",
         from: `${leftToRight ? -46 : W + 10}px`, to: `${leftToRight ? W + 10 : -46}px`,
-        d: `${0.8 + i * 0.3}s`, dur: `${rand(2.2, 2.8)}s`
+        d: `${0.8 + i * 0.3}s`, dur: `${rand(3.2, 4)}s`
       });
     }
-    return 4000;
+    return 6600;
   }
 };
 
@@ -441,6 +486,7 @@ function buddyFullScreen(scene, banner) {
   if (banner) fxSprite(layer, "fx-banner", "", {}).textContent = banner;
   document.body.append(layer);
   fxScreenOn = true;
+  buddySfx(scene);
   setTimeout(() => { layer.remove(); fxScreenOn = false; }, ms + 100);
   return true;
 }
@@ -524,6 +570,7 @@ function buddyFx(fx, ms, line) {
   void el.offsetWidth; // restart the animation on every tap
   el.dataset.fx = fx;
   buddySay(line);
+  buddySfx(fx); // tricks, splat, tickle, dizzy, sleep
   clearTimeout(buddyFxTimer);
   buddyFxTimer = setTimeout(() => delete el.dataset.fx, ms);
 }
@@ -576,8 +623,15 @@ function buddyResults(answered, pct) {
   if (!answered) setBuddy("idle", buddyPick("ended"));
   else if (pct === 100) {
     setBuddy("party", buddyPick("perfect"));
-    if (answered >= 5) buddyFullScreen("party", "PERFECT!");
+    // The party show brings its own fanfare
+    if (!(answered >= 5 && buddyFullScreen("party", "PERFECT!"))) buddySfx("perfect");
   }
-  else if (pct >= 80) setBuddy("happy", buddyPick("great"));
-  else setBuddy("idle", buddyPick("keepGoing"));
+  else if (pct >= 80) {
+    setBuddy("happy", buddyPick("great"));
+    buddySfx("great");
+  }
+  else {
+    setBuddy("idle", buddyPick("keepGoing"));
+    buddySfx("keepGoing");
+  }
 }
