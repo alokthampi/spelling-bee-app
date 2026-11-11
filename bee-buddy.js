@@ -230,12 +230,13 @@ function buddyTimer(elapsed) {
 }
 
 function buddyAnswer(entry) {
+  let faceLine = "";
   if (entry.status === "correct") {
     buddyStreak++;
     const n = buddyStreak;
     // 15, 20, 25 in a row, then every 10 more: a full-screen show
     const show = BUDDY_STREAK_SCENES[n] || (n >= 30 && n % 10 === 0 && {
-      scene: pickOne(["swarm", "honey", "bloom", "party"]),
+      scene: pickOne(["swarm", "honey", "bloom", "party", ...(FX_SCENES.selfie ? ["selfie"] : [])]),
       banner: "LEGENDARY!",
       line: `${n} in a row! Is that even allowed?! 🤯`
     });
@@ -245,7 +246,10 @@ function buddyAnswer(entry) {
       setBuddy("party", show.line);
       buddyFullScreen(show.scene, show.banner);
     } else if (Math.random() < GOLDEN_BEE_CHANCE) setBuddy("happy", buddyGoldenBee());
-    else if (/bee|buzz|honey|hive|pollen|nectar/i.test(entry.item.word)) {
+    else if ((faceLine = typeof faceBeeOnRight === "function" ? faceBeeOnRight() : "")) {
+      setBuddy("happy", faceLine); // the face bee loops past (face-bee.js)
+      buddyPop(2000);
+    } else if (/bee|buzz|honey|hive|pollen|nectar/i.test(entry.item.word)) {
       // Secret: a word with a bee (or bee things) in it
       setBuddy("happy", "");
       buddyTrick({ fx: "boing", ms: 900, lines: BUDDY_LINES.beeWord });
@@ -268,7 +272,9 @@ function buddyAnswer(entry) {
       buddyPop(1300); // long enough to watch the shades fall
       return;
     }
-    if (!entry.timedOut && Math.random() < 0.25) buddyTrick(BUDDY_SPLAT);
+    // Now and then the face bee blows a raspberry at the word (face-bee.js); otherwise maybe a splat
+    const faced = !entry.timedOut && typeof faceBeeOnWrong === "function" && faceBeeOnWrong();
+    if (!faced && !entry.timedOut && Math.random() < 0.25) buddyTrick(BUDDY_SPLAT);
   }
   buddySetStreakLook(buddyStreak >= 10 ? "fire" : buddyStreak >= 5 ? "cool" : "");
 }
@@ -499,7 +505,7 @@ function buddyFullScreen(scene, banner) {
    - Spell a word with "bee", "buzz", "honey"... in it right: the bee notices
    - Special days on the start screen: April Fools', Halloween, Christmas...
    - On a computer keyboard (not while typing an answer), type "buzz",
-     "honey", "bloom" or "party"
+     "honey", "bloom" or "party" (or "selfie", added by face-bee.js)
 --------------------------- */
 const BUDDY_SECRET_WORDS = { buzz: "swarm", honey: "honey", bloom: "bloom", party: "party" };
 let buddyHoldTimer = null;
@@ -596,7 +602,9 @@ function buddyTickle() {
   buddyTaps = [...buddyTaps.filter(t => now - t < 4000), now];
   if (buddyTaps.length >= 10) {
     buddyTaps = [];
-    buddyFx("dizzy", 2600, "Whoa... the room is spinning... 😵‍💫");
+    // The bee spins into her face bee for a moment (face-bee.js)
+    const faceLine = typeof faceBeeBuddySwap === "function" ? faceBeeBuddySwap(2600) : "";
+    buddyFx("dizzy", 2600, faceLine || "Whoa... the room is spinning... 😵‍💫");
     buddyPop(2600);
   } else if (el.dataset.fx !== "dizzy") {
     buddyFx("tickle", 650, buddyPick("tickle"));

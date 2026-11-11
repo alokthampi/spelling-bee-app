@@ -8,6 +8,7 @@
    - every 10 words learned in a sitting, a bee flies across with a banner
    - a word with "bee", "honey", "buzz"... in it: a quick wave hello
    - tap the visiting bee: it giggles and flies off early
+   - now and then the visitor is her face bee (face-bee.js)
    Uses app.js (activeTab, currentItem, words, isCompleted, progressData) and
    bee-buddy.js (BUDDY_STAGES, buddyStageIndex, buddyBodySvg, buddyFaceSvg,
    flyingBeeSvg, pickOne, reducedMotion).
@@ -65,7 +66,8 @@ function learnBeeBusy() {
   return !!document.querySelector("dialog[open], .mw-overlay:not([hidden]), .fx-screen");
 }
 
-function learnBeeFigureSvg() {
+function learnBeeFigureSvg(face = false) {
+  if (face) return faceBeeSvg(undefined, "lb-figure"); // face-bee.js
   const count = typeof words !== "undefined" ? words.filter(isCompleted).length : 0;
   const stage = BUDDY_STAGES[buddyStageIndex(count)];
   return `<svg class="lb-figure" viewBox="0 0 64 64">${buddyBodySvg(stage)}${buddyFaceSvg()}</svg>`;
@@ -113,7 +115,10 @@ function learnBeeShow(skit, line) {
   el.className = "learn-bee";
   el.dataset.skit = skit.skit;
   el.setAttribute("aria-hidden", "true");
-  el.innerHTML = `<p class="lb-speech"></p><div class="lb-body">${learnBeeProps(skit)}${learnBeeFigureSvg()}</div>`;
+  // Now and then it's her face bee instead (not for the nap: it has no eyes to close)
+  const face = skit.skit !== "nap" && typeof faceBeeSvg === "function" && Math.random() < FACE_BEE_LEARN_CHANCE;
+  if (face) el.classList.add("lb-face", ...(Math.random() < 0.5 ? ["lb-left"] : [])); // drops in top right or top left
+  el.innerHTML = `<p class="lb-speech"></p><div class="lb-body">${learnBeeProps(skit)}${learnBeeFigureSvg(face)}</div>`;
   el.querySelector(".lb-speech").textContent = line;
   const sign = el.querySelector(".lb-sign");
   if (sign) sign.textContent = pickOne(skit.signs);

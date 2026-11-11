@@ -3228,28 +3228,18 @@ async function showMWPanel(item = currentItem) {
   renderMWRecord(item.word, words ? words[item.word] : null);
 }
 
-// Learning card: "Also spelled: or theatre" under the word when MW accepts
-// other spellings (what a bee judge would also accept). Learning only: it
+// Learning card: the official study list's other spellings under the word
+// (alternate_spellings, with preferred_spelling when the list marks the main
+// one as preferred). Only the study list's: Merriam-Webster's variants are
+// left to the MW pop-up, since the bee goes by the list. Learning only: it
 // would give the spelling away in a test.
-// The official study list's other spellings come first (alternate_spellings,
-// with preferred_spelling when the list marks the main one as preferred):
 //   ★ Preferred spelling: brazier · Also accepted: brasier
 //   Also accepted: fertiliser (British spelling)
-async function showWordVariants(item) {
+function showWordVariants(item) {
   const el = document.getElementById("wordVariants");
   el.hidden = true;
-  if (!item) return;
-  if (item.alternate_spellings?.length) {
-    el.replaceChildren(iconEl("pen"), ...studyListSpellingNodes(item));
-    el.hidden = false;
-    return;
-  }
-  const words = await loadMWEntryFile(letterPart(item._scope, item.word));
-  if (currentItem !== item || !words) return; // moved on meanwhile, or offline
-  const variants = (words[item.word]?.entries || []).flatMap(e => e.variants || []);
-  if (!variants.length) return;
-  el.innerHTML = mwHtml(`Also spelled: ${variantText(variants)}`);
-  el.prepend(iconEl("pen"));
+  if (!item?.alternate_spellings?.length) return;
+  el.replaceChildren(iconEl("pen"), ...studyListSpellingNodes(item));
   el.hidden = false;
 }
 
