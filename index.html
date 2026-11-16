@@ -2090,6 +2090,14 @@
       color-scheme: dark;
     }
     .act-custom { display: flex; align-items: center; gap: 6px; color: var(--text-tertiary); font-size: 13px; flex-wrap: wrap; }
+    .act-range-nav { display: inline-flex; gap: 4px; }
+    .act-range-nav button {
+      width: 42px; min-height: 42px; padding: 0; font: inherit; font-size: 27px; line-height: 1;
+      color: var(--text); background: var(--bg-inset); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+    }
+    .act-range-nav button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-hover); }
+    .act-range-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .act-range-nav button:disabled { opacity: .45; cursor: not-allowed; }
     .act-range-text { font-size: 13px; color: var(--text-tertiary); margin-bottom: 12px; }
     .act-tiles { grid-template-columns: repeat(2, 1fr); }
     @media (min-width: 700px) { .act-tiles { grid-template-columns: repeat(4, 1fr); } }
