@@ -2424,10 +2424,11 @@ function renderStats() {
 }
 
 /* ---------------------------
-   Stats: activity by day or week. Words learned come from each word's
-   coveredAt (when it was first opened on the Learning card); practice comes
-   from each word's practice.days (the day of every attempt). Both were only
-   recorded from TRACKING_START on, so older activity is counted separately.
+   Stats: activity by day or week. A word is completed when it is first opened
+   on the Learning card or first attempted in Practice. Its completion date is
+   the earlier of coveredAt and practice.days; attempts use every practice day.
+   Dates were only recorded from TRACKING_START on, so older activity is
+   counted separately.
 --------------------------- */
 const TRACKING_START = "2026-10-11";
 const DAY_MS = 86400000;
@@ -2451,7 +2452,7 @@ function weekStart(day) {
   return day - ((new Date(day * DAY_MS).getUTCDay() + 6) % 7); // weeks start on Monday
 }
 
-const activityView = { chart: "words", group: "day", range: "7", from: null, to: null };
+const activityView = { chart: "words", group: "day", range: "7", from: null, to: null, offset: 0 };
 
 function activityRange() {
   const today = dayNumber();
@@ -2459,9 +2460,22 @@ function activityRange() {
     let from = dayFromInput(activityView.from) ?? today - 6;
     let to = dayFromInput(activityView.to) ?? today;
     if (from > to) [from, to] = [to, from];
-    return { from: Math.max(from, to - MAX_ACTIVITY_DAYS + 1), to };
+    from = Math.max(from, to - MAX_ACTIVITY_DAYS + 1);
+    return activityView.group === "week"
+      ? { from: weekStart(from), to: weekStart(to) + 6 }
+      : { from, to };
   }
-  return { from: today - Number(activityView.range) + 1, to: today };
+  const days = Number(activityView.range);
+  if (activityView.group === "week") {
+    // A weekly bar always represents one complete calendar week: Monday
+    // 12:00 AM through Sunday 11:59 PM. The current week is included even
+    // though its future days naturally have no activity yet.
+    const weeks = Math.ceil(days / 7);
+    const currentWeek = weekStart(today) - activityView.offset * weeks * 7;
+    return { from: currentWeek - (weeks - 1) * 7, to: currentWeek + 6 };
+  }
+  const to = today - activityView.offset * days;
+  return { from: to - days + 1, to };
 }
 
 // Practice counts as "new" when the word was learned this many days ago or
@@ -2489,13 +2503,16 @@ function activityPeriods(list) {
 
   const undated = { learned: 0, attempts: 0 };
   list.forEach(w => {
-    if (w.covered) {
-      const day = w.coveredAt ? dayNumber(new Date(w.coveredAt)) : null;
-      if (day === null) undated.learned++;
-      else if (byDay.has(day)) byDay.get(day).learned++;
-    }
     const p = w.practice;
     const days = p.days || [];
+    const coveredDay = w.covered && w.coveredAt ? dayNumber(new Date(w.coveredAt)) : null;
+    const firstPracticeDay = days.length ? Math.min(...days) : null;
+    const completionDays = [coveredDay, firstPracticeDay].filter(day => day !== null);
+    const completedDay = completionDays.length ? Math.min(...completionDays) : null;
+    if (isCompleted(w)) {
+      if (completedDay === null) undated.learned++;
+      else if (byDay.has(completedDay)) byDay.get(completedDay).learned++;
+    }
     undated.attempts += Math.max(0, p.attempts - days.length);
     // days lines up with the newest attempts in history. Walk the attempts in
     // order, counting how many came before and how many of those were wrong
@@ -2545,7 +2562,7 @@ function periodText(period, long) {
 // the caps when there's room; each group has a hover/focus tooltip listing
 // everything, and the table below does too.
 const ACTIVITY_SERIES = [
-  { key: "learned", name: "Learned", color: "var(--series-learned)", value: p => p.learned },
+  { key: "learned", name: "Completed", color: "var(--series-learned)", value: p => p.learned },
   { key: "practiced", name: "Practiced", color: "transparent", value: p => p.practiced.size }
 ];
 const PRACTICE_KINDS = [
@@ -2588,16 +2605,18 @@ function activityChartHtml(periods) {
   return `
     <div class="act-chart">
       <div class="act-chart-head">
-        <span class="act-chart-title">Words per ${activityView.group === "day" ? "day" : "week"}</span>
+        <span class="act-chart-title">Words completed and practiced per ${activityView.group === "day" ? "day" : "week"}</span>
         <span class="act-legend">${legend}</span>
       </div>
-      <div class="act-plot" role="img" aria-label="Words learned and practiced per ${activityView.group}, with practiced split into new words, ever spelled wrong and always right; the table below lists every value">${groups}</div>
+      <div class="act-plot" role="img" aria-label="Words completed and practiced per ${activityView.group}, with practiced split into new words, ever spelled wrong and always right; the table below lists every value">${groups}</div>
     </div>`;
 }
 
 function activitySectionHtml(list) {
   const { periods, undated } = activityPeriods(list);
   const { from, to } = activityRange();
+  const latestEnd = activityView.group === "week" ? weekStart(dayNumber()) + 6 : dayNumber();
+  const canMoveForward = to < latestEnd;
   const learned = periods.reduce((n, p) => n + p.learned, 0);
   const practicedWords = new Set(periods.flatMap(p => [...p.practiced])).size;
   const attempts = periods.reduce((n, p) => n + p.attempts, 0);
@@ -2614,7 +2633,7 @@ function activitySectionHtml(list) {
     </tr>`).join("");
   const startText = dayLabel(dayFromInput(TRACKING_START), { month: "short", day: "numeric", year: "numeric" });
   const note = undated.learned || undated.attempts
-    ? `<p class="act-note">Dates are recorded from ${startText}. ${undated.learned} word${undated.learned === 1 ? "" : "s"} learned and ${undated.attempts} practice attempt${undated.attempts === 1 ? "" : "s"} from before then aren't shown by ${unit.toLowerCase()}.</p>`
+    ? `<p class="act-note">Dates are recorded from ${startText}. ${undated.learned} completed word${undated.learned === 1 ? "" : "s"} and ${undated.attempts} practice attempt${undated.attempts === 1 ? "" : "s"} from before then aren't shown by ${unit.toLowerCase()}.</p>`
     : "";
 
   return `
@@ -2630,16 +2649,20 @@ function activitySectionHtml(list) {
           <button type="button" data-group="week" aria-pressed="${activityView.group === "week"}">Weekly</button>
         </div>
         <select class="act-select" id="activityRange" aria-label="Date range">${rangeOptions}</select>
+        <div class="act-range-nav" role="group" aria-label="Move through date ranges">
+          <button type="button" id="activityPrevious" aria-label="Show previous date range" title="Previous date range">‹</button>
+          <button type="button" id="activityNext" aria-label="Show next date range" title="Next date range"${canMoveForward ? "" : " disabled"}>›</button>
+        </div>
         <div class="act-custom"${activityView.range === "custom" ? "" : " hidden"}>
-          <input type="date" id="activityFrom" aria-label="From" value="${dayToInput(from)}" max="${dayToInput(dayNumber())}" />
+          <input type="date" id="activityFrom" aria-label="From" value="${dayToInput(from)}" max="${dayToInput(latestEnd)}" />
           <span>to</span>
-          <input type="date" id="activityTo" aria-label="To" value="${dayToInput(to)}" max="${dayToInput(dayNumber())}" />
+          <input type="date" id="activityTo" aria-label="To" value="${dayToInput(to)}" max="${dayToInput(latestEnd)}" />
         </div>
       </div>
       <div class="act-range-text">${escapeHtml(dayLabel(from, { month: "short", day: "numeric", year: "numeric" }))}${from === to ? "" : ` – ${escapeHtml(dayLabel(to, { month: "short", day: "numeric", year: "numeric" }))}`}</div>
       ${activityView.chart === "time" ? timeViewHtml(periods, unit) : `
       <div class="stat-grid act-tiles">
-        ${statTile(`${iconSvg("book")}Words learned`, learned)}
+        ${statTile(`${iconSvg("check")}Words completed`, learned)}
         ${statTile(`${iconSvg("pen")}Words practiced`, practicedWords)}
         ${statTile("Attempts", attempts)}
         ${statTile(`${iconSvg("target")}Accuracy`, attempts ? `${Math.round((correct / attempts) * 100)}%` : "—")}
@@ -2648,7 +2671,7 @@ function activitySectionHtml(list) {
       <details class="act-table-wrap">
         <summary>Show as a table</summary>
         <table class="act-table">
-          <thead><tr><th scope="col">${unit}</th><th scope="col">Learned</th><th scope="col">Practiced</th>${PRACTICE_KINDS.map(k => `<th scope="col">${k.name}</th>`).join("")}<th scope="col">Attempts</th><th scope="col">✓</th><th scope="col">✗</th></tr></thead>
+          <thead><tr><th scope="col">${unit}</th><th scope="col">Completed</th><th scope="col">Practiced</th>${PRACTICE_KINDS.map(k => `<th scope="col">${k.name}</th>`).join("")}<th scope="col">Attempts</th><th scope="col">✓</th><th scope="col">✗</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </details>
@@ -2816,7 +2839,7 @@ function wireSessionsToggle(container) {
 
 function wireActivity(container) {
   container.querySelectorAll(".act-toggle [data-group]").forEach(btn =>
-    btn.addEventListener("click", () => { activityView.group = btn.dataset.group; renderStats(); }));
+    btn.addEventListener("click", () => { activityView.group = btn.dataset.group; activityView.offset = 0; renderStats(); }));
   container.querySelectorAll(".act-toggle [data-chart]").forEach(btn =>
     btn.addEventListener("click", () => { activityView.chart = btn.dataset.chart; renderStats(); }));
   container.querySelector("#activityRange").addEventListener("change", event => {
@@ -2826,6 +2849,7 @@ function wireActivity(container) {
       activityView.from = dayToInput(from);
       activityView.to = dayToInput(to);
     }
+    activityView.offset = 0;
     renderStats();
   });
   ["activityFrom", "activityTo"].forEach(id => container.querySelector(`#${id}`).addEventListener("change", event => {
@@ -2833,6 +2857,23 @@ function wireActivity(container) {
     activityView[id === "activityFrom" ? "from" : "to"] = event.target.value;
     renderStats();
   }));
+  const shiftRange = direction => {
+    if (activityView.range === "custom") {
+      const { from, to } = activityRange();
+      const days = to - from + 1;
+      const latestEnd = activityView.group === "week" ? weekStart(dayNumber()) + 6 : dayNumber();
+      const nextTo = to + direction * days;
+      if (direction > 0 && nextTo > latestEnd) return;
+      activityView.from = dayToInput(from + direction * days);
+      activityView.to = dayToInput(nextTo);
+    } else {
+      // Earlier ranges advance the page; a later range backs toward today.
+      activityView.offset = Math.max(0, activityView.offset - direction);
+    }
+    renderStats();
+  };
+  container.querySelector("#activityPrevious").addEventListener("click", () => shiftRange(-1));
+  container.querySelector("#activityNext").addEventListener("click", () => shiftRange(1));
 
   // One shared tooltip: value first, then the period
   let tip = document.getElementById("actTip");
