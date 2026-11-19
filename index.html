@@ -1823,6 +1823,120 @@
     .spelling-tips li { padding: 8px 10px; border-radius: var(--radius-sm); background: var(--bg-inset); color: var(--text); }
     .spelling-tips .tip-lang { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent-hover); }
     .spelling-tips .tip-letters { margin-right: 6px; padding: 0 5px; border-radius: 4px; background: var(--success-soft); color: var(--success); letter-spacing: 0.04em; }
+    /* The tip the misspelling touched (after a wrong answer) */
+    .spelling-tips li.tip-hit { box-shadow: inset 3px 0 0 var(--warning); }
+    .spelling-tips .tip-hit-label { display: block; margin-bottom: 3px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--warning); }
+    .spelling-tips .tip-drill { display: inline-flex; align-items: center; gap: 4px; margin-left: 4px; padding: 2px 0; }
+
+    /* Word parts: the word split into its roots (patterns.js) */
+    .word-parts-line { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 2px; margin: 2px 0 8px; font-size: 20px; letter-spacing: 0.03em; }
+    .word-parts-line .wp-root { display: inline-flex; flex-direction: column; align-items: center; padding: 2px 6px 3px; border-radius: 8px; line-height: 1.15; }
+    .word-parts-line .wp-root b { font-weight: 800; }
+    .word-parts-line .wp-root small { font-size: 11px; font-weight: 600; letter-spacing: 0; opacity: 0.85; max-width: 9em; text-align: center; white-space: normal; }
+    .word-parts-line .wp-greek { background: rgba(127, 178, 245, 0.16); color: #b9d4fa; }
+    .word-parts-line .wp-latin { background: rgba(229, 180, 85, 0.16); color: var(--accent-hover); }
+    .word-parts-line .wp-glue { padding: 2px 1px; color: var(--success); font-weight: 800; text-decoration: underline dotted; text-underline-offset: 4px; cursor: help; }
+    .word-parts-line .wp-rest { padding: 2px 1px; color: var(--text-secondary); }
+    .word-parts-list .wp-also { margin-top: 4px; font-size: 13px; color: var(--text-secondary); }
+    .word-parts-list .wp-word { padding: 0; border: 0; background: none; font: inherit; color: var(--accent-hover); text-decoration: underline; cursor: pointer; }
+    .word-parts-list .wp-glue-note { color: var(--text-secondary); }
+
+    /* Pattern drill pop-up (patterns.js) */
+    .drill-dialog {
+      width: min(400px, calc(100vw - 32px));
+      box-sizing: border-box;
+      padding: 16px 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+      color: var(--text);
+      box-shadow: var(--shadow-md);
+    }
+    .drill-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+    .drill-top { display: flex; align-items: center; gap: 8px; }
+    .drill-top .tip-lang { padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--accent-soft); color: var(--accent-hover); }
+    .drill-count { flex: 1; font-size: 13px; color: var(--text-tertiary); }
+    .drill-close { width: var(--tap); height: var(--tap); margin: -8px -8px -8px 0; border: 0; background: none; color: var(--text-secondary); font-size: 26px; line-height: 1; cursor: pointer; }
+    .drill-dialog h3 { margin: 6px 0 10px; font-size: 18px; }
+    .drill-word { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: 0.04em; overflow-wrap: anywhere; }
+    .drill-gap { display: inline-block; min-width: 1.4em; margin: 0 2px; padding: 0 4px; border-radius: 6px; border: 2px dashed var(--accent-line); color: var(--accent-hover); text-align: center; }
+    .drill-gap.filled { border-style: solid; }
+    .drill-gap.right { border-color: var(--success); color: var(--success); background: var(--success-soft); }
+    .drill-gap.wrong { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
+    .drill-def { margin: 8px 0 10px; color: var(--text-secondary); font-size: 14px; line-height: 1.45; }
+    .drill-hear { width: auto; margin-bottom: 12px; }
+    .drill-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .drill-option { min-height: var(--tap); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-inset); color: var(--text); font: inherit; font-size: 20px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; }
+    .drill-option:hover:not(:disabled) { background: var(--bg-hover); }
+    .drill-option:disabled { cursor: default; opacity: 0.55; }
+    .drill-option.right { opacity: 1; border-color: var(--success); background: var(--success-soft); color: var(--success); }
+    .drill-option.wrong { opacity: 1; border-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+    .drill-after { margin: 12px 0; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 14px; line-height: 1.45; }
+    .drill-after.right { background: var(--success-soft); }
+    .drill-after.wrong { background: var(--danger-soft); }
+    .drill-rule { color: var(--text-secondary); line-height: 1.45; }
+    .drill-actions { display: flex; flex-direction: column; gap: 8px; }
+    .drill-dialog .primary-btn { width: 100%; }
+
+    /* Roots tab > Language patterns (patterns.js) */
+    .roots-pages { margin-bottom: 12px; }
+    .patterns-lang { min-height: var(--tap); padding: 6px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-inset); color: var(--text); font: inherit; max-width: 100%; }
+    .pattern-lang-section { margin-bottom: 14px; }
+    .pattern-lang-section[hidden] { display: none; }
+    .pattern-lang-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 4px 2px 6px; }
+    .pattern-lang-head h3 { margin: 0; font-size: 18px; }
+    .pattern-lang-count { font-size: 13px; color: var(--text-tertiary); }
+    .pattern-lang-note { margin: 0 2px 8px; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+    .pattern-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+    .pattern-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-elevated); min-width: 0; }
+    .pattern-card[hidden] { display: none; }
+    .pattern-card-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .pattern-card .tip-letters { padding: 0 6px; border-radius: 4px; background: var(--success-soft); color: var(--success); font-weight: 800; letter-spacing: 0.04em; }
+    .pattern-card-rule { margin: 0; font-size: 14px; line-height: 1.45; }
+    .pattern-card-example { margin: 6px 0 0; font-size: 13px; color: var(--text-secondary); overflow-wrap: anywhere; }
+    .pattern-card-example b { color: var(--success); }
+    .pattern-card-example .wp-word { padding: 0; border: 0; background: none; font: inherit; color: var(--accent-hover); text-decoration: underline; cursor: pointer; }
+    .pattern-card .tip-drill { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; padding: 2px 0; }
+
+    /* Roots tab (patterns.js) */
+    .roots-intro { margin-bottom: 14px; }
+    .roots-intro .stats-heading { margin-top: 0; }
+    .roots-lead { margin: 0 0 12px; color: var(--text-secondary); line-height: 1.5; }
+    #rootsSearch { width: 100%; box-sizing: border-box; }
+    .roots-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+    .roots-filters .act-toggle { flex-wrap: wrap; }
+    .roots-mine { margin: 0; }
+    .roots-count { margin: 10px 0 0; font-size: 13px; color: var(--text-tertiary); }
+    .roots-empty { padding: 12px 4px; }
+    .roots-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    .root-card { padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-elevated); min-width: 0; }
+    .root-card[hidden] { display: none; }
+    .root-card-head { display: flex; gap: 6px; align-items: center; }
+    .root-lang { padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .root-lang.wp-greek { background: rgba(127, 178, 245, 0.16); color: #b9d4fa; }
+    .root-lang.wp-latin { background: rgba(229, 180, 85, 0.16); color: var(--accent-hover); }
+    .root-scripps { padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--success-soft); color: var(--success); white-space: nowrap; }
+    .root-kind { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); }
+    .root-name { margin: 6px 0 2px; font-family: var(--font-display); font-size: 22px; overflow-wrap: anywhere; }
+    .root-meaning { margin: 0 0 6px; color: var(--text); }
+    .root-common, .root-words { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary); overflow-wrap: anywhere; }
+    .root-label { color: var(--text-tertiary); font-weight: 600; }
+    .root-none { font-weight: 400; font-style: italic; }
+    .root-words .wp-word { padding: 0; border: 0; background: none; font: inherit; color: var(--accent-hover); text-decoration: underline; cursor: pointer; }
+    .root-more { font-size: 13px; padding: 0; }
+
+    /* Stats > Spelling patterns (patterns.js) */
+    .pattern-intro { margin: -4px 0 10px; font-size: 13px; color: var(--text-tertiary); }
+    .pattern-list { display: grid; gap: 8px; }
+    .pattern-row { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--bg-inset); }
+    .pattern-rule { font-size: 14px; line-height: 1.45; }
+    .pattern-rule .tip-lang { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--accent-soft); color: var(--accent-hover); }
+    .pattern-rule .tip-letters { margin-right: 6px; padding: 0 5px; border-radius: 4px; background: var(--success-soft); color: var(--success); letter-spacing: 0.04em; }
+    .pattern-meta { margin-top: 4px; font-size: 13px; color: var(--warning); }
+    .pattern-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .pattern-actions .reset-btn { width: auto; }
+    .pattern-solid { margin-top: 10px; font-size: 13px; color: var(--text-secondary); line-height: 2; }
+    .pattern-chip { display: inline-block; padding: 0 8px; border-radius: 999px; background: var(--success-soft); color: var(--success); white-space: nowrap; }
     /* ---------- MW info pop-up: the word's Merriam-Webster entry inside the app.
        Element ids/classes still say "panel" (mwPanel, .mw-panel) from its first,
        side-panel version; app.js refers to them by those names. ---------- */
@@ -2363,6 +2477,10 @@
       <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 4.5l4 4L8 20H4v-4z"/><path d="M13 7l4 4"/></svg>
       <span>Practice</span>
     </button>
+    <button class="tab-btn" data-tab="roots">
+      <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M12 12c0 4-3 5-6 8"/><path d="M12 12c0 4 3 5 6 8"/><path d="M12 15v6"/><circle cx="12" cy="3.5" r="1.5"/></svg>
+      <span>Roots</span>
+    </button>
     <button class="tab-btn" data-tab="stats">
       <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg>
       <span>Stats</span>
@@ -2533,6 +2651,13 @@
       <div id="spellingTipsSection" hidden>
         <div class="label">Spelling tips</div>
         <ul id="spellingTips" class="spelling-tips"></ul>
+      </div>
+
+      <!-- The word's Greek and Latin roots (patterns.js, word_roots.json) -->
+      <div id="wordPartsSection" hidden>
+        <div class="label">Word parts</div>
+        <div id="wordPartsLine" class="word-parts-line" aria-label="The word split into its roots"></div>
+        <ul id="wordPartsList" class="spelling-tips word-parts-list"></ul>
       </div>
 
       <div class="label">Definition <span id="definitionSource" class="source-badge" hidden></span></div>
@@ -2808,6 +2933,66 @@
     </div>
   </div>
 
+  <!-- Every Greek and Latin root, prefix and suffix (patterns.js "Roots tab", word_roots.json) -->
+  <div id="rootsTab" class="tab-panel">
+    <!-- Two pages in one tab (the phone tab bar has room for four tabs): roots, and language patterns -->
+    <div class="act-toggle roots-pages" role="group" aria-label="Show">
+      <button type="button" data-roots-page="roots" aria-pressed="true">Roots</button>
+      <button type="button" data-roots-page="patterns" aria-pressed="false">Language patterns</button>
+    </div>
+    <div id="rootsPage">
+    <div class="card roots-intro">
+      <h2 class="stats-heading">Greek and Latin roots</h2>
+      <p class="roots-lead">Most hard bee words are built from these parts. Know the root and you can spell, and often understand, a word you have never seen. Tap a study word to open it. Roots marked <span class="root-scripps">Scripps guide</span> are the ones in the 2026 Words of the Champions; the rest come from general Greek and Latin root lists.</p>
+      <input id="rootsSearch" class="search-box" type="search" placeholder="Search roots, meanings or words (e.g. water, graph)" aria-label="Search roots" />
+      <div class="roots-filters">
+        <div class="act-toggle" role="group" aria-label="Language">
+          <button type="button" data-roots-lang="all" aria-pressed="true">All</button>
+          <button type="button" data-roots-lang="Greek" aria-pressed="false">Greek</button>
+          <button type="button" data-roots-lang="Latin" aria-pressed="false">Latin</button>
+        </div>
+        <div class="act-toggle" role="group" aria-label="Kind">
+          <button type="button" data-roots-kind="all" aria-pressed="true">All</button>
+          <button type="button" data-roots-kind="prefix" aria-pressed="false">Prefixes</button>
+          <button type="button" data-roots-kind="root" aria-pressed="false">Roots</button>
+          <button type="button" data-roots-kind="suffix" aria-pressed="false">Suffixes</button>
+        </div>
+        <label class="correction-toggle roots-mine" for="rootsMine">
+          <input id="rootsMine" type="checkbox" />
+          <span>Only roots in my study words</span>
+        </label>
+        <label class="correction-toggle roots-mine" for="rootsScripps">
+          <input id="rootsScripps" type="checkbox" />
+          <span>Only roots from the Scripps guide</span>
+        </label>
+      </div>
+      <p id="rootsCount" class="roots-count"></p>
+    </div>
+    <p id="rootsEmpty" class="stats-empty roots-empty" hidden>No roots match. Try another search.</p>
+    <div id="rootsList" class="roots-list"></div>
+    </div>
+
+    <!-- Every spelling pattern by language (patterns.js "Patterns page", spelling-help.js ORIGIN_TIPS) -->
+    <div id="patternsPage" hidden>
+      <div class="card roots-intro">
+        <h2 class="stats-heading">Language patterns</h2>
+        <p class="roots-lead">How each language spells its sounds. When you get a word you don't know, ask for the language of origin and use these. Rules marked <span class="root-scripps">Scripps guide</span> come from the 2026 Words of the Champions. Tap an example to open it, or drill a pattern.</p>
+        <input id="patternsSearch" class="search-box" type="search" placeholder="Search patterns or letters (e.g. ph, French, silent)" aria-label="Search patterns" />
+        <div class="roots-filters">
+          <label class="field-label" for="patternsLang">Language</label>
+          <select id="patternsLang" class="patterns-lang"><option value="all">All languages</option></select>
+          <label class="correction-toggle roots-mine" for="patternsScripps">
+            <input id="patternsScripps" type="checkbox" />
+            <span>Only rules from the Scripps guide</span>
+          </label>
+        </div>
+        <p id="patternsCount" class="roots-count"></p>
+      </div>
+      <p id="patternsEmpty" class="stats-empty roots-empty" hidden>No patterns match. Try another search.</p>
+      <div id="patternsList"></div>
+    </div>
+  </div>
+
   <div id="statsTab" class="tab-panel">
     <div class="difficulty-bar practice-filters" id="statsFilters">
       <div class="field">
@@ -2939,12 +3124,17 @@
 </script>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="spelling-help.js?v=2026101302"></script>
-<script src="app.js?v=2026111103"></script>
+<!-- Pattern drill pop-up, filled in by patterns.js (opened from the Learning card's tips and from Stats) -->
+<dialog id="drillDialog" class="drill-dialog" aria-labelledby="drillTitle"></dialog>
+
+<!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
+<script src="spelling-help.js?v=2026111803"></script>
+<script src="app.js?v=2026111803"></script>
 <script src="sfx.js?v=2026111102"></script>
 <script src="bee-buddy.js?v=2026111105"></script>
 <script src="face-bee.js?v=2026111102"></script>
 <script src="learn-bee.js?v=2026111104"></script>
-<script src="practice.js?v=2026111101"></script>
+<script src="practice.js?v=2026111801"></script>
+<script src="patterns.js?v=2026111804"></script>
 </body>
 </html>

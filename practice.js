@@ -755,7 +755,8 @@ function showAnswerState(entry) {
       feedback.querySelector(".fb-word").textContent = entry.item.word;
       feedback.querySelector(".fb-typed-row").remove();
     }
-    renderSpellingTips(feedback.querySelector(".fb-tips"), spellingTips(entry.item, 2));
+    // A rule the mistake touched comes first ("This is where it slipped")
+    renderSpellingTips(feedback.querySelector(".fb-tips"), tipsForMistake(entry.item, steps, 2));
   }
   if (correct) feedback.querySelector(".fb-word").textContent = entry.item.word;
   // The study list's other spellings, once the answer is in
