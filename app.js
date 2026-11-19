@@ -530,6 +530,8 @@ async function loadWords() {
   if (typeof onWordsLoaded === "function") onWordsLoaded();
   // A refresh on Stats opened it before the words arrived: draw it with them now
   if (activeTab === "stats") renderStats();
+  // Same for the Roots tab (its Patterns page needs the words)
+  if (activeTab === "roots" && typeof renderRootsTab === "function") renderRootsTab();
 }
 
 /* ---------------------------
@@ -813,6 +815,7 @@ function switchTab(tab) {
   if (leaving === "practice" && tab !== "practice" && typeof leavePractice === "function") leavePractice();
   if (tab === "learning") startLearnClock();
   if (tab === "stats") renderStats();
+  if (tab === "roots" && typeof renderRootsTab === "function") renderRootsTab();
   if (tab === "practice" && typeof openPractice === "function") openPractice();
 }
 
@@ -1805,8 +1808,12 @@ function renderSourceBadge(id, text, source) {
 // Language-of-origin tips that fit this word (spelling-help.js)
 function renderCardTips(item) {
   const tips = item ? spellingTips(item) : [];
+  const list = document.getElementById("spellingTips");
   document.getElementById("spellingTipsSection").hidden = !tips.length;
-  renderSpellingTips(document.getElementById("spellingTips"), tips);
+  renderSpellingTips(list, tips);
+  // patterns.js: a Drill button on each pattern tip, and the word's roots
+  if (typeof addDrillButtons === "function") addDrillButtons(list, tips, item);
+  if (typeof renderWordParts === "function") renderWordParts(item);
 }
 
 // The last few misspellings from Practice, newest first, each lined up with
@@ -2384,6 +2391,7 @@ function renderStats() {
           <h3>Most missed words</h3>
           <div class="missed-list">${missedHtml}</div>
         </div>
+        ${typeof patternStatsHtml === "function" ? patternStatsHtml(scopeWords) : ""}
         <div class="stat-section">
           <div class="stat-section-head">
             <h3>Recent tests</h3>
@@ -2401,6 +2409,7 @@ function renderStats() {
 
   wireActivity(container);
   wireSessionsToggle(container);
+  if (typeof wirePatternStats === "function") wirePatternStats(container, scopeWords);
 
   container.querySelectorAll(".stat-filter").forEach(tile => {
     const open = () => {

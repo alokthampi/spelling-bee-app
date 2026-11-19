@@ -1,0 +1,109 @@
+{
+  "_about": "Hand corrections for tag_roots.py: a word's roots to add (when the root's form is in the word but the tagger missed it) or remove (a look-alike). Reviewed 2026-11-18.",
+  "acolyte": {
+    "remove": [
+      "lys",
+      "a-not"
+    ]
+  },
+  "diocese": {
+    "remove": [
+      "di"
+    ]
+  },
+  "eclogue": {
+    "remove": [
+      "log"
+    ]
+  },
+  "loggia": {
+    "remove": [
+      "log"
+    ]
+  },
+  "onomatopoeia": {
+    "remove": [
+      "nom"
+    ]
+  },
+  "reredos": {
+    "remove": [
+      "re"
+    ]
+  },
+  "suffrage": {
+    "remove": [
+      "fract"
+    ]
+  },
+  "vindictive": {
+    "remove": [
+      "dict"
+    ]
+  },
+  "spatha": {
+    "remove": [
+      "path"
+    ]
+  },
+  "spathe": {
+    "remove": [
+      "path"
+    ]
+  },
+  "apostrophe": {
+    "remove": [
+      "trop"
+    ]
+  },
+  "evident": {
+    "add": [
+      "vid"
+    ]
+  },
+  "genet": {
+    "remove": [
+      "gen"
+    ]
+  },
+  "Jurassic": {
+    "remove": [
+      "jur"
+    ]
+  },
+  "parsimony": {
+    "remove": [
+      "part"
+    ]
+  },
+  "proxy": {
+    "remove": [
+      "prox"
+    ]
+  },
+  "seneschal": {
+    "remove": [
+      "sen"
+    ]
+  },
+  "Typhoean": {
+    "remove": [
+      "typ"
+    ]
+  },
+  "embassy": {
+    "remove": [
+      "en-gr"
+    ]
+  },
+  "stratosphere": {
+    "remove": [
+      "strat"
+    ]
+  },
+  "amass": {
+    "remove": [
+      "a-not"
+    ]
+  }
+}

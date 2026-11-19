@@ -44,9 +44,13 @@ jobs:
       - name: Download new recordings
         run: python download_mw_audio.py
 
+      # New word histories can confirm more Greek and Latin roots (Learning card > Word parts)
+      - name: Tag word roots
+        run: python tag_roots.py
+
       - name: Commit new entries
         run: |
-          git add mw_entries mw_audio
+          git add mw_entries mw_audio word_roots.json
           if git diff --cached --quiet; then
             echo "No new entries to commit"
             exit 0
