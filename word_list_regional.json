@@ -1498,7 +1498,7 @@
   {
     "word": "azure",
     "difficulty": "one",
-    "origin": "Persian, Arabic, Latin, French",
+    "origin": "Persian, Arabic, French",
     "part_of_speech": "noun",
     "definition": "the blue color of the clear sky",
     "definition_source": "merriam_webster",
@@ -2483,7 +2483,7 @@
   {
     "word": "cadence",
     "difficulty": "one",
-    "origin": "Latin, Italian",
+    "origin": "Latin",
     "part_of_speech": "noun",
     "definition": "the beat, time, or measure of rhythmical motion or activity",
     "definition_source": "merriam_webster",
@@ -2555,7 +2555,7 @@
   {
     "word": "canoe",
     "difficulty": "one",
-    "origin": "Arawak, Spanish",
+    "origin": "Arawak, Spanish, Latin, French",
     "part_of_speech": "noun",
     "definition": "a light narrow boat with both ends sharp that is usually propelled by paddling",
     "definition_source": "merriam_webster",
@@ -2677,7 +2677,7 @@
   {
     "word": "Caribbean",
     "difficulty": "one",
-    "origin": "Carib, Spanish",
+    "origin": "Carib, Spanish, Latin",
     "part_of_speech": "adjective",
     "definition": "of or relating to the Caribs, the eastern and southern West Indies, or the Caribbean Sea",
     "definition_source": "merriam_webster",
@@ -5790,7 +5790,7 @@
   {
     "word": "embassy",
     "difficulty": "one",
-    "origin": "French",
+    "origin": "Celtic, Germanic, Latin, Occitan, Italian, French",
     "part_of_speech": "noun",
     "definition": "the official office of an ambassador in a foreign country",
     "definition_source": "generated",
@@ -6757,7 +6757,7 @@
   {
     "word": "fez",
     "difficulty": "one",
-    "origin": "Turkish, French",
+    "origin": "Eponym, French",
     "part_of_speech": "noun",
     "definition": "a brimless cylindrical or somewhat cone-shaped hat with a flat top that usually has a tassel, is typically made of red felt, and is worn especially by men in eastern Mediterranean countries",
     "definition_source": "merriam_webster",
@@ -10220,7 +10220,7 @@
   {
     "word": "likelier",
     "difficulty": "one",
-    "origin": "Old Norse",
+    "origin": "Old English, Old Norse",
     "part_of_speech": "adjective",
     "definition": "more likely",
     "definition_source": "generated",
@@ -12036,7 +12036,7 @@
   {
     "word": "nosh",
     "difficulty": "one",
-    "origin": "Yiddish",
+    "origin": "German, Yiddish",
     "part_of_speech": "verb",
     "definition": "to eat a snack : munch",
     "definition_source": "merriam_webster",
@@ -13032,7 +13032,7 @@
   {
     "word": "petunia",
     "difficulty": "one",
-    "origin": "Guarani, French, Latin",
+    "origin": "Tupi, French, Latin",
     "part_of_speech": "noun",
     "definition": "any of a genus (Petunia) of tropical South American herbs of the nightshade family that are commonly grown as annuals for their fragrant, colorful, trumpet-shaped flowers",
     "definition_source": "merriam_webster",
@@ -14496,7 +14496,7 @@
   {
     "word": "rejuvenate",
     "difficulty": "one",
-    "origin": "Latin",
+    "origin": "Latin, French",
     "part_of_speech": "verb",
     "definition": "to make young or youthful again : give new vigor to",
     "definition_source": "merriam_webster",
@@ -17239,7 +17239,7 @@
   {
     "word": "tariff",
     "difficulty": "one",
-    "origin": "Arabic, Turkish, Italian",
+    "origin": "Arabic, Italian",
     "part_of_speech": "noun",
     "definition": "a tax on goods coming into or going out of a country",
     "definition_source": "generated",
@@ -20601,7 +20601,7 @@
   {
     "word": "alchemy",
     "difficulty": "two",
-    "origin": "Greek, Arabic, Latin",
+    "origin": "Greek, Arabic, Latin, French",
     "part_of_speech": "noun",
     "definition": "a medieval chemical science and speculative philosophy aiming to achieve the transmutation of the base metals into gold, the discovery of a universal cure for disease, and the discovery of a means of indefinitely prolonging life",
     "definition_source": "merriam_webster",
@@ -20622,7 +20622,7 @@
   {
     "word": "aerophobia",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "fear or strong dislike of flying : aviophobia",
     "definition_source": "merriam_webster",
@@ -20928,7 +20928,7 @@
   {
     "word": "apothecary",
     "difficulty": "two",
-    "origin": "Greek, Latin",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "one who prepares and sells drugs or compounds for medicinal purposes",
     "definition_source": "merriam_webster",
@@ -21057,7 +21057,7 @@
   {
     "word": "aporia",
     "difficulty": "two",
-    "origin": "Greek, Latin",
+    "origin": "Greek, French",
     "part_of_speech": "noun",
     "definition": "an expression of real or pretended doubt or uncertainty especially for rhetorical effect",
     "definition_source": "merriam_webster",
@@ -21736,7 +21736,7 @@
   {
     "word": "agoraphobia",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, German",
     "part_of_speech": "noun",
     "definition": "abnormal fear of being helpless in a situation from which escape may be difficult or embarrassing that is characterized initially often by panic or anticipatory anxiety and finally by the avoidance of open or public places",
     "definition_source": "merriam_webster",
@@ -21994,7 +21994,7 @@
   {
     "word": "anhinga",
     "difficulty": "two",
-    "origin": "Tupi, Portuguese",
+    "origin": "Tupi, Latin",
     "part_of_speech": "noun",
     "definition": "any of a genus (Anhinga) of fish-eating birds related to the cormorants but distinguished by a longer neck and sharply pointed rather than hooked bill; especially : one (A. anhinga) occurring from the southern U.S. to Argentina",
     "definition_source": "merriam_webster",
@@ -22437,7 +22437,7 @@
   {
     "word": "boondoggle",
     "difficulty": "two",
-    "origin": "Unknown",
+    "origin": "English",
     "part_of_speech": "noun",
     "definition": "a wasteful and useless project or activity",
     "definition_source": "generated",
@@ -22925,7 +22925,7 @@
   {
     "word": "babka",
     "difficulty": "two",
-    "origin": "Polish",
+    "origin": "Polish, Yiddish",
     "part_of_speech": "noun",
     "definition": "a sweet yeast cake, often swirled with chocolate or cinnamon",
     "definition_source": "generated",
@@ -22950,7 +22950,7 @@
   {
     "word": "bolivar",
     "difficulty": "two",
-    "origin": "Eponym",
+    "origin": "Eponym, Spanish",
     "part_of_speech": "noun",
     "definition": "the basic monetary unit of Venezuela",
     "definition_source": "merriam_webster",
@@ -23279,7 +23279,7 @@
   {
     "word": "boisterous",
     "difficulty": "two",
-    "origin": "Unknown",
+    "origin": "French",
     "part_of_speech": "adjective",
     "definition": "noisily turbulent : rowdy",
     "definition_source": "merriam_webster",
@@ -23686,7 +23686,7 @@
   {
     "word": "baobab",
     "difficulty": "two",
-    "origin": "Unknown",
+    "origin": "Latin",
     "part_of_speech": "noun",
     "definition": "a broad-trunked tropical tree (Adansonia digitata) of the mallow family that is native to Africa and has an edible acidic fruit resembling a gourd and bark used in making paper, cloth, and rope; also : any of several related trees chiefly of Madagascar and Australia",
     "definition_source": "merriam_webster",
@@ -23819,7 +23819,7 @@
   {
     "word": "blintzes",
     "difficulty": "two",
-    "origin": "Ukrainian, Yiddish",
+    "origin": "Slavic, Yiddish",
     "part_of_speech": "noun",
     "definition": "a thin usually wheat-flour pancake folded to form a casing (as for cheese or fruit) and then sautéed or baked",
     "definition_source": "merriam_webster",
@@ -24772,7 +24772,7 @@
   {
     "word": "calypso",
     "difficulty": "two",
-    "origin": "Unknown",
+    "origin": "English",
     "part_of_speech": "noun",
     "definition": "a style of music from Trinidad with lively rhythms and words that are often made up on the spot",
     "definition_source": "generated",
@@ -27445,7 +27445,7 @@
   {
     "word": "capstan",
     "difficulty": "two",
-    "origin": "Latin, Occitan",
+    "origin": "Latin, Occitan, French",
     "part_of_speech": "noun",
     "definition": "a machine for moving or raising heavy weights that consists of a vertical drum which can be rotated and around which cable is turned",
     "definition_source": "merriam_webster",
@@ -28960,7 +28960,7 @@
   {
     "word": "ecesis",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "the establishment of a plant or animal in a new habitat",
     "definition_source": "merriam_webster",
@@ -29966,7 +29966,7 @@
   {
     "word": "euphonious",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, Latin",
     "part_of_speech": "adjective",
     "definition": "pleasing to the ear",
     "definition_source": "merriam_webster",
@@ -30017,7 +30017,7 @@
   {
     "word": "ethmoid",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, French",
     "part_of_speech": "noun",
     "definition": "a light spongy cubical bone forming much of the walls of the nasal cavity and part of those of the orbits",
     "definition_source": "merriam_webster",
@@ -32093,7 +32093,7 @@
   {
     "word": "hetman",
     "difficulty": "two",
-    "origin": "German, Polish",
+    "origin": "German, Polish, Ukrainian",
     "part_of_speech": "noun",
     "definition": "a Cossack leader",
     "definition_source": "merriam_webster",
@@ -35428,7 +35428,7 @@
   {
     "word": "famulus",
     "difficulty": "two",
-    "origin": "Latin",
+    "origin": "Latin, German",
     "part_of_speech": "noun",
     "definition": "a private secretary or attendant",
     "definition_source": "merriam_webster",
@@ -35774,7 +35774,7 @@
   {
     "word": "glossolalia",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, German",
     "part_of_speech": "noun",
     "definition": "speech in an unknown language, or in sounds that resemble language, especially during religious worship : speaking in tongues",
     "definition_source": "generated",
@@ -37802,7 +37802,7 @@
   {
     "word": "lithium",
     "difficulty": "two",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "noun",
     "definition": "a chemical element of the alkali metal group that is the lightest metal known and that is used especially in alloys and glass, in mechanical lubricants, and in storage batteries",
     "definition_source": "merriam_webster",
@@ -38159,7 +38159,7 @@
   {
     "word": "jacamar",
     "difficulty": "two",
-    "origin": "Tupi, French",
+    "origin": "Tupi-Guarani, Portuguese, French",
     "part_of_speech": "noun",
     "definition": "any of a family (Galbulidae) of usually iridescent green or bronze insectivorous birds of tropical American forests having a long sharp bill",
     "definition_source": "merriam_webster",
@@ -38180,7 +38180,7 @@
   {
     "word": "loch",
     "difficulty": "two",
-    "origin": "Gaelic",
+    "origin": "Scottish Gaelic",
     "part_of_speech": "noun",
     "definition": "a lake or a narrow arm of the sea, especially in Scotland",
     "definition_source": "generated",
@@ -40254,7 +40254,7 @@
   {
     "word": "Mennonites",
     "difficulty": "two",
-    "origin": "Eponym",
+    "origin": "Eponym, German",
     "part_of_speech": "plural noun",
     "definition": "members of a Protestant church that grew out of the Anabaptist movement and is known for simple living and refusing military service",
     "definition_source": "generated",
@@ -44774,7 +44774,7 @@
   {
     "word": "poblano",
     "difficulty": "two",
-    "origin": "Eponym",
+    "origin": "Eponym, Spanish",
     "part_of_speech": "noun",
     "definition": "a large usually mild heart-shaped chili pepper especially when fresh and dark green",
     "definition_source": "merriam_webster",
@@ -46445,7 +46445,7 @@
   {
     "word": "potassium",
     "difficulty": "two",
-    "origin": "Dutch, Latin",
+    "origin": "English, Latin",
     "part_of_speech": "noun",
     "definition": "a silver-white soft light low-melting monovalent metallic element of the alkali metal group that occurs abundantly in nature especially combined in minerals",
     "definition_source": "merriam_webster",
@@ -48446,7 +48446,7 @@
   {
     "word": "seraphic",
     "difficulty": "two",
-    "origin": "Latin",
+    "origin": "Hebrew, Latin",
     "part_of_speech": "adjective",
     "definition": "angelic : very beautiful or pure",
     "definition_source": "generated",
@@ -49438,7 +49438,7 @@
   {
     "word": "scarlatina",
     "difficulty": "two",
-    "origin": "Italian",
+    "origin": "Latin",
     "part_of_speech": "noun",
     "definition": "scarlet fever",
     "definition_source": "merriam_webster",
@@ -49476,7 +49476,7 @@
   {
     "word": "soufflé",
     "difficulty": "two",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a light, fluffy baked dish made with beaten egg whites",
     "definition_source": "generated",
@@ -50850,7 +50850,7 @@
   {
     "word": "Seminole",
     "difficulty": "two",
-    "origin": "Creek, Spanish",
+    "origin": "Spanish, Creek",
     "part_of_speech": "noun",
     "definition": "a member of any of several groups of Indigenous people that emigrated to Florida from Georgia and Alabama in the 18th and 19th centuries and whose descendants now live in southern Florida and Oklahoma",
     "definition_source": "merriam_webster",
@@ -51739,7 +51739,7 @@
   {
     "word": "trophic",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, French",
     "part_of_speech": "adjective",
     "definition": "of or relating to nutrition : nutritional",
     "definition_source": "merriam_webster",
@@ -54027,7 +54027,7 @@
   {
     "word": "vermicide",
     "difficulty": "two",
-    "origin": "Latin",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "an agent that destroys worms",
     "definition_source": "merriam_webster",
@@ -54216,7 +54216,7 @@
   {
     "word": "zoolatry",
     "difficulty": "two",
-    "origin": "Greek",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "animal worship",
     "definition_source": "merriam_webster",
@@ -56452,7 +56452,7 @@
   {
     "word": "aileron",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a movable airfoil at the trailing edge of an airplane wing that is used for imparting a rolling motion especially in banking for turns",
     "definition_source": "merriam_webster",
@@ -56720,7 +56720,7 @@
   {
     "word": "amertoy",
     "difficulty": "three",
-    "origin": "",
+    "origin": "English",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -57196,7 +57196,7 @@
   {
     "word": "Ardipithecus",
     "difficulty": "three",
-    "origin": "Greek, Latin",
+    "origin": "Afar, Greek, Latin",
     "part_of_speech": "noun",
     "definition": "a genus of early hominins that lived in eastern Africa over four million years ago",
     "definition_source": "generated",
@@ -57277,7 +57277,7 @@
   {
     "word": "as nas",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Persian",
     "part_of_speech": "noun",
     "definition": "a term given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -57655,7 +57655,7 @@
   {
     "word": "balata",
     "difficulty": "three",
-    "origin": "Spanish",
+    "origin": "Carib, Spanish",
     "part_of_speech": "noun",
     "definition": "the dried latex of a tropical American tree (genus Manilkara and especially M. bidentata) of the sapodilla family that is similar to gutta-percha and is used especially in belting and golf balls; also : a tree yielding it",
     "definition_source": "merriam_webster",
@@ -57714,7 +57714,7 @@
   {
     "word": "Barnumesque",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "adjective",
     "definition": "showy and exaggerated in the manner of the showman P. T. Barnum",
     "definition_source": "generated",
@@ -57731,7 +57731,7 @@
   {
     "word": "Bartókian",
     "difficulty": "three",
-    "origin": "Hungarian",
+    "origin": "Eponym",
     "part_of_speech": "adjective",
     "definition": "of, relating to, or like the music of the Hungarian composer Béla Bartók",
     "definition_source": "generated",
@@ -58011,7 +58011,7 @@
   {
     "word": "Bernoulli effect",
     "difficulty": "three",
-    "origin": "Swiss, Latin",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "the drop in pressure of a fluid as its speed increases, which helps airplane wings make lift",
     "definition_source": "generated",
@@ -58027,7 +58027,7 @@
   {
     "word": "Bessemer",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "adjective",
     "definition": "relating to the Bessemer process, a method of making steel by blowing air through melted iron",
     "definition_source": "generated",
@@ -58068,7 +58068,7 @@
   {
     "word": "Bezier curve",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a smooth curve drawn on a computer using control points",
     "definition_source": "generated",
@@ -58154,7 +58154,7 @@
   {
     "word": "bijou",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Breton, French",
     "part_of_speech": "noun",
     "definition": "a small dainty usually ornamental piece of delicate workmanship : jewel",
     "definition_source": "merriam_webster",
@@ -59016,7 +59016,7 @@
   {
     "word": "caló",
     "difficulty": "three",
-    "origin": "Spanish",
+    "origin": "Dravidian, Indo-Aryan, Romani, Spanish",
     "part_of_speech": "noun",
     "definition": "a Spanish slang language that comes from the speech of the Spanish Romani; also : Mexican American street slang",
     "definition_source": "generated",
@@ -59148,7 +59148,7 @@
   {
     "word": "cantatrice",
     "difficulty": "three",
-    "origin": "French, Italian",
+    "origin": "Latin, Italian, French",
     "part_of_speech": "noun",
     "definition": "a woman who is a singer; especially : an opera singer",
     "definition_source": "merriam_webster",
@@ -59351,7 +59351,7 @@
   {
     "word": "Casimir effect",
     "difficulty": "three",
-    "origin": "Dutch",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a small attractive force between two very close parallel metal plates in a vacuum",
     "definition_source": "generated",
@@ -59475,7 +59475,7 @@
   {
     "word": "catlinite",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a soft red clay stone carved by Plains Indians into pipes : pipestone",
     "definition_source": "generated",
@@ -59698,7 +59698,7 @@
   {
     "word": "chalybeate",
     "difficulty": "three",
-    "origin": "Latin",
+    "origin": "Greek, Latin",
     "part_of_speech": "adjective",
     "definition": "impregnated with salts of iron; also : having a taste due to iron",
     "definition_source": "merriam_webster",
@@ -59931,7 +59931,7 @@
   {
     "word": "chèvre",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "cheese made from goat's milk",
     "definition_source": "generated",
@@ -60663,7 +60663,7 @@
   {
     "word": "coryphée",
     "difficulty": "three",
-    "origin": "Greek, French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "a ballet dancer who ranks above the corps de ballet and dances small solo parts",
     "definition_source": "generated",
@@ -61180,7 +61180,7 @@
   {
     "word": "Deseret",
     "difficulty": "three",
-    "origin": "Reformed Egyptian",
+    "origin": "Unknown",
     "part_of_speech": "noun",
     "definition": "a word in the Book of Mormon meaning honeybee, later the name Mormon settlers proposed for their state",
     "definition_source": "generated",
@@ -61537,7 +61537,7 @@
   {
     "word": "dysphasia",
     "difficulty": "three",
-    "origin": "Greek",
+    "origin": "Greek, French",
     "part_of_speech": "noun",
     "definition": "loss of or deficiency in the power to use or understand language as a result of injury to or disease of the brain",
     "definition_source": "merriam_webster",
@@ -62443,7 +62443,7 @@
   {
     "word": "Feldenkrais",
     "difficulty": "three",
-    "origin": "Hebrew",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a method of gentle movement exercises meant to improve posture and ease of motion",
     "definition_source": "generated",
@@ -62667,7 +62667,7 @@
   {
     "word": "freycinetia",
     "difficulty": "three",
-    "origin": "Latin",
+    "origin": "Eponym, Latin",
     "part_of_speech": "noun",
     "definition": "a genus of climbing plants of the screw-pine family found on Pacific islands",
     "definition_source": "generated",
@@ -64708,7 +64708,7 @@
   {
     "word": "Ishihara test",
     "difficulty": "three",
-    "origin": "Japanese",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a test for color blindness that uses circles of colored dots with hidden numbers",
     "definition_source": "generated",
@@ -65216,7 +65216,7 @@
   {
     "word": "Kjeldahl",
     "difficulty": "three",
-    "origin": "Danish",
+    "origin": "Eponym",
     "part_of_speech": "adjective",
     "definition": "relating to a method for measuring the amount of nitrogen in a substance",
     "definition_source": "generated",
@@ -65427,7 +65427,7 @@
   {
     "word": "La Tène",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Eponym, French",
     "part_of_speech": "noun",
     "definition": "a Celtic culture of the late Iron Age in Europe, known for curving decorative art",
     "definition_source": "generated",
@@ -65624,7 +65624,7 @@
   {
     "word": "limaçon",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "a heart-shaped or looping curve in mathematics",
     "definition_source": "generated",
@@ -66252,7 +66252,7 @@
   {
     "word": "martinoe",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Unknown",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -66385,7 +66385,7 @@
   {
     "word": "mediobrome",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Unknown",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -66471,7 +66471,7 @@
   {
     "word": "Metonic cycle",
     "difficulty": "three",
-    "origin": "Greek",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a period of 19 years after which the phases of the moon fall on the same days of the year",
     "definition_source": "generated",
@@ -67359,7 +67359,7 @@
   {
     "word": "nymss",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Egyptian",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -68588,7 +68588,7 @@
   {
     "word": "portugais",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Latin, Portuguese, French",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -69223,7 +69223,7 @@
   {
     "word": "Quonset",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "—used for a prefabricated shelter having a semicircular arching roof of corrugated metal",
     "definition_source": "merriam_webster",
@@ -69401,7 +69401,7 @@
   {
     "word": "Rayleigh wave",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a kind of earthquake wave that rolls along the ground like a wave on water",
     "definition_source": "generated",
@@ -69531,7 +69531,7 @@
   {
     "word": "rickettsial",
     "difficulty": "three",
-    "origin": "Latin",
+    "origin": "Eponym, Latin",
     "part_of_speech": "adjective",
     "definition": "of, relating to, or caused by rickettsias, tiny bacteria spread by ticks and lice",
     "definition_source": "generated",
@@ -69708,7 +69708,7 @@
   {
     "word": "rooseveltite",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "a rare mineral made of bismuth arsenate",
     "definition_source": "generated",
@@ -69913,7 +69913,7 @@
   {
     "word": "sacalait",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Choctaw, French",
     "part_of_speech": "noun",
     "definition": "a crappie, a sunfish of North American rivers and lakes",
     "definition_source": "generated",
@@ -70196,7 +70196,7 @@
   {
     "word": "saussurite",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Eponym, French",
     "part_of_speech": "noun",
     "definition": "a tough, greenish mixture of minerals formed when feldspar is changed by heat and pressure",
     "definition_source": "generated",
@@ -70678,7 +70678,7 @@
   {
     "word": "shtetlach",
     "difficulty": "three",
-    "origin": "Yiddish",
+    "origin": "German, Yiddish",
     "part_of_speech": "plural noun",
     "definition": "small Jewish towns or villages that were once found in Eastern Europe",
     "definition_source": "generated",
@@ -70760,7 +70760,7 @@
   {
     "word": "Skeltonic",
     "difficulty": "three",
-    "origin": "English",
+    "origin": "Eponym",
     "part_of_speech": "adjective",
     "definition": "written in short, irregular rhyming lines like the verse of the English poet John Skelton",
     "definition_source": "generated",
@@ -70823,7 +70823,7 @@
   {
     "word": "soirée",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Latin, French",
     "part_of_speech": "noun",
     "definition": "an evening party or reception",
     "definition_source": "generated",
@@ -70977,7 +70977,7 @@
   {
     "word": "Strelitzia",
     "difficulty": "three",
-    "origin": "Latin",
+    "origin": "Eponym, Latin",
     "part_of_speech": "noun",
     "definition": "a genus of African plants with orange and blue flowers shaped like a bird's head : bird-of-paradise",
     "definition_source": "generated",
@@ -71232,7 +71232,7 @@
   {
     "word": "swainsona",
     "difficulty": "three",
-    "origin": "Latin",
+    "origin": "Eponym, Latin",
     "part_of_speech": "noun",
     "definition": "a genus of Australian plants of the pea family with clusters of colorful flowers",
     "definition_source": "generated",
@@ -72307,7 +72307,7 @@
   {
     "word": "trillado",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Spanish",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -72361,7 +72361,7 @@
   {
     "word": "trochee",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Greek, Latin, French",
     "part_of_speech": "noun",
     "definition": "a metrical foot consisting of one long syllable followed by one short syllable or of one stressed syllable followed by one unstressed syllable (as in apple)",
     "definition_source": "merriam_webster",
@@ -72414,7 +72414,7 @@
   {
     "word": "tsukupin",
     "difficulty": "three",
-    "origin": "",
+    "origin": "Yapese",
     "part_of_speech": "noun",
     "definition": "a word given in the regional list; check its meaning in Merriam-Webster Unabridged",
     "definition_source": "generated",
@@ -72426,7 +72426,7 @@
   {
     "word": "tullibee",
     "difficulty": "three",
-    "origin": "French",
+    "origin": "Ojibwe, French",
     "part_of_speech": "noun",
     "definition": "a whitefish of the Great Lakes and other cold lakes of North America",
     "definition_source": "generated",
@@ -72938,7 +72938,7 @@
   {
     "word": "wahine",
     "difficulty": "three",
-    "origin": "Hawaiian",
+    "origin": "Maori, Hawaiian",
     "part_of_speech": "noun",
     "definition": "a Polynesian woman",
     "definition_source": "merriam_webster",
@@ -73384,7 +73384,7 @@
   {
     "word": "Zamboni",
     "difficulty": "three",
-    "origin": "Italian",
+    "origin": "Eponym",
     "part_of_speech": "noun",
     "definition": "—used for an ice resurfacing machine",
     "definition_source": "merriam_webster",
