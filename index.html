@@ -706,7 +706,7 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(229, 180, 85, 0.06) inset;
     }
 
-    #word {
+    .word-heading {
       font-family: var(--font-display);
       font-size: clamp(32px, 8vw, 48px);
       font-weight: 600;
@@ -927,7 +927,7 @@
     .pronunciation-chip.unrecorded { color: var(--text-secondary); border-style: dashed; }
     .pronunciation-chip small { color: var(--text-tertiary); font-size: 11px; }
 
-    #definition, #sentence {
+    .word-passage {
       font-size: 14px;
       line-height: 1.55;
       color: var(--text);
@@ -1833,8 +1833,8 @@
     .word-parts-line .wp-root { display: inline-flex; flex-direction: column; align-items: center; padding: 2px 6px 3px; border-radius: 8px; line-height: 1.15; }
     .word-parts-line .wp-root b { font-weight: 800; }
     .word-parts-line .wp-root small { font-size: 11px; font-weight: 600; letter-spacing: 0; opacity: 0.85; max-width: 9em; text-align: center; white-space: normal; }
-    .word-parts-line .wp-greek { background: rgba(127, 178, 245, 0.16); color: #b9d4fa; }
-    .word-parts-line .wp-latin { background: rgba(229, 180, 85, 0.16); color: var(--accent-hover); }
+    .word-parts-line .wp-greek, .root-lang.wp-greek { background: rgba(127, 178, 245, 0.16); color: #b9d4fa; }
+    .word-parts-line .wp-latin, .root-lang.wp-latin { background: rgba(229, 180, 85, 0.16); color: var(--accent-hover); }
     .word-parts-line .wp-glue { padding: 2px 1px; color: var(--success); font-weight: 800; text-decoration: underline dotted; text-underline-offset: 4px; cursor: help; }
     .word-parts-line .wp-rest { padding: 2px 1px; color: var(--text-secondary); }
     .word-parts-list .wp-also { margin-top: 4px; font-size: 13px; color: var(--text-secondary); }
@@ -1902,28 +1902,46 @@
     .roots-intro { margin-bottom: 14px; }
     .roots-intro .stats-heading { margin-top: 0; }
     .roots-lead { margin: 0 0 12px; color: var(--text-secondary); line-height: 1.5; }
-    #rootsSearch { width: 100%; box-sizing: border-box; }
     .roots-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
-    .roots-filters .act-toggle { flex-wrap: wrap; }
     .roots-mine { margin: 0; }
     .roots-count { margin: 10px 0 0; font-size: 13px; color: var(--text-tertiary); }
     .roots-empty { padding: 12px 4px; }
-    .roots-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-    .root-card { padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-elevated); min-width: 0; }
-    .root-card[hidden] { display: none; }
-    .root-card-head { display: flex; gap: 6px; align-items: center; }
+    .roots-filter-bar select { padding-left: 12px; }
+    .roots-filter-bar .field-search { grid-column: 1 / -1; }
+    .roots-filter-bar .roots-mine { grid-column: 1 / -1; min-height: var(--tap); }
+    .roots-layout { align-items: stretch; }
+    .roots-list-panel, .roots-detail { min-width: 0; }
+    .roots-detail { align-self: flex-start; width: 100%; }
+    .root-row {
+      width: 100%; min-height: var(--tap); background: none; border: 0;
+      border-left: 3px solid transparent; color: var(--text); font-family: inherit;
+      text-align: left; overflow-wrap: anywhere;
+    }
+    .root-row[hidden] { display: none; }
+    @media (min-width: 700px) {
+      #rootsFilters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr); }
+      .roots-filter-bar .field-search { grid-column: auto; }
+    }
+    .root-heading-banner { align-items: flex-start; flex-direction: column; gap: 6px; margin-bottom: 10px; padding: 12px 14px; }
+    .root-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
     .root-lang { padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .root-lang.wp-greek { background: rgba(127, 178, 245, 0.16); color: #b9d4fa; }
-    .root-lang.wp-latin { background: rgba(229, 180, 85, 0.16); color: var(--accent-hover); }
-    .root-scripps { padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--success-soft); color: var(--success); white-space: nowrap; }
     .root-kind { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); }
-    .root-name { margin: 6px 0 2px; font-family: var(--font-display); font-size: 22px; overflow-wrap: anywhere; }
+    .root-name { font-size: 28px; }
     .root-meaning { margin: 0 0 6px; color: var(--text); }
-    .root-common, .root-words { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary); overflow-wrap: anywhere; }
+    .root-common { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: var(--text-secondary); overflow-wrap: anywhere; }
     .root-label { color: var(--text-tertiary); font-weight: 600; }
     .root-none { font-weight: 400; font-style: italic; }
-    .root-words .wp-word { padding: 0; border: 0; background: none; font: inherit; color: var(--accent-hover); text-decoration: underline; cursor: pointer; }
-    .root-more { font-size: 13px; padding: 0; }
+    .root-study { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .root-study-heading { margin: 0 0 10px; font-size: 15px; }
+    .root-study-list { display: grid; gap: 10px; }
+    .root-study-word { padding: 12px; overflow-wrap: anywhere; }
+    .root-study-word-head { margin-bottom: 10px; padding: 8px 12px; }
+    .root-study-word-head .word-heading { font-size: 24px; }
+    .root-study-audio { flex: none; }
+    .root-study-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 8px 12px; margin: 8px 0 0; }
+    .root-study-fields dt { margin-top: 0; }
+    .root-study-fields dd { margin: 0; font-size: 14px; line-height: 1.55; }
+    .root-study-wide { grid-column: 1 / -1; }
 
     /* Stats > Spelling patterns (patterns.js) */
     .pattern-intro { margin: -4px 0 10px; font-size: 13px; color: var(--text-tertiary); }
@@ -2610,7 +2628,7 @@
 
     <div class="card">
       <div class="word-header empty">
-        <h2 id="word">Select a word</h2>
+        <h2 id="word" class="word-heading">Select a word</h2>
         <div class="word-status">
           <button id="clearCoveredBtn" class="reset-btn clear-btn" title="Tapped by mistake? Clear this word" hidden><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg>Clear</button>
         </div>
@@ -2661,7 +2679,7 @@
       </div>
 
       <div class="label">Definition <span id="definitionSource" class="source-badge" hidden></span></div>
-      <div id="definition">—</div>
+      <div id="definition" class="word-passage">—</div>
 
       <div id="pictureSection" hidden>
         <div class="label">Picture <a id="pictureSource" class="source-badge source-picture" target="_blank" rel="noopener"></a></div>
@@ -2673,7 +2691,7 @@
       </div>
 
       <div class="label">Sentence <span id="sentenceSource" class="source-badge" hidden></span></div>
-      <div id="sentence">—</div>
+      <div id="sentence" class="word-passage">—</div>
 
       <div class="label">Part of Speech</div>
       <div id="pos">—</div>
@@ -2941,50 +2959,59 @@
       <button type="button" data-roots-page="patterns" aria-pressed="false">Language patterns</button>
     </div>
     <div id="rootsPage">
-    <div class="card roots-intro">
-      <h2 class="stats-heading">Greek and Latin roots</h2>
-      <p class="roots-lead">Most hard bee words are built from these parts. Know the root and you can spell, and often understand, a word you have never seen. Tap a study word to open it. Roots marked <span class="root-scripps">Scripps guide</span> are the ones in the 2026 Words of the Champions; the rest come from general Greek and Latin root lists.</p>
-      <input id="rootsSearch" class="search-box" type="search" placeholder="Search roots, meanings or words (e.g. water, graph)" aria-label="Search roots" />
-      <div class="roots-filters">
-        <div class="act-toggle" role="group" aria-label="Language">
-          <button type="button" data-roots-lang="all" aria-pressed="true">All</button>
-          <button type="button" data-roots-lang="Greek" aria-pressed="false">Greek</button>
-          <button type="button" data-roots-lang="Latin" aria-pressed="false">Latin</button>
+      <form id="rootsFilters" class="difficulty-bar roots-filter-bar" aria-label="Root filters">
+        <div class="field">
+          <label class="field-label" for="rootsLang">Language</label>
+          <select id="rootsLang">
+            <option value="all">All languages</option>
+            <option value="Greek">Greek</option>
+            <option value="Latin">Latin</option>
+          </select>
         </div>
-        <div class="act-toggle" role="group" aria-label="Kind">
-          <button type="button" data-roots-kind="all" aria-pressed="true">All</button>
-          <button type="button" data-roots-kind="prefix" aria-pressed="false">Prefixes</button>
-          <button type="button" data-roots-kind="root" aria-pressed="false">Roots</button>
-          <button type="button" data-roots-kind="suffix" aria-pressed="false">Suffixes</button>
+        <div class="field">
+          <label class="field-label" for="rootsKind">Part type</label>
+          <select id="rootsKind">
+            <option value="all">All types</option>
+            <option value="prefix">Prefixes</option>
+            <option value="root">Roots</option>
+            <option value="suffix">Suffixes</option>
+          </select>
+        </div>
+        <div class="field field-search">
+          <label class="field-label" for="rootsSearch">Search</label>
+          <div class="field-row">
+            <input id="rootsSearch" class="search-box" type="search" placeholder="Search roots, meanings, or words" />
+            <button type="button" class="reset-btn clear-filters-btn" id="clearRootsFilters" title="Clear all root filters" disabled><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Clear</button>
+          </div>
         </div>
         <label class="correction-toggle roots-mine" for="rootsMine">
           <input id="rootsMine" type="checkbox" />
           <span>Only roots in my study words</span>
         </label>
-        <label class="correction-toggle roots-mine" for="rootsScripps">
-          <input id="rootsScripps" type="checkbox" />
-          <span>Only roots from the Scripps guide</span>
-        </label>
+      </form>
+      <div class="layout roots-layout">
+        <div id="rootsListPanel" class="word-list roots-list-panel" role="region" aria-labelledby="rootsListTitle" tabindex="0">
+          <div class="word-list-header">
+            <h3 id="rootsListTitle">Root List</h3>
+            <span id="rootsCount" class="collapse-summary" role="status"></span>
+          </div>
+          <div id="rootsList"></div>
+        </div>
+        <article id="rootsDetail" class="card roots-detail" aria-label="Selected root">
+          <p class="stats-empty">Loading roots…</p>
+        </article>
       </div>
-      <p id="rootsCount" class="roots-count"></p>
-    </div>
-    <p id="rootsEmpty" class="stats-empty roots-empty" hidden>No roots match. Try another search.</p>
-    <div id="rootsList" class="roots-list"></div>
     </div>
 
     <!-- Every spelling pattern by language (patterns.js "Patterns page", spelling-help.js ORIGIN_TIPS) -->
     <div id="patternsPage" hidden>
       <div class="card roots-intro">
         <h2 class="stats-heading">Language patterns</h2>
-        <p class="roots-lead">How each language spells its sounds. When you get a word you don't know, ask for the language of origin and use these. Rules marked <span class="root-scripps">Scripps guide</span> come from the 2026 Words of the Champions. Tap an example to open it, or drill a pattern.</p>
+        <p class="roots-lead">How each language spells its sounds. When you get a word you don't know, ask for the language of origin and use these. Tap an example to open it, or drill a pattern.</p>
         <input id="patternsSearch" class="search-box" type="search" placeholder="Search patterns or letters (e.g. ph, French, silent)" aria-label="Search patterns" />
         <div class="roots-filters">
           <label class="field-label" for="patternsLang">Language</label>
           <select id="patternsLang" class="patterns-lang"><option value="all">All languages</option></select>
-          <label class="correction-toggle roots-mine" for="patternsScripps">
-            <input id="patternsScripps" type="checkbox" />
-            <span>Only rules from the Scripps guide</span>
-          </label>
         </div>
         <p id="patternsCount" class="roots-count"></p>
       </div>
@@ -3128,13 +3155,13 @@
 <dialog id="drillDialog" class="drill-dialog" aria-labelledby="drillTitle"></dialog>
 
 <!-- Bump ?v= on every release so phones fetch the new code instead of a cached copy -->
-<script src="spelling-help.js?v=2026111803"></script>
+<script src="spelling-help.js?v=2026111905"></script>
 <script src="app.js?v=2026111803"></script>
 <script src="sfx.js?v=2026111102"></script>
 <script src="bee-buddy.js?v=2026111105"></script>
 <script src="face-bee.js?v=2026111102"></script>
 <script src="learn-bee.js?v=2026111104"></script>
 <script src="practice.js?v=2026111801"></script>
-<script src="patterns.js?v=2026111804"></script>
+<script src="patterns.js?v=2026111905"></script>
 </body>
 </html>
