@@ -138,7 +138,6 @@ const ORIGIN_TIPS = {
       [/^(eu)/, "eu- is Greek for “good” or “well” (euphemism, eulogy).", { unless: /^eur(ek|o)/ }],
       [/(graph|gram)/, "graph and gram are Greek for “write” (autograph, telegram)."],
       [/(ism)$/, "-ism is a Greek ending for an idea or a way of acting (heroism, optimism).", { unless: /^prism$/ }],
-      // From here on: the 2026 Words of the Champions language guide (pp. 64-81)
       [/^(x)/, "At the start of a Greek word, x says “z” (xylophone, xyloglyphy).", { sound: /(^|\s)z/, alts: ["z"] }],
       [/^(k)/, "Greek words sometimes keep k for the “k” sound (kyphoplasty, kinesiology) where Latin would use c.", { alts: ["c", "ch"] }],
       [/(c)[aou]/, "A “k” sound in a Greek word can be c, k or ch, as in cataphora, kyphoplasty and allochroous; ask for the root to be sure.",
@@ -161,7 +160,6 @@ const ORIGIN_TIPS = {
         "-ant / -ance and -ent / -ence sound alike. A related word can give the vowel away: substance → substantial, confidence → confidential.",
         { unless: /ment$|^stance$/ }],
       [/(ous)(ly|ness)?$/, "-ous makes a describing word and is always spelled -ous, never -us: nervous, previous (but a thing is -us: bonus, census)."],
-      // From here on: the 2026 Words of the Champions language guide (pp. 64-81)
       [/(ae)$/, "A Latin plural that ends in an “ee” sound is spelled -ae (lunulae, larvae).", { sound: /ē/, alts: ["i", "e", "ee"] }],
       [/[^aeiou](i)$/, "A Latin plural that ends in an “eye” sound is spelled -i (stimuli, cacti).", { sound: /ī(\s|$)/, unless: /-/, alts: ["ae", "y", "ie"] }],
       [/(us)$/, "A thing (a noun) that ends in “us” is spelled -us in Latin words (cumulus, impetus); a describing word is -ous.",
@@ -191,7 +189,6 @@ const ORIGIN_TIPS = {
         { sound: /äzh/, ifSound: "If -age sounds like “ahzh”, that's French (garage, montage, collage)." }],
       [/(et)$/, "The t at the end is silent, the French way (ballet, buffet, gourmet).",
         { sound: /ā(\s|$)/, ifSound: "If the t at the end is silent, that's French (ballet, buffet, gourmet)." }],
-      // From here on: the 2026 Words of the Champions language guide (pp. 68-69)
       [/^(e)/, "A long “a” at the start of a French word is spelled é (étude, éclaircissement).", { sound: /(^|\s)ā/, alts: ["a", "ai", "ay"] }],
       [/[aeiou](ss)[aeiou]/, "In French words a double ss between vowels says “s” (impasse, lassitude, coulisse); a single s there would say “z”.",
         { sound: /s/, alts: ["s", "c", "sc"] }],
@@ -225,7 +222,6 @@ const ORIGIN_TIPS = {
   "Old Norse": {
     patterns: [
       [/(sk)/, "sk is often a Norse clue (sky, skin, skull, bask)."],
-      // The 2026 Words of the Champions language guide (p. 73)
       [/[^aeiou](a)[^aeiou]/, "In Scandinavian words the “ah” sound is usually spelled a (slalom).", { sound: /ä/, alts: ["o", "ah", "aa"] }]
     ],
     general: "Old Norse and the Scandinavian languages gave English short words that are spelled much like German ones; the schwa can be any vowel (fulmar, anorak, lefse, litmus)."
@@ -238,7 +234,6 @@ const ORIGIN_TIPS = {
         { sound: /ch/, ifSound: "If c sounds like “ch”, that's Italian (cello, concerto)." }],
       [/(([bcdfglmnprstv])\2)/, "Italian words often double their consonants (spaghetti, umbrella, staccato)."],
       [/([aio])$/, "Italian words usually end in a vowel (piano, opera, confetti)."],
-      // From here on: the 2026 Words of the Champions language guide (p. 70)
       [/(c{1,2})i[aeou]/, "Before i and another vowel, c or cc says “ch” and the i is silent (focaccia, cioppino, perciatelli).",
         { sound: /ch/, alts: ["ch", "cch", "tch"] }],
       [/(ch)/, "In Italian words ch says “k” (macchiato, scherzo, gnocchi, bruschetta).", { sound: /k/, alts: ["k", "c", "ck"] }],
@@ -258,7 +253,6 @@ const ORIGIN_TIPS = {
       [/(j)/, "Here j says “h”, the Spanish way (jalapeño, fajita).",
         { sound: /h/, ifSound: "In Spanish words j usually says “h” (jalapeño, fajita)." }],
       [/([ao])$/, "Spanish words usually end in a vowel, often -o or -a (bonanza, burrito, patio)."],
-      // From here on: the 2026 Words of the Champions language guide (p. 71)
       [/(i)$/, "An “ee” at the end of a stressed last syllable is spelled i in Spanish words (coquí).", { sound: /ˈ[^-ˌˈ\s]*ē(\s|$)/, alts: ["e", "ee", "y"] }],
       [/[^aeiou](e)$/, "An “ee” at the end of an unstressed last syllable is spelled e in Spanish words (zacate).", { sound: /-[^ˈˌ\s-]*ē(\s|$)/, alts: ["i", "ee", "y"] }],
       [/(c)[ei]/, "Before e or i, c says “s” in Spanish words (cilantro, cereza).", { sound: /s/, alts: ["s", "z", "ss"] }],
@@ -275,7 +269,6 @@ const ORIGIN_TIPS = {
       [/(ch)/, "Here ch says “k”, as it often does in German (dachshund, Bach).", { sound: /k/, notSound: /ch|sh/ }],
       [/(ei)/, "In German words ei says a long “i” (stein, poltergeist).", { sound: /ī/ }],
       [/(ie)/, "In German words ie says “ee” (glockenspiel).", { sound: /ē/ }],
-      // From here on: the 2026 Words of the Champions language guide (pp. 72-73)
       [/(w)/, "In German words w says “v” (Weimaraner, weltschmerz).", { sound: /v/, alts: ["v", "wh", "f"] }],
       [/(au)/, "In German words the “ow” sound is spelled au (sauerkraut).", { sound: /aw/, alts: ["ow", "ou", "ao"] }],
       [/^(k)/, "German spells the “k” sound with k, rarely c (konditorei, kriegspiel).", { alts: ["c", "ck", "ch"] }],
@@ -290,7 +283,6 @@ const ORIGIN_TIPS = {
   Dutch: {
     patterns: [
       [/(oo|aa)/, "A double vowel is a Dutch clue (cookie, aardvark)."],
-      // From here on: the 2026 Words of the Champions language guide (p. 73)
       [/(oe)/, "In Dutch and Afrikaans words oe says “oo” (baboen).", { sound: /ü/, alts: ["oo", "u", "ou"] }],
       [/(ee)/, "In Dutch and Afrikaans words ee says a long “a” (keeshond).", { sound: /ā/, alts: ["a", "ay", "ei"] }]
     ],
@@ -299,7 +291,6 @@ const ORIGIN_TIPS = {
   Arabic: {
     patterns: [
       [/^(al)/, "al- is Arabic for “the” (algebra, alcohol, alchemy)."],
-      // From here on: the 2026 Words of the Champions language guide (p. 77)
       [/(q)(?!u)/, "Arabic often spells the “k” sound q with no u after it (qiyas).", { alts: ["k", "qu", "c"] }],
       [/(([bdfklmnrstwz])\2)/, "Arabic words often double their consonants (Shawwal, fellahin)."],
       [/(ah)$/, "Some Arabic words end in -ah (bismillah), but many don't (halala, Jahiliya).", { alts: ["a", "aa"] }],
@@ -326,7 +317,6 @@ const ORIGIN_TIPS = {
   },
   Japanese: {
     patterns: [
-      // The 2026 Words of the Champions language guide (p. 74)
       [/(ei)/, "In Japanese words ei says a long “a” (sensei, Heian).", { sound: /ā/, alts: ["ay", "a", "ai"] }],
       [/[^aeiou](e)$/, "A long “a” at the end of a Japanese word is spelled e (anime, edamame, yosenabe).", { sound: /ā(\s|$)/, alts: ["ay", "ai", "ei"] }],
       [/[^aeiou](i)$/, "In Japanese words the long “e” sound is spelled i (torii, enoki, funori).", { sound: /ē(\s|$)/, alts: ["ee", "e", "y"] }],
@@ -341,7 +331,6 @@ const ORIGIN_TIPS = {
   },
   Hawaiian: {
     patterns: [
-      // The 2026 Words of the Champions language guide (p. 75)
       [/([aeiou]{2})/, "Each vowel is said on its own in Hawaiian and other Pacific words, so spell every vowel you hear (oopuhue, pahoehoe)."],
       [/[^aeiou](e)$/, "A final e says “ay” in Hawaiian and Maori words (wahine).", { sound: /ā(\s|$)/, alts: ["ay", "ai", "a"] }]
     ],
@@ -352,7 +341,6 @@ const ORIGIN_TIPS = {
   },
   Sanskrit: {
     patterns: [
-      // The 2026 Words of the Champions language guide (p. 76)
       [/([bdtgkp]h)/, "Sanskrit marks a puff of air with an h after the consonant: bh, dh, th, kh (bhikshuni, kathakali, svarabhakti, ardhamagadhi).",
         { unless: /sh/ }],
       [/[^aeiou](i)(?![aeiou])/, "In Sanskrit words the long “ee” sound is usually spelled i (Devanagari).", { sound: /ē/, alts: ["ee", "e", "y"] }],
@@ -365,7 +353,6 @@ const ORIGIN_TIPS = {
   },
   Slavic: {
     patterns: [
-      // The 2026 Words of the Champions language guide (p. 78)
       [/(k)/, "Slavic words (Russian, Polish, Czech) spell the “k” sound with k (chastushka, promyshlennik).", { alts: ["c", "ck", "q"] }],
       [/(a)$/, "The schwa at the end of a Slavic word is often spelled a (purga).", { sound: /ə(\s|$)/, alts: ["e", "uh", "o"] }]
     ],
@@ -376,7 +363,6 @@ const ORIGIN_TIPS = {
   },
   "Native American": {
     patterns: [
-      // The 2026 Words of the Champions language guide (p. 78)
       [/[^aeiou](e)$/, "Nahuatl words often end in an “ee” sound spelled e (ahuehuete, cacaxte).", { sound: /ē(\s|$)/, alts: ["i", "ee", "y"] }],
       [/[aeiou](ck)$/, "Words from North American languages came through American English, so endings look English (wejack).", { alts: ["k", "c", "ch"] }]
     ],
@@ -391,14 +377,6 @@ const ORIGIN_TIPS = {
   Imitative: {
     general: "This word imitates a sound, so spell it the way it sounds in English (buzz, kazoo, zowie)."
   }
-};
-
-// Where each language's rules from the 2026 Words of the Champions language
-// guide start in its patterns list (the ones before were here already). The
-// Patterns page marks those as "Scripps guide". Add new rules at the end.
-const GUIDE_RULES_FROM = {
-  Greek: 9, Latin: 8, French: 10, "Old Norse": 1, Italian: 5, Spanish: 5, German: 4, Dutch: 1, Arabic: 1,
-  Hebrew: 0, Turkish: 0, Japanese: 0, Hawaiian: 0, Sanskrit: 0, Slavic: 0, "Native American": 0
 };
 
 // The Patterns page's names for the tip groups

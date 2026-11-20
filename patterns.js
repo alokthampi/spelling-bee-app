@@ -1,6 +1,5 @@
 /* ---------------------------
-   Roots and spelling patterns (after the 2026 Words of the Champions section
-   "language patterns and root word study"):
+   Roots and spelling patterns:
    - Word parts: the word's Greek and Latin roots on the Learning card, with
      what they mean and other words that share them (word_roots.json, made by
      tag_roots.py)
@@ -485,9 +484,9 @@ function startPatternPractice(items, rule) {
    Roots tab: every root in word_roots.json, tagged in a study word or not,
    with its meaning, everyday words and the study words that have it
 --------------------------- */
-const ROOT_WORDS_SHOWN = 12;
-const rootsView = { query: "", lang: "all", kind: "all", mine: false, scripps: false };
 let rootsBuilt = false;
+let selectedRootRow = null;
+let rootStudyWordSource;
 
 function rootSortKey(root) {
   return root.root.toLowerCase().replace(/[^a-z]/g, "");
@@ -498,76 +497,131 @@ function rootStudyWords(id) {
   return [...new Set(rootIndex?.get(id) || [])].sort((a, b) => a.localeCompare(b));
 }
 
-function rootCard(id, root) {
-  const card = drillEl("article", "root-card");
-  card.dataset.id = id;
-  const head = drillEl("div", "root-card-head");
-  head.append(drillEl("span", `root-lang ${root.lang.includes("Greek") ? "wp-greek" : "wp-latin"}`, rootLangLabel(root.lang)),
+function rootStudyWordCard(word, item) {
+  const card = drillEl("article", "card root-study-word");
+  const head = drillEl("div", "word-header root-study-word-head");
+  head.append(drillEl("h4", "word-heading", word));
+  card.append(head);
+  if (!item) {
+    card.append(drillEl("p", "root-none", "Word details unavailable."));
+    return card;
+  }
+
+  const audio = drillEl("button", "reset-btn root-study-audio");
+  audio.type = "button";
+  audio.setAttribute("aria-label", `Hear ${word}`);
+  audio.append(iconEl("volume"));
+  audio.addEventListener("click", () => playMWSequence(recordedPronunciations(item), word));
+  head.append(audio);
+
+  const pronunciations = (item.pronunciations || []).filter(p => p.written)
+    .map(p => p.label ? `${p.written} (${p.label})` : p.written);
+  const details = drillEl("dl", "root-study-fields");
+  for (const [label, value] of [
+    ["Pronunciation", pronunciations.join(" / ")],
+    ["Part of speech", item.part_of_speech],
+    ["Origin", item.origin],
+    ["Difficulty", item.difficulty && difficultyLabel(item.difficulty)],
+    ["Definition", item.definition],
+    ["Example sentence", item.sentence]
+  ]) {
+    if (!value) continue;
+    const isPassage = label === "Definition" || label === "Example sentence";
+    const field = drillEl("div", isPassage ? "root-study-wide" : "");
+    field.append(drillEl("dt", "label", label), drillEl("dd", isPassage ? "word-passage" : "", value));
+    details.append(field);
+  }
+  card.append(details);
+  return card;
+}
+
+function selectRoot(row) {
+  if (row === selectedRootRow && rootStudyWordSource === words) return;
+  selectedRootRow?.classList.remove("active");
+  selectedRootRow?.setAttribute("aria-pressed", "false");
+  selectedRootRow = row;
+  rootStudyWordSource = words;
+  const detail = document.getElementById("rootsDetail");
+  if (!row) {
+    detail.replaceChildren(drillEl("p", "stats-empty", "No roots match. Try another search or clear the filters."));
+    return;
+  }
+  row.classList.add("active");
+  row.setAttribute("aria-pressed", "true");
+  const id = row.dataset.id;
+  const root = wordRoots.roots[id];
+  const head = drillEl("div", "word-header root-heading-banner");
+  const tags = drillEl("div", "root-tags");
+  tags.append(drillEl("span", `root-lang ${root.lang.includes("Greek") ? "wp-greek" : "wp-latin"}`, rootLangLabel(root.lang)),
     drillEl("span", "root-kind", root.kind));
-  // Listed in the Scripps guide (Words of the Champions 2026) or added from general root lists
-  if (root.scripps) head.append(drillEl("span", "root-scripps", "Scripps guide"));
-  card.append(head, drillEl("h3", "root-name", root.root), drillEl("p", "root-meaning", `“${root.meaning}”`));
+  head.append(tags, drillEl("h2", "word-heading root-name", root.root));
+  detail.replaceChildren(head, drillEl("p", "root-meaning", `“${root.meaning}”`));
   if (root.common?.length) {
     const common = drillEl("p", "root-common");
     common.append(drillEl("span", "root-label", "Everyday: "), root.common.join(", "));
-    card.append(common);
+    detail.append(common);
   }
   const mine = rootStudyWords(id);
-  const list = drillEl("div", "root-words");
-  if (mine.length) {
-    list.append(drillEl("span", "root-label", `In your words (${mine.length}): `));
-    const addWords = from => mine.slice(from, from === 0 ? ROOT_WORDS_SHOWN : undefined).forEach(w => {
-      const btn = drillEl("button", "wp-word", w);
-      btn.type = "button";
-      btn.addEventListener("click", () => openRootWord(w));
-      list.append(btn, " ");
-    });
-    addWords(0);
-    if (mine.length > ROOT_WORDS_SHOWN) {
-      const more = drillEl("button", "link-btn root-more", `+${mine.length - ROOT_WORDS_SHOWN} more`);
-      more.type = "button";
-      more.addEventListener("click", () => { more.remove(); addWords(ROOT_WORDS_SHOWN); });
-      list.append(more);
-    }
-  } else {
-    list.append(drillEl("span", "root-label root-none", "Not in your study words yet"));
+  if (!mine.length) {
+    detail.append(drillEl("p", "root-common root-none", "Not in your study words yet"));
+    return;
   }
-  card.append(list);
-  // What the search looks through: the root, its meaning and its words
-  card.dataset.search = [root.root, root.meaning, ...(root.common || []), ...mine].join(" ").toLowerCase();
-  card.dataset.lang = root.lang;
-  card.dataset.kind = root.kind;
-  card.dataset.mine = mine.length ? "1" : "";
-  card.dataset.scripps = root.scripps ? "1" : "";
-  return card;
+  const wanted = new Set(mine);
+  const entries = new Map();
+  for (const item of words) {
+    if (wanted.has(item.word) && !entries.has(item.word)) entries.set(item.word, item);
+  }
+  const study = drillEl("section", "root-study");
+  study.append(drillEl("h3", "root-study-heading", `Study words (${mine.length})`));
+  const list = drillEl("div", "root-study-list");
+  list.append(...mine.map(word => rootStudyWordCard(word, entries.get(word))));
+  study.append(list);
+  detail.append(study);
 }
 
 function buildRootsTab() {
   const listEl = document.getElementById("rootsList");
   if (!listEl || !wordRoots) return false;
   const entries = Object.entries(wordRoots.roots).sort((a, b) => rootSortKey(a[1]).localeCompare(rootSortKey(b[1])));
-  listEl.replaceChildren(...entries.map(([id, root]) => rootCard(id, root)));
+  listEl.replaceChildren(...entries.map(([id, root]) => {
+    const row = drillEl("button", "word-item root-row", root.root);
+    row.type = "button";
+    row.setAttribute("aria-pressed", "false");
+    row.setAttribute("aria-controls", "rootsDetail");
+    row.dataset.id = id;
+    row.dataset.search = [root.root, root.meaning, ...(root.common || []), ...rootStudyWords(id)].join(" ").toLowerCase();
+    row.addEventListener("click", () => selectRoot(row));
+    return row;
+  }));
   rootsBuilt = true;
   return true;
 }
 
 function filterRootsTab() {
-  const q = rootsView.query.trim().toLowerCase();
-  let shown = 0;
-  document.querySelectorAll("#rootsList .root-card").forEach(card => {
-    const ok = (!q || card.dataset.search.includes(q)) &&
-      (rootsView.lang === "all" || card.dataset.lang.includes(rootsView.lang)) &&
-      (rootsView.kind === "all" || card.dataset.kind === rootsView.kind) &&
-      (!rootsView.mine || card.dataset.mine) &&
-      (!rootsView.scripps || card.dataset.scripps);
-    card.hidden = !ok;
-    if (ok) shown++;
+  const filters = document.getElementById("rootsFilters").elements;
+  const q = filters.rootsSearch.value.trim().toLowerCase();
+  const lang = filters.rootsLang.value;
+  const kind = filters.rootsKind.value;
+  const mine = filters.rootsMine.checked;
+  filters.clearRootsFilters.disabled = !(filters.rootsSearch.value || lang !== "all" || kind !== "all" || mine);
+  if (!rootsBuilt) return;
+
+  const rows = Array.from(document.getElementById("rootsList").children);
+  const visibleRows = rows.filter(row => {
+    const id = row.dataset.id;
+    const root = wordRoots.roots[id];
+    const matches = (!q || row.dataset.search.includes(q)) &&
+      (lang === "all" || root.lang.includes(lang)) &&
+      (kind === "all" || root.kind === kind) &&
+      (!mine || rootIndex.has(id));
+    row.hidden = !matches;
+    return matches;
   });
-  const total = Object.keys(wordRoots.roots).length;
-  const tagged = new Set(Object.values(wordRoots.words).flat().map(p => p[0])).size;
-  document.getElementById("rootsCount").textContent =
-    `${shown} of ${total} roots · ${tagged} appear in your study words`;
-  document.getElementById("rootsEmpty").hidden = shown > 0;
+  document.getElementById("rootsCount").textContent = `${visibleRows.length} of ${rows.length}`;
+  if (!selectedRootRow || selectedRootRow.hidden) {
+    selectRoot(visibleRows[0]);
+    document.getElementById("rootsListPanel").scrollTop = 0;
+  }
 }
 
 // Called by switchTab() when the Roots tab opens (it shows whichever page is open)
@@ -575,26 +629,17 @@ function renderRootsTab() {
   if (!document.getElementById("patternsPage")?.hidden) return renderPatternsPage();
   if (!rootsBuilt && !buildRootsTab()) return; // word_roots.json not loaded yet: loadWordRoots draws it
   filterRootsTab();
+  if (selectedRootRow) selectRoot(selectedRootRow);
 }
 
 function wireRootsTab() {
-  const search = document.getElementById("rootsSearch");
-  if (!search) return;
-  search.addEventListener("input", () => { rootsView.query = search.value; filterRootsTab(); });
-  document.querySelectorAll("#rootsTab [data-roots-lang], #rootsTab [data-roots-kind]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const key = btn.dataset.rootsLang !== undefined ? "lang" : "kind";
-      rootsView[key] = btn.dataset.rootsLang ?? btn.dataset.rootsKind;
-      btn.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
-      filterRootsTab();
-    });
-  });
-  document.getElementById("rootsMine").addEventListener("change", event => {
-    rootsView.mine = event.target.checked;
-    filterRootsTab();
-  });
-  document.getElementById("rootsScripps").addEventListener("change", event => {
-    rootsView.scripps = event.target.checked;
+  const form = document.getElementById("rootsFilters");
+  if (!form) return;
+  form.addEventListener("submit", event => event.preventDefault());
+  form.addEventListener("change", filterRootsTab);
+  form.elements.rootsSearch.addEventListener("input", filterRootsTab);
+  form.elements.clearRootsFilters.addEventListener("click", () => {
+    form.reset();
     filterRootsTab();
   });
 }
@@ -604,7 +649,7 @@ function wireRootsTab() {
    by language, each with its shortest study word as an example and a Drill
    button
 --------------------------- */
-const patternsView = { query: "", lang: "all", scripps: false };
+const patternsView = { query: "", lang: "all" };
 let patternsBuilt = false;
 
 // One pass over the words: rule id -> { entries, letters } and tip group -> how many words
@@ -629,13 +674,15 @@ function patternIndex() {
   return { rules, langWords };
 }
 
-function patternCard(id, text, guide, found) {
+function patternCard(id, text, found) {
   const card = drillEl("article", "pattern-card");
-  const head = drillEl("div", "pattern-card-head");
   const letters = found ? commonLetters(found) : "";
-  if (letters) head.append(drillEl("b", "tip-letters", letters));
-  if (guide) head.append(drillEl("span", "root-scripps", "Scripps guide"));
-  card.append(head, drillEl("p", "pattern-card-rule", text));
+  if (letters) {
+    const head = drillEl("div", "pattern-card-head");
+    head.append(drillEl("b", "tip-letters", letters));
+    card.append(head);
+  }
+  card.append(drillEl("p", "pattern-card-rule", text));
   const example = drillEl("p", "pattern-card-example");
   if (found?.entries.length) {
     // The shortest study word with this rule reads best
@@ -653,7 +700,6 @@ function patternCard(id, text, guide, found) {
     card.append(example);
   }
   card.dataset.search = `${text} ${letters}`.toLowerCase();
-  card.dataset.scripps = guide ? "1" : "";
   return card;
 }
 
@@ -676,8 +722,8 @@ function buildPatternsPage() {
     if (patterns.length) {
       const cards = drillEl("div", "pattern-cards");
       patterns.forEach(([, text], i) => {
-        const guide = GUIDE_RULES_FROM[key] !== undefined && i >= GUIDE_RULES_FROM[key];
-        cards.append(patternCard(`${key}#${i}`, text, guide, rules.get(`${key}#${i}`)));
+        const id = `${key}#${i}`;
+        cards.append(patternCard(id, text, rules.get(id)));
       });
       section.append(cards);
     }
@@ -704,12 +750,12 @@ function filterPatternsPage() {
     let any = false;
     cards.forEach(card => {
       total++;
-      const ok = langOk && (!q || sectionHit || card.dataset.search.includes(q)) && (!patternsView.scripps || card.dataset.scripps);
+      const ok = langOk && (!q || sectionHit || card.dataset.search.includes(q));
       card.hidden = !ok;
       if (ok) { shown++; any = true; }
     });
     // A language with only a note (no patterns) shows unless something narrows it out
-    const noteOnly = !cards.length && langOk && !patternsView.scripps && (!q || sectionHit);
+    const noteOnly = !cards.length && langOk && (!q || sectionHit);
     section.hidden = !(any || noteOnly);
   });
   document.getElementById("patternsCount").textContent = `${shown} of ${total} patterns`;
@@ -741,10 +787,6 @@ function wirePatternsPage() {
   search.addEventListener("input", () => { patternsView.query = search.value; filterPatternsPage(); });
   document.getElementById("patternsLang").addEventListener("change", event => {
     patternsView.lang = event.target.value;
-    filterPatternsPage();
-  });
-  document.getElementById("patternsScripps").addEventListener("change", event => {
-    patternsView.scripps = event.target.checked;
     filterPatternsPage();
   });
   // Back on the page that was open before a refresh (without drawing it yet)
